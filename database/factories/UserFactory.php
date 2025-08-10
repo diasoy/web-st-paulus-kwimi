@@ -27,6 +27,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'role' => 'umat', // default role
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
@@ -39,6 +40,26 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
+        ]);
+    }
+
+    /**
+     * Create an admin user
+     */
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'admin',
+        ]);
+    }
+
+    /**
+     * Create a regular umat user
+     */
+    public function umat(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => 'umat',
         ]);
     }
 }

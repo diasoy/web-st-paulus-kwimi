@@ -2,18 +2,10 @@ import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { type NavItem, type SharedData } from '@/types';
+import { Link, usePage } from '@inertiajs/react';
+import { BookOpen, Folder, LayoutGrid, Users, Calendar, Bell, Settings, UserCheck } from 'lucide-react';
 import AppLogo from './app-logo';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-];
 
 const footerNavItems: NavItem[] = [
     {
@@ -29,6 +21,61 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { auth } = usePage<SharedData>().props;
+    const user = auth.user;
+
+    // Menu items berdasarkan role
+    const getMainNavItems = (): NavItem[] => {
+        if (user.role === 'admin') {
+            return [
+                {
+                    title: 'Dashboard Admin',
+                    href: '/admin/dashboard',
+                    icon: LayoutGrid,
+                },
+                {
+                    title: 'Kelola Pengguna',
+                    href: '/admin/users',
+                    icon: Users,
+                },
+                {
+                    title: 'Pengaturan',
+                    href: '/settings/profile',
+                    icon: Settings,
+                },
+            ];
+        }
+        
+        // Menu untuk umat
+        return [
+            {
+                title: 'Dashboard',
+                href: '/umat/dashboard',
+                icon: LayoutGrid,
+            },
+            {
+                title: 'Profil Saya',
+                href: '/umat/profile',
+                icon: UserCheck,
+            },
+            {
+                title: 'Pengumuman',
+                href: '/umat/announcements',
+                icon: Bell,
+            },
+            {
+                title: 'Jadwal Ibadah',
+                href: '/umat/schedule',
+                icon: Calendar,
+            },
+            {
+                title: 'Pengaturan',
+                href: '/settings/profile',
+                icon: Settings,
+            },
+        ];
+    };
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -44,7 +91,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={getMainNavItems()} />
             </SidebarContent>
 
             <SidebarFooter>

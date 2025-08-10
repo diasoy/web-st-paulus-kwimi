@@ -10,6 +10,7 @@ class WorshipSchedule extends Model
     use HasFactory;
 
     protected $fillable = [
+        'name',
         'date',
         'pic',
         'time_start',
@@ -28,7 +29,12 @@ class WorshipSchedule extends Model
      */
     public function communities()
     {
-        return $this->belongsToMany(Community::class, 'worship_schedule_communities');
+        return $this->belongsToMany(
+            Community::class, 
+            'worship_schedule_communities',
+            'worship_schedules_id',  // foreign key for current model
+            'community_id'           // foreign key for other model
+        );
     }
 
     /**

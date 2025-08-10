@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,19 +11,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
-        User::factory()->admin()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
+        $this->call([
+            RoleSeeder::class,
+            CommunitySeeder::class,
+            UserSeeder::class,
+            AnnouncementSeeder::class,
+            ActivitySeeder::class,
+            WorshipScheduleSeeder::class,
         ]);
-
-        // Create test umat user
-        User::factory()->umat()->create([
-            'name' => 'Test Umat',
-            'email' => 'umat@example.com',
-        ]);
-
-        // Create additional umat users
-        User::factory()->umat()->count(5)->create();
     }
 }

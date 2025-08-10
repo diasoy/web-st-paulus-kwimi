@@ -26,6 +26,11 @@ class Community extends Model
      */
     public function worshipSchedules()
     {
-        return $this->belongsToMany(WorshipSchedule::class, 'worship_schedule_communities');
+        return $this->belongsToMany(
+            WorshipSchedule::class, 
+            'worship_schedule_communities',
+            'community_id',          // foreign key for current model
+            'worship_schedules_id'   // foreign key for other model
+        );
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
+use App\Models\Community;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -25,22 +27,17 @@ class UserFactory extends Factory
     {
         return [
             'name' => fake()->name(),
+            'username' => fake()->unique()->userName(),
             'email' => fake()->unique()->safeEmail(),
-            'email_verified_at' => now(),
-            'role' => 'umat', // default role
+            'phone_number' => fake()->phoneNumber(),
             'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
+            'address' => fake()->address(),
+            'birth_date' => fake()->dateTimeBetween('-70 years', '-18 years')->format('Y-m-d'),
+            'gender' => fake()->randomElement(['male', 'female']),
+            'role_id' => Role::factory(),
+            'community_id' => Community::factory(),
+            'status' => fake()->randomElement(['active', 'inactive']),
         ];
-    }
-
-    /**
-     * Indicate that the model's email address should be unverified.
-     */
-    public function unverified(): static
-    {
-        return $this->state(fn (array $attributes) => [
-            'email_verified_at' => null,
-        ]);
     }
 
     /**
@@ -48,9 +45,13 @@ class UserFactory extends Factory
      */
     public function admin(): static
     {
-        return $this->state(fn (array $attributes) => [
-            'role' => 'admin',
-        ]);
+        return $this->state(function (array $attributes) {
+            $adminRole = Role::where('name', 'admin')->first() ?? Role::factory()->create(['name' => 'admin']);
+            return [
+                'role_id' => $adminRole->id,
+                'status' => 'active',
+            ];
+        });
     }
 
     /**
@@ -58,8 +59,42 @@ class UserFactory extends Factory
      */
     public function umat(): static
     {
+        return $this->state(function (array $attributes) {
+            $umatRole = Role::where('name', 'umat')->first() ?? Role::factory()->create(['name' => 'umat']);
+            return [
+                'role_id' => $umatRole->id,
+                'status' => 'active',
+            ];
+        });
+    }
+
+    /**
+     * Create a user with specific community
+     */
+    public function withCommunity($communityId): static
+    {
         return $this->state(fn (array $attributes) => [
-            'role' => 'umat',
+            'community_id' => $communityId,
+        ]);
+    }
+
+    /**
+     * Create an active user
+     */
+    public function active(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'active',
+        ]);
+    }
+
+    /**
+     * Create an inactive user
+     */
+    public function inactive(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => 'inactive',
         ]);
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Community;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,11 @@ class RegisteredUserController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('auth/register');
+        $communities = Community::all(['id', 'name']);
+        
+        return Inertia::render('auth/register', [
+            'communities' => $communities
+        ]);
     }
 
     /**
@@ -38,6 +43,7 @@ class RegisteredUserController extends Controller
             'address' => 'required|string|max:255',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
+            'community_id' => 'required|exists:communities,id',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
             'password_confirmation' => 'required',
         ]);
@@ -51,7 +57,7 @@ class RegisteredUserController extends Controller
             'birth_date' => $request->birth_date,
             'gender' => $request->gender,
             'password' => Hash::make($request->password),
-            'community_id' => 1, 
+            'community_id' => $request->community_id,
             'role_id' => 2, 
             'status' => 'active', 
         ]);
@@ -60,7 +66,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // Redirect berdasarkan role_id
-        return redirect()->route('dashboard'); // Main dashboard akan redirect otomatis berdasarkan role
+        return redirect()->route('dashboard');
     }
 }

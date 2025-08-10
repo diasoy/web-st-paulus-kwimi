@@ -9,22 +9,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AuthLayout from '@/layouts/auth-layout';
+import { RegisterForm, Community } from '@/types/auth/register';
 
-type RegisterForm = {
-    name: string;
-    username: string;
-    email: string;
-    phone_number: string;
-    address: string;
-    birth_date: string;
-    gender: 'male' | 'female';
-    password: string;
-    password_confirmation: string;
-    community_id: number;
-    role_id: number;
-};
+interface Props {
+    communities: Community[];
+}
 
-export default function Register() {
+export default function Register({ communities }: Props) {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: '',
         username: '',
@@ -35,7 +26,7 @@ export default function Register() {
         gender: 'male',
         password: '',
         password_confirmation: '',
-        community_id: 1,
+        community_id: communities.length > 0 ? communities[0].id : 1,
         role_id: 2,
     });
 
@@ -166,12 +157,33 @@ export default function Register() {
                     </div>
 
                     <div className="grid gap-2">
+                        <Label htmlFor="community">Community</Label>
+                        <Select
+                            value={data.community_id.toString()}
+                            onValueChange={(value) => setData('community_id', parseInt(value))}
+                            disabled={processing}
+                        >
+                            <SelectTrigger tabIndex={8}>
+                                <SelectValue placeholder="Select community" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {communities.map((community) => (
+                                    <SelectItem key={community.id} value={community.id.toString()}>
+                                        {community.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <InputError message={errors.community_id} />
+                    </div>
+
+                    <div className="grid gap-2">
                         <Label htmlFor="password">Password</Label>
                         <Input
                             id="password"
                             type="password"
                             required
-                            tabIndex={8}
+                            tabIndex={9}
                             autoComplete="new-password"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
@@ -187,7 +199,7 @@ export default function Register() {
                             id="password_confirmation"
                             type="password"
                             required
-                            tabIndex={9}
+                            tabIndex={10}
                             autoComplete="new-password"
                             value={data.password_confirmation}
                             onChange={(e) => setData('password_confirmation', e.target.value)}
@@ -197,7 +209,7 @@ export default function Register() {
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <Button type="submit" className="mt-2 w-full" tabIndex={10} disabled={processing}>
+                    <Button type="submit" className="mt-2 w-full" tabIndex={11} disabled={processing}>
                         {processing && <LoaderCircle className="h-4 w-4 animate-spin" />}
                         Create account
                     </Button>
@@ -205,7 +217,7 @@ export default function Register() {
 
                 <div className="text-center text-sm text-muted-foreground">
                     Already have an account?{' '}
-                    <TextLink href={route('login')} tabIndex={11}>
+                    <TextLink href={route('login')} tabIndex={12}>
                         Log in
                     </TextLink>
                 </div>

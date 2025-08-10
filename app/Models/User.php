@@ -19,9 +19,16 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
+        'phone_number',
         'password',
-        'role',
+        'address',
+        'birth_date',
+        'gender',
+        'community_id',
+        'role_id',
+        'status',
     ];
 
     /**
@@ -42,9 +49,25 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
+            'birth_date' => 'date',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get the user's role
+     */
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    /**
+     * Get the user's community
+     */
+    public function community()
+    {
+        return $this->belongsTo(Community::class);
     }
 
     /**
@@ -52,7 +75,7 @@ class User extends Authenticatable
      */
     public function isAdmin(): bool
     {
-        return $this->role === 'admin';
+        return $this->role?->name === 'admin';
     }
 
     /**
@@ -60,7 +83,7 @@ class User extends Authenticatable
      */
     public function isUmat(): bool
     {
-        return $this->role === 'umat';
+        return $this->role?->name === 'umat';
     }
 
     /**
@@ -68,10 +91,6 @@ class User extends Authenticatable
      */
     public function getRoleDisplayName(): string
     {
-        return match($this->role) {
-            'admin' => 'Administrator',
-            'umat' => 'Umat',
-            default => 'Unknown'
-        };
+        return $this->role?->name ?? 'Unknown';
     }
 }

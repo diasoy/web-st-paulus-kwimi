@@ -35,7 +35,15 @@ export interface User {
     id: number;
     name: string;
     email: string;
-    role: string;
+    username: string;
+    phone_number: string;
+    address: string;
+    birth_date: string;
+    gender: 'male' | 'female';
+    role_id: number;
+    role: string; // Derived field: 'admin' | 'umat'
+    community_id: number;
+    status: string;
     avatar?: string;
     email_verified_at: string | null;
     created_at: string;

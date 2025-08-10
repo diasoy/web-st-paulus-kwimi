@@ -20,7 +20,7 @@ class AdminMiddleware
             return redirect()->route('login');
         }
 
-        if (!Auth::user()->isAdmin()) {
+        if (Auth::user()->role_id !== 1) {
             abort(403, 'Akses ditolak. Hanya admin yang dapat mengakses halaman ini.');
         }
 

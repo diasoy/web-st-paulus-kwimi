@@ -13,6 +13,13 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     /**
+     * The attributes that should be appended to model arrays.
+     *
+     * @var list<string>
+     */
+    protected $appends = ['role'];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>
@@ -72,19 +79,19 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is admin
+     * Check if user is admin (role_id = 1)
      */
     public function isAdmin(): bool
     {
-        return $this->role?->name === 'admin';
+        return $this->role_id === 1;
     }
 
     /**
-     * Check if user is umat
+     * Check if user is umat (role_id = 2)
      */
     public function isUmat(): bool
     {
-        return $this->role?->name === 'umat';
+        return $this->role_id === 2;
     }
 
     /**
@@ -92,6 +99,22 @@ class User extends Authenticatable
      */
     public function getRoleDisplayName(): string
     {
-        return $this->role?->name ?? 'Unknown';
+        return match($this->role_id) {
+            1 => 'Administrator',
+            2 => 'Umat',
+            default => 'Unknown'
+        };
+    }
+
+    /**
+     * Get role attribute for frontend
+     */
+    public function getRoleAttribute(): string
+    {
+        return match($this->role_id) {
+            1 => 'admin',
+            2 => 'umat',
+            default => 'unknown'
+        };
     }
 }

@@ -13,9 +13,9 @@ class RoleMiddleware
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  string  $role
+     * @param  int  $role
      */
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, int $role): Response
     {
         // Check if user is authenticated
         if (!Auth::check()) {
@@ -23,7 +23,7 @@ class RoleMiddleware
         }
 
         // Check if user has the required role
-        if (Auth::user()->role !== $role) {
+        if (Auth::user()->role_id !== $role) {
             abort(403, 'Unauthorized. You do not have access to this section.');
         }
 

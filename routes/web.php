@@ -15,13 +15,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
     // Admin Routes
-    Route::middleware('admin')->prefix('admin')->name('admin.')->group(function () {
+    Route::middleware('role_id:1')->prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('users', [AdminDashboardController::class, 'users'])->name('users');
     });
     
     // Umat Routes  
-    Route::middleware('role:umat')->prefix('umat')->name('umat.')->group(function () {
+    Route::middleware('role_id:2')->prefix('umat')->name('umat.')->group(function () {
         Route::get('dashboard', [UmatDashboardController::class, 'index'])->name('dashboard');
         Route::get('profile', [UmatDashboardController::class, 'profile'])->name('profile');
     });

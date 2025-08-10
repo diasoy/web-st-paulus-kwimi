@@ -12,11 +12,17 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create basic roles if they don't exist
-        $roles = ['admin', 'umat'];
+        // Create basic roles with specific IDs
+        $roles = [
+            ['id' => 1, 'name' => 'admin'],
+            ['id' => 2, 'name' => 'umat']
+        ];
 
-        foreach ($roles as $roleName) {
-            Role::firstOrCreate(['name' => $roleName]);
+        foreach ($roles as $role) {
+            Role::updateOrCreate(
+                ['id' => $role['id']], 
+                $role + ['created_at' => now(), 'updated_at' => now()]
+            );
         }
     }
 }

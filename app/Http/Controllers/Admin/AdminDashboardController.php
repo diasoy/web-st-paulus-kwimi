@@ -17,8 +17,8 @@ class AdminDashboardController extends Controller
     {
         $stats = [
             'total_users' => User::count(),
-            'total_admin' => User::where('role', 'admin')->count(),
-            'total_umat' => User::where('role', 'umat')->count(),
+            'total_admin' => User::where('role_id', 1)->count(),
+            'total_umat' => User::where('role_id', 2)->count(),
             'recent_users' => User::latest()->take(5)->get(),
         ];
 
@@ -38,7 +38,9 @@ class AdminDashboardController extends Controller
                       ->orWhere('email', 'like', "%{$search}%");
             })
             ->when($request->role, function ($query, $role) {
-                $query->where('role', $role);
+                // Map role string to role_id
+                $roleId = $role === 'admin' ? 1 : 2;
+                $query->where('role_id', $roleId);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);

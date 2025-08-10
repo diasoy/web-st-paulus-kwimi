@@ -32,22 +32,35 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
+            'phone_number' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
+            'birth_date' => 'required|date',
+            'gender' => 'required|in:male,female',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'sometimes|in:admin,umat',
+            'password_confirmation' => 'required',
         ]);
 
         $user = User::create([
             'name' => $request->name,
+            'username' => $request->username,
             'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'address' => $request->address,
+            'birth_date' => $request->birth_date,
+            'gender' => $request->gender,
             'password' => Hash::make($request->password),
-            'role' => $request->role ?? 'umat', // default to umat if not specified
+            'community_id' => 1, 
+            'role_id' => 2, 
+            'status' => 'active', 
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        // Redirect berdasarkan role_id
+        return redirect()->route('dashboard'); // Main dashboard akan redirect otomatis berdasarkan role
     }
 }

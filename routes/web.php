@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
+use App\Http\Controllers\Admin\WorshipScheduleController;
+use App\Http\Controllers\Admin\ActivityController;
+use App\Http\Controllers\Admin\CommunityController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Umat\UmatDashboardController;
@@ -19,6 +23,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role_id:1')->prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('users', [AdminDashboardController::class, 'users'])->name('users');
+        
+        // Kelola Pengumuman
+        Route::resource('announcements', AdminAnnouncementController::class);
+        
+        // Kelola Jadwal Ibadah
+        Route::resource('worship-schedules', WorshipScheduleController::class);
+        
+        // Kelola Agenda Kegiatan
+        Route::resource('activities', ActivityController::class);
+        
+        // Kelola Komunitas Basis
+        Route::resource('communities', CommunityController::class);
     });
     
     // Umat Routes - Hanya bisa melihat pengumuman

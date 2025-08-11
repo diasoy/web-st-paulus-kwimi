@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use App\Http\Controllers\Controller;
+use App\Models\WorshipSchedule;
+use App\Models\Community;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+
+class WorshipScheduleController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $worshipSchedules = WorshipSchedule::with('communities')->latest()->paginate(10);
+        
+        return Inertia::render('admin/worship-schedules/index', [
+            'worshipSchedules' => $worshipSchedules
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $communities = Community::all();
+        
+        return Inertia::render('admin/worship-schedules/create', [
+            'communities' => $communities
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'waktu' => 'required|date_format:H:i',
+            'hari' => 'required|string|max:20',
+            'tempat' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string',
+            'communities' => 'array',
+            'communities.*' => 'exists:communities,id'
+        ]);
+
+        $worshipSchedule = WorshipSchedule::create($validated);
+        
+        if (isset($validated['communities'])) {
+            $worshipSchedule->communities()->sync($validated['communities']);
+        }
+
+        return redirect()->route('admin.worship-schedules.index')
+            ->with('success', 'Jadwal Ibadah berhasil dibuat.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(WorshipSchedule $worshipSchedule)
+    {
+        $worshipSchedule->load('communities');
+        
+        return Inertia::render('admin/worship-schedules/show', [
+            'worshipSchedule' => $worshipSchedule
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(WorshipSchedule $worshipSchedule)
+    {
+        $worshipSchedule->load('communities');
+        $communities = Community::all();
+        
+        return Inertia::render('admin/worship-schedules/edit', [
+            'worshipSchedule' => $worshipSchedule,
+            'communities' => $communities
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, WorshipSchedule $worshipSchedule)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'waktu' => 'required|date_format:H:i',
+            'hari' => 'required|string|max:20',
+            'tempat' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string',
+            'communities' => 'array',
+            'communities.*' => 'exists:communities,id'
+        ]);
+
+        $worshipSchedule->update($validated);
+        
+        if (isset($validated['communities'])) {
+            $worshipSchedule->communities()->sync($validated['communities']);
+        }
+
+        return redirect()->route('admin.worship-schedules.index')
+            ->with('success', 'Jadwal Ibadah berhasil diperbarui.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(WorshipSchedule $worshipSchedule)
+    {
+        $worshipSchedule->delete();
+
+        return redirect()->route('admin.worship-schedules.index')
+            ->with('success', 'Jadwal Ibadah berhasil dihapus.');
+    }
+}

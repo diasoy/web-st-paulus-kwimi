@@ -4,7 +4,20 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, Users, Calendar, Bell, Settings, UserCheck } from 'lucide-react';
+import {
+    Activity,
+    Bell,
+    BookOpen,
+    Calendar,
+    CalendarDays,
+    Folder,
+    LayoutGrid,
+    MessageSquare,
+    Settings,
+    UserCheck,
+    Users,
+    UsersIcon,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -39,13 +52,33 @@ export function AppSidebar() {
                     icon: Users,
                 },
                 {
+                    title: 'Kelola Pengumuman',
+                    href: '/admin/announcements',
+                    icon: MessageSquare,
+                },
+                {
+                    title: 'Jadwal Ibadah',
+                    href: '/admin/worship-schedules',
+                    icon: CalendarDays,
+                },
+                {
+                    title: 'Agenda Kegiatan',
+                    href: '/admin/activities',
+                    icon: Activity,
+                },
+                {
+                    title: 'Kelola Komunitas Basis',
+                    href: '/admin/communities',
+                    icon: UsersIcon,
+                },
+                {
                     title: 'Pengaturan',
                     href: '/settings/profile',
                     icon: Settings,
                 },
             ];
         }
-        
+
         // Menu untuk umat
         return [
             {

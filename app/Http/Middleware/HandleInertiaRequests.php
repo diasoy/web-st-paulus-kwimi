@@ -49,9 +49,15 @@ class HandleInertiaRequests extends Middleware
                     'name' => $request->user()->name,
                     'email' => $request->user()->email,
                     'username' => $request->user()->username,
+                    'phone_number' => $request->user()->phone_number,
+                    'address' => $request->user()->address,
+                    'birth_date' => $request->user()->birth_date,
+                    'gender' => $request->user()->gender,
                     'role_id' => $request->user()->role_id,
                     'role' => $request->user()->role, // Ini akan memanggil getRoleAttribute()
+                    'community_id' => $request->user()->community_id,
                     'status' => $request->user()->status,
+                    'email_verified_at' => $request->user()->email_verified_at,
                 ] : null,
             ],
             'ziggy' => fn (): array => [

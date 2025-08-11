@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Umat\UmatDashboardController;
 use Illuminate\Support\Facades\Route;
@@ -20,10 +21,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('users', [AdminDashboardController::class, 'users'])->name('users');
     });
     
-    // Umat Routes  
+    // Umat Routes - Hanya bisa melihat pengumuman
     Route::middleware('role_id:2')->prefix('umat')->name('umat.')->group(function () {
         Route::get('dashboard', [UmatDashboardController::class, 'index'])->name('dashboard');
         Route::get('profile', [UmatDashboardController::class, 'profile'])->name('profile');
+        Route::get('announcements', [AnnouncementController::class, 'index'])->name('pengumuman');
+        // Removed POST route - umat tidak bisa membuat pengumuman
     });
 });
 

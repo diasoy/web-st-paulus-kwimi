@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Announcement extends Model
 {
@@ -12,14 +13,34 @@ class Announcement extends Model
     protected $fillable = [
         'title',
         'description',
+        'content',
         'image_url',
         'is_publish',
+        'user_id',
     ];
 
-    protected function casts(): array
+    protected $casts = [
+        'is_publish' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
+    public function user(): BelongsTo
     {
-        return [
-            'is_publish' => 'boolean',
-        ];
+        return $this->belongsTo(User::class);
+    }
+
+    // Scope untuk hanya menampilkan pengumuman yang dipublish
+    public function scopePublished($query)
+    {
+        return $query->where('is_publish', true);
+    }
+
+    // Accessor untuk mendapatkan excerpt dari content
+    public function getExcerptAttribute(): string
+    {
+        return strlen($this->description) > 150 
+            ? substr($this->description, 0, 150) . '...' 
+            : $this->description;
     }
 }

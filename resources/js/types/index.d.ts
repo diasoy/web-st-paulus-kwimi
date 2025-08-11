@@ -36,10 +36,10 @@ export interface User {
     name: string;
     email: string;
     username: string;
-    phone_number: string;
-    address: string;
-    birth_date: string;
-    gender: 'male' | 'female';
+    phone_number?: string;
+    address?: string;
+    birth_date?: string;
+    gender?: 'male' | 'female';
     role_id: number;
     role: string; // Derived field: 'admin' | 'umat'
     community_id: number;

@@ -58,7 +58,14 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                // SSL Configuration
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA') ? base_path(env('MYSQL_ATTR_SSL_CA')) : null,
+                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', false) ? true : false,
+                PDO::MYSQL_ATTR_SSL_CIPHER => env('MYSQL_ATTR_SSL_CIPHER'),
+                // Additional options for better compatibility
+                PDO::ATTR_EMULATE_PREPARES => false,
+                PDO::ATTR_STRINGIFY_FETCHES => false,
+                PDO::ATTR_TIMEOUT => 30,
             ]) : [],
         ],
 

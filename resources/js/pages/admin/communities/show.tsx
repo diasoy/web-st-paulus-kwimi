@@ -1,13 +1,23 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Edit, Users } from 'lucide-react';
+import { ArrowLeft, Edit, Mail, Phone, User, Users } from 'lucide-react';
+
+interface User {
+    id: number;
+    name: string;
+    email: string;
+    phone?: string;
+    created_at: string;
+}
 
 interface Community {
     id: number;
     name: string;
+    users?: User[];
     created_at: string;
     updated_at: string;
 }
@@ -50,8 +60,7 @@ export default function CommunityShow({ community }: CommunityShowProps) {
                             Edit Komunitas
                         </Button>
                     </Link>
-                </div>
-
+                </div>{' '}
                 <div className="grid gap-6 md:grid-cols-2">
                     <Card>
                         <CardHeader>
@@ -64,6 +73,10 @@ export default function CommunityShow({ community }: CommunityShowProps) {
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Nama Komunitas</label>
                                 <p className="text-lg font-semibold">{community.name}</p>
+                            </div>
+                            <div>
+                                <label className="text-sm font-medium text-muted-foreground">Jumlah Anggota</label>
+                                <p className="text-lg font-semibold">{community.users?.length || 0} orang</p>
                             </div>
                             <div>
                                 <label className="text-sm font-medium text-muted-foreground">Status</label>
@@ -90,6 +103,64 @@ export default function CommunityShow({ community }: CommunityShowProps) {
                         </CardContent>
                     </Card>
                 </div>
+                {/* Daftar Anggota */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <User className="h-5 w-5" />
+                            Daftar Anggota Komunitas
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        {!community.users || community.users.length === 0 ? (
+                            <div className="py-8 text-center">
+                                <User className="mx-auto h-12 w-12 text-muted-foreground" />
+                                <h3 className="mt-2 text-sm font-medium text-gray-900">Belum ada anggota</h3>
+                                <p className="mt-1 text-sm text-muted-foreground">Komunitas ini belum memiliki anggota terdaftar.</p>
+                            </div>
+                        ) : (
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead>Nama</TableHead>
+                                        <TableHead>Email</TableHead>
+                                        <TableHead>Telepon</TableHead>
+                                        <TableHead>Bergabung Sejak</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {community.users.map((user) => (
+                                        <TableRow key={user.id}>
+                                            <TableCell className="font-medium">
+                                                <div className="flex items-center gap-2">
+                                                    <User className="h-4 w-4 text-muted-foreground" />
+                                                    {user.name}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <Mail className="h-4 w-4 text-muted-foreground" />
+                                                    {user.email}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {user.phone ? (
+                                                    <div className="flex items-center gap-2">
+                                                        <Phone className="h-4 w-4 text-muted-foreground" />
+                                                        {user.phone}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-muted-foreground">-</span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-sm text-muted-foreground">{formatDate(user.created_at)}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        )}
+                    </CardContent>
+                </Card>
             </div>
         </AuthenticatedLayout>
     );

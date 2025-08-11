@@ -13,7 +13,8 @@ class CommunityController extends Controller
      */
     public function index()
     {
-        $communities = Community::latest()
+        $communities = Community::withCount('users')
+            ->latest()
             ->paginate(10);
 
         return Inertia::render('admin/communities/index', [
@@ -45,6 +46,8 @@ class CommunityController extends Controller
      */
     public function show(Community $community)
     {
+        $community->load('users');
+
         return Inertia::render('admin/communities/show', [
             'community' => $community,
         ]);

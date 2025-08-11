@@ -8,6 +8,7 @@ import { Edit, Eye, Plus, Trash2, Users } from 'lucide-react';
 interface Community {
     id: number;
     name: string;
+    users_count?: number;
     created_at: string;
     updated_at: string;
 }
@@ -15,8 +16,8 @@ interface Community {
 interface CommunitiesIndexProps {
     communities: {
         data: Community[];
-        links?: any[];
-        meta?: any;
+        links: any[];
+        meta: any;
     };
 }
 
@@ -58,7 +59,7 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                         <CardTitle>Daftar Komunitas Basis</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        {!communities || !communities.data || communities.data.length === 0 ? (
+                        {communities.data.length === 0 ? (
                             <div className="py-8 text-center">
                                 <p className="text-muted-foreground">Belum ada komunitas basis</p>
                                 <Link href="/admin/communities/create">
@@ -73,6 +74,7 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Nama Komunitas</TableHead>
+                                        <TableHead>Anggota</TableHead>
                                         <TableHead>Tanggal Dibuat</TableHead>
                                         <TableHead className="text-right">Aksi</TableHead>
                                     </TableRow>
@@ -80,15 +82,15 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                                 <TableBody>
                                     {communities.data.map((community) => (
                                         <TableRow key={community.id}>
-                                            <TableCell className="font-medium">
+                                            <TableCell className="font-medium">{community.name}</TableCell>{' '}
+                                            <TableCell>
                                                 <div className="flex items-center gap-2">
-                                                    <Users className="h-4 w-4 text-muted-foreground" />
-                                                    {community.name}
+                                                    <Users className="h-4 w-4" />
+                                                    <span className="font-medium">{community.users_count || 0}</span>
+                                                    <span className="text-sm text-muted-foreground">anggota</span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-sm text-muted-foreground">
-                                                {formatDate(community.created_at)}
-                                            </TableCell>
+                                            <TableCell className="text-sm text-muted-foreground">{formatDate(community.created_at)}</TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <Button variant="outline" size="sm" asChild>

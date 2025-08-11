@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle, Church, Users, Heart, Book } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { LoaderCircle, Church, Users, Heart, Book, Eye, EyeOff } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -15,6 +15,9 @@ interface Props {
 }
 
 export default function Register({ communities }: Props) {
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: '',
         username: '',
@@ -260,33 +263,65 @@ export default function Register({ communities }: Props) {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="grid gap-2">
                                         <Label htmlFor="password">Kata Sandi</Label>
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            required
-                                            tabIndex={9}
-                                            autoComplete="new-password"
-                                            value={data.password}
-                                            onChange={(e) => setData('password', e.target.value)}
-                                            disabled={processing}
-                                            placeholder="Kata sandi"
-                                        />
+                                        <div className="relative">
+                                            <Input
+                                                id="password"
+                                                type={showPassword ? "text" : "password"}
+                                                required
+                                                tabIndex={9}
+                                                autoComplete="new-password"
+                                                value={data.password}
+                                                onChange={(e) => setData('password', e.target.value)}
+                                                disabled={processing}
+                                                placeholder="Kata sandi"
+                                                className="pr-10"
+                                            />
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                tabIndex={-1}
+                                                disabled={processing}
+                                            >
+                                                {showPassword ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </button>
+                                        </div>
                                         <InputError message={errors.password} />
                                     </div>
 
                                     <div className="grid gap-2">
                                         <Label htmlFor="password_confirmation">Konfirmasi Kata Sandi</Label>
-                                        <Input
-                                            id="password_confirmation"
-                                            type="password"
-                                            required
-                                            tabIndex={10}
-                                            autoComplete="new-password"
-                                            value={data.password_confirmation}
-                                            onChange={(e) => setData('password_confirmation', e.target.value)}
-                                            disabled={processing}
-                                            placeholder="Konfirmasi kata sandi"
-                                        />
+                                        <div className="relative">
+                                            <Input
+                                                id="password_confirmation"
+                                                type={showConfirmPassword ? "text" : "password"}
+                                                required
+                                                tabIndex={10}
+                                                autoComplete="new-password"
+                                                value={data.password_confirmation}
+                                                onChange={(e) => setData('password_confirmation', e.target.value)}
+                                                disabled={processing}
+                                                placeholder="Konfirmasi kata sandi"
+                                                className="pr-10"
+                                            />
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
+                                                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                tabIndex={-1}
+                                                disabled={processing}
+                                            >
+                                                {showConfirmPassword ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </button>
+                                        </div>
                                         <InputError message={errors.password_confirmation} />
                                     </div>
                                 </div>

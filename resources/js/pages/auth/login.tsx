@@ -1,6 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle, Church, Users, Book, Shield } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { LoaderCircle, Church, Users, Book, Shield, Eye, EyeOff } from 'lucide-react';
+import { FormEventHandler, useState } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
@@ -21,6 +21,8 @@ interface LoginProps {
 }
 
 export default function Login({ status, canResetPassword }: LoginProps) {
+    const [showPassword, setShowPassword] = useState(false);
+    
     const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
         email: '',
         password: '',
@@ -29,8 +31,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('login'), {s
-            onFinish: () => reset('password'),
+        post(route('login'), {
+            onFinish: () => reset('password')
         });
     };
 
@@ -137,38 +139,56 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                         <div className="flex items-center">
                                             <Label htmlFor="password">Kata Sandi</Label>
                                             {canResetPassword && (
-                                                <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={5}>
+                                                <TextLink href={route('password.request')} className="ml-auto text-sm" tabIndex={7}>
                                                     Lupa kata sandi?
                                                 </TextLink>
                                             )}
                                         </div>
-                                        <Input
-                                            id="password"
-                                            type="password"
-                                            required
-                                            tabIndex={2}
-                                            autoComplete="current-password"
-                                            value={data.password}
-                                            onChange={(e) => setData('password', e.target.value)}
-                                            placeholder="Kata sandi"
-                                            disabled={processing}
-                                        />
+                                        <div className="relative">
+                                            <Input
+                                                id="password"
+                                                type={showPassword ? "text" : "password"}
+                                                required
+                                                tabIndex={2}
+                                                autoComplete="current-password"
+                                                value={data.password}
+                                                onChange={(e) => setData('password', e.target.value)}
+                                                placeholder="Kata sandi"
+                                                disabled={processing}
+                                                className="pr-10"
+                                            />
+                                            <button
+                                                type="button"
+                                                className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
+                                                onClick={() => setShowPassword(!showPassword)}
+                                                tabIndex={-1}
+                                                disabled={processing}
+                                            >
+                                                {showPassword ? (
+                                                    <EyeOff className="h-4 w-4" />
+                                                ) : (
+                                                    <Eye className="h-4 w-4" />
+                                                )}
+                                            </button>
+                                        </div>
                                         <InputError message={errors.password} />
                                     </div>
 
-                                    <div className="flex items-center space-x-3">
-                                        <Checkbox
-                                            id="remember"
-                                            name="remember"
-                                            checked={data.remember}
-                                            onClick={() => setData('remember', !data.remember)}
-                                            tabIndex={3}
-                                            disabled={processing}
-                                        />
-                                        <Label htmlFor="remember">Ingat saya</Label>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center space-x-3">
+                                            <Checkbox
+                                                id="remember"
+                                                name="remember"
+                                                checked={data.remember}
+                                                onClick={() => setData('remember', !data.remember)}
+                                                tabIndex={3}
+                                                disabled={processing}
+                                            />
+                                            <Label htmlFor="remember">Ingat saya</Label>
+                                        </div>
                                     </div>
 
-                                    <Button type="submit" className="mt-6 w-full" tabIndex={4} disabled={processing}>
+                                    <Button type="submit" className="mt-6 w-full" tabIndex={5} disabled={processing}>
                                         {processing && <LoaderCircle className="h-4 w-4 animate-spin mr-2" />}
                                         Masuk
                                     </Button>

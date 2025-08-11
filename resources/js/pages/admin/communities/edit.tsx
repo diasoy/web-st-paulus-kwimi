@@ -26,11 +26,11 @@ export default function CommunityEdit({ community }: CommunityEditProps) {
         e.preventDefault();
         put(`/admin/communities/${community.id}`);
     };
-
     return (
         <AuthenticatedLayout>
-            <Head title={`Edit Komunitas - ${community.name}`} />{' '}
-            <div className="space-y-6">
+            <Head title={`Edit Komunitas - ${community.name}`} />
+
+            <div className="space-y-6 p-6">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/communities">
                         <Button variant="outline" size="sm">
@@ -48,7 +48,7 @@ export default function CommunityEdit({ community }: CommunityEditProps) {
                     <CardHeader>
                         <CardTitle>Informasi Komunitas</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-6">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Nama Komunitas</Label>

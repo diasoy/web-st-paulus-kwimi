@@ -50,7 +50,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
         <AuthenticatedLayout>
             <Head title="Kelola Pengumuman" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Kelola Pengumuman</h1>
@@ -65,10 +65,11 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                 </div>
 
                 <Card>
+                    {' '}
                     <CardHeader>
                         <CardTitle>Daftar Pengumuman</CardTitle>
-                    </CardHeader>{' '}
-                    <CardContent>
+                    </CardHeader>
+                    <CardContent className="p-6">
                         {announcements.data.length === 0 ? (
                             <div className="py-8 text-center">
                                 <p className="text-muted-foreground">Belum ada pengumuman</p>

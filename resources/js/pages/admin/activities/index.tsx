@@ -60,12 +60,11 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
             day: 'numeric',
         });
     };
-
     return (
         <AuthenticatedLayout>
             <Head title="Agenda Kegiatan" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Agenda Kegiatan</h1>
@@ -80,10 +79,11 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                 </div>
 
                 <Card>
+                    {' '}
                     <CardHeader>
                         <CardTitle>Daftar Agenda Kegiatan</CardTitle>
-                    </CardHeader>{' '}
-                    <CardContent>
+                    </CardHeader>
+                    <CardContent className="p-6">
                         {activities.data.length === 0 ? (
                             <div className="py-8 text-center">
                                 <p className="text-muted-foreground">Belum ada agenda kegiatan</p>

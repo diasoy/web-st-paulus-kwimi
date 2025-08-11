@@ -35,12 +35,11 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
             day: 'numeric',
         });
     };
-
     return (
         <AuthenticatedLayout>
             <Head title="Kelola Komunitas Basis" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Kelola Komunitas Basis</h1>
@@ -53,14 +52,13 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                         </Button>
                     </Link>
                 </div>
-
                 <Card>
                     <CardHeader>
                         <CardTitle>Daftar Komunitas Basis</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-6">
                         {communities.data.length === 0 ? (
-                            <div className="py-8 text-center">
+                            <div className="py-12 text-center">
                                 <p className="text-muted-foreground">Belum ada komunitas basis</p>
                                 <Link href="/admin/communities/create">
                                     <Button className="mt-4">
@@ -70,55 +68,56 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                                 </Link>
                             </div>
                         ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Nama Komunitas</TableHead>
-                                        <TableHead>Anggota</TableHead>
-                                        <TableHead>Tanggal Dibuat</TableHead>
-                                        <TableHead className="text-right">Aksi</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {communities.data.map((community) => (
-                                        <TableRow key={community.id}>
-                                            <TableCell className="font-medium">{community.name}</TableCell>{' '}
-                                            <TableCell>
-                                                <div className="flex items-center gap-2">
-                                                    <Users className="h-4 w-4" />
-                                                    <span className="font-medium">{community.users_count || 0}</span>
-                                                    <span className="text-sm text-muted-foreground">anggota</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-sm text-muted-foreground">{formatDate(community.created_at)}</TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/communities/${community.id}`}>
-                                                            <Eye className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/communities/${community.id}/edit`}>
-                                                            <Edit className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button variant="destructive" size="sm" onClick={() => handleDelete(community.id)}>
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
+                            <div className="rounded-md border">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="pl-6">Nama Komunitas</TableHead>
+                                            <TableHead>Anggota</TableHead>
+                                            <TableHead>Tanggal Dibuat</TableHead>
+                                            <TableHead className="pr-6 text-right">Aksi</TableHead>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {communities.data.map((community) => (
+                                            <TableRow key={community.id}>
+                                                <TableCell className="pl-6 font-medium">{community.name}</TableCell>
+                                                <TableCell>
+                                                    <div className="flex items-center gap-2">
+                                                        <Users className="h-4 w-4" />
+                                                        <span className="font-medium">{community.users_count || 0}</span>
+                                                        <span className="text-sm text-muted-foreground">anggota</span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-sm text-muted-foreground">{formatDate(community.created_at)}</TableCell>
+                                                <TableCell className="pr-6 text-right">
+                                                    <div className="flex justify-end gap-2">
+                                                        <Button variant="outline" size="sm" asChild>
+                                                            <Link href={`/admin/communities/${community.id}`}>
+                                                                <Eye className="h-4 w-4" />
+                                                            </Link>
+                                                        </Button>
+                                                        <Button variant="outline" size="sm" asChild>
+                                                            <Link href={`/admin/communities/${community.id}/edit`}>
+                                                                <Edit className="h-4 w-4" />
+                                                            </Link>
+                                                        </Button>
+                                                        <Button variant="destructive" size="sm" onClick={() => handleDelete(community.id)}>
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </div>
                         )}
                     </CardContent>
-                </Card>
-
+                </Card>{' '}
                 {/* Pagination */}
                 {communities.links && communities.links.length > 3 && (
-                    <div className="flex justify-center space-x-2">
+                    <div className="flex justify-center space-x-2 pt-4">
                         {communities.links.map((link: any, index: number) => (
                             <Button key={index} variant={link.active ? 'default' : 'outline'} size="sm" disabled={!link.url} asChild={!!link.url}>
                                 {link.url ? (

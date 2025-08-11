@@ -15,12 +15,11 @@ export default function CommunitiesCreate() {
         e.preventDefault();
         post(route('admin.communities.store'));
     };
-
     return (
         <AuthenticatedLayout>
             <Head title="Tambah Komunitas Basis" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/communities">
                         <Button variant="outline" size="sm">
@@ -39,7 +38,7 @@ export default function CommunitiesCreate() {
                         <CardTitle>Informasi Komunitas</CardTitle>
                         <CardDescription>Isi informasi untuk komunitas basis baru</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-6">
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Nama Komunitas *</Label>

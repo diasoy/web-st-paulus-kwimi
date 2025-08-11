@@ -56,7 +56,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
         <AuthenticatedLayout>
             <Head title="Jadwal Ibadah" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Jadwal Ibadah</h1>
@@ -71,10 +71,11 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                 </div>
 
                 <Card>
+                    {' '}
                     <CardHeader>
                         <CardTitle>Daftar Jadwal Ibadah</CardTitle>
-                    </CardHeader>{' '}
-                    <CardContent>
+                    </CardHeader>
+                    <CardContent className="p-6">
                         {worshipSchedules.data.length === 0 ? (
                             <div className="py-8 text-center">
                                 <p className="text-muted-foreground">Belum ada jadwal ibadah</p>

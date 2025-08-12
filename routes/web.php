@@ -23,6 +23,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role_id:1')->prefix('admin')->name('admin.')->group(function () {
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('users', [AdminDashboardController::class, 'users'])->name('users');
+        Route::get('users/{user}', [AdminDashboardController::class, 'showUser'])->name('users.show');
+        Route::get('users/{user}/edit', [AdminDashboardController::class, 'editUser'])->name('users.edit');
+        Route::put('users/{user}', [AdminDashboardController::class, 'updateUser'])->name('users.update');
+        Route::delete('users/{user}', [AdminDashboardController::class, 'destroyUser'])->name('users.destroy');
         
         // Kelola Pengumuman
         Route::resource('announcements', AdminAnnouncementController::class);

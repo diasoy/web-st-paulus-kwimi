@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
@@ -19,7 +18,7 @@ interface UserEdit {
     gender: 'male' | 'female';
     role: string;
     status: 'active' | 'inactive';
-    community_id?: number;
+    community_id?: number | null;
     created_at: string;
 }
 
@@ -34,6 +33,19 @@ interface UserEditProps {
 }
 
 export default function UserEdit({ user, communities }: UserEditProps) {
+    console.log('UserEdit called with:', { user, communities });
+
+    // Protective check
+    if (!user) {
+        return (
+            <AuthenticatedLayout>
+                <Head title="Edit Pengguna" />
+                <div className="p-6">
+                    <p>Data pengguna tidak ditemukan.</p>
+                </div>
+            </AuthenticatedLayout>
+        );
+    }
     const { data, setData, put, processing, errors } = useForm({
         name: user.name || '',
         username: user.username || '',
@@ -43,12 +55,13 @@ export default function UserEdit({ user, communities }: UserEditProps) {
         birth_date: user.birth_date || '',
         gender: user.gender || 'male',
         status: user.status || 'active',
-        community_id: user.community_id || '',
+        community_id: user.community_id || null,
     });
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        put(`/admin/users/${user.id}`);
+        console.log('Form submitted with data:', data);
+        put(route('admin.users.update', user.id));
     };
 
     return (
@@ -56,15 +69,15 @@ export default function UserEdit({ user, communities }: UserEditProps) {
             <Head title={`Edit Pengguna - ${user.name}`} />
 
             <div className="space-y-6 p-6">
+                {' '}
                 <div className="flex items-center justify-between">
-                    <Link href={`/admin/users/${user.id}`}>
+                    <Link href={route('admin.users.show', user.id)}>
                         <Button variant="outline">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Kembali
                         </Button>
                     </Link>
                 </div>
-
                 <Card>
                     <CardHeader>
                         <CardTitle>Edit Pengguna</CardTitle>
@@ -84,7 +97,6 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                                     />
                                     {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
                                 </div>
-
                                 <div className="space-y-2">
                                     <Label htmlFor="username">Username *</Label>
                                     <Input
@@ -97,7 +109,6 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                                     />
                                     {errors.username && <p className="text-sm text-red-600">{errors.username}</p>}
                                 </div>
-
                                 <div className="space-y-2">
                                     <Label htmlFor="email">Email *</Label>
                                     <Input
@@ -110,7 +121,6 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                                     />
                                     {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
                                 </div>
-
                                 <div className="space-y-2">
                                     <Label htmlFor="phone_number">Nomor Telepon</Label>
                                     <Input
@@ -121,8 +131,7 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                                         placeholder="Masukkan nomor telepon"
                                     />
                                     {errors.phone_number && <p className="text-sm text-red-600">{errors.phone_number}</p>}
-                                </div>
-
+                                </div>{' '}
                                 <div className="space-y-2">
                                     <Label htmlFor="birth_date">Tanggal Lahir</Label>
                                     <Input
@@ -133,53 +142,50 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                                     />
                                     {errors.birth_date && <p className="text-sm text-red-600">{errors.birth_date}</p>}
                                 </div>
-
                                 <div className="space-y-2">
                                     <Label htmlFor="gender">Gender *</Label>
-                                    <Select value={data.gender} onValueChange={(value: 'male' | 'female') => setData('gender', value)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Pilih gender" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="male">Laki-laki</SelectItem>
-                                            <SelectItem value="female">Perempuan</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <select
+                                        id="gender"
+                                        value={data.gender}
+                                        onChange={(e) => setData('gender', e.target.value as 'male' | 'female')}
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                                        required
+                                    >
+                                        <option value="male">Laki-laki</option>
+                                        <option value="female">Perempuan</option>
+                                    </select>
                                     {errors.gender && <p className="text-sm text-red-600">{errors.gender}</p>}
                                 </div>
-
                                 <div className="space-y-2">
                                     <Label htmlFor="community_id">Komunitas Basis</Label>
-                                    <Select
-                                        value={data.community_id.toString()}
-                                        onValueChange={(value) => setData('community_id', parseInt(value) || '')}
+                                    <select
+                                        id="community_id"
+                                        value={data.community_id || ''}
+                                        onChange={(e) => setData('community_id', e.target.value ? parseInt(e.target.value) : null)}
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
                                     >
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Pilih komunitas basis" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="">Tidak ada</SelectItem>
-                                            {communities.map((community) => (
-                                                <SelectItem key={community.id} value={community.id.toString()}>
+                                        <option value="">Tidak ada</option>
+                                        {communities &&
+                                            communities.map((community) => (
+                                                <option key={community.id} value={community.id}>
                                                     {community.name}
-                                                </SelectItem>
+                                                </option>
                                             ))}
-                                        </SelectContent>
-                                    </Select>
+                                    </select>
                                     {errors.community_id && <p className="text-sm text-red-600">{errors.community_id}</p>}
                                 </div>
-
                                 <div className="space-y-2">
                                     <Label htmlFor="status">Status *</Label>
-                                    <Select value={data.status} onValueChange={(value: 'active' | 'inactive') => setData('status', value)}>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Pilih status" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="active">Aktif</SelectItem>
-                                            <SelectItem value="inactive">Nonaktif</SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                    <select
+                                        id="status"
+                                        value={data.status}
+                                        onChange={(e) => setData('status', e.target.value as 'active' | 'inactive')}
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background"
+                                        required
+                                    >
+                                        <option value="active">Aktif</option>
+                                        <option value="inactive">Nonaktif</option>
+                                    </select>
                                     {errors.status && <p className="text-sm text-red-600">{errors.status}</p>}
                                 </div>
                             </div>
@@ -201,8 +207,8 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                                 <Button type="submit" disabled={processing}>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
-                                </Button>
-                                <Link href={`/admin/users/${user.id}`}>
+                                </Button>{' '}
+                                <Link href={route('admin.users.show', user.id)}>
                                     <Button type="button" variant="outline">
                                         Batal
                                     </Button>

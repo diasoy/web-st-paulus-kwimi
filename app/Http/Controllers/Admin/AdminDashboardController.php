@@ -115,7 +115,7 @@ class AdminDashboardController extends Controller
         \Log::info('User data: ', $user->toArray());
         \Log::info('Communities count: ' . $communities->count());
         
-        return Inertia::render('admin/users/edit-simple', [
+        return Inertia::render('admin/users/edit', [
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,

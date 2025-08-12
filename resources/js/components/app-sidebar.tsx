@@ -4,20 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import {
-    Activity,
-    Bell,
-    BookOpen,
-    Calendar,
-    CalendarDays,
-    Folder,
-    LayoutGrid,
-    MessageSquare,
-    Settings,
-    UserCheck,
-    Users,
-    UsersIcon,
-} from 'lucide-react';
+import { Activity, Bell, BookOpen, Calendar, CalendarDays, Folder, LayoutGrid, MessageSquare, Settings, UserCheck, UsersIcon, User } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -47,12 +34,17 @@ export function AppSidebar() {
                     icon: LayoutGrid,
                 },
                 {
-                    title: 'Kelola Pengguna',
+                    title: 'Pengguna',
                     href: '/admin/users',
-                    icon: Users,
+                    icon: User,
                 },
                 {
-                    title: 'Kelola Pengumuman',
+                    title: 'Komunitas Basis',
+                    href: '/admin/communities',
+                    icon: UsersIcon,
+                },
+                {
+                    title: 'Pengumuman',
                     href: '/admin/announcements',
                     icon: MessageSquare,
                 },
@@ -65,11 +57,6 @@ export function AppSidebar() {
                     title: 'Agenda Kegiatan',
                     href: '/admin/activities',
                     icon: Activity,
-                },
-                {
-                    title: 'Kelola Komunitas Basis',
-                    href: '/admin/communities',
-                    icon: UsersIcon,
                 },
                 {
                     title: 'Pengaturan',

@@ -6,29 +6,39 @@ import { Label } from '@/components/ui/label';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { FormEvent } from 'react';
 
 interface Community {
     id: number;
     name: string;
 }
 
-interface WorshipSchedulesCreateProps {
+interface WorshipSchedule {
+    id: number;
+    name: string;
+    date: string;
+    pic: string;
+    time_start: string;
     communities: Community[];
 }
 
-export default function WorshipSchedulesCreate({ communities }: WorshipSchedulesCreateProps) {
-    const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        date: '',
-        pic: '',
-        time_start: '',
-        communities: [] as number[],
+interface WorshipScheduleEditProps {
+    worshipSchedule: WorshipSchedule;
+    communities: Community[];
+}
+
+export default function WorshipScheduleEdit({ worshipSchedule, communities }: WorshipScheduleEditProps) {
+    const { data, setData, put, processing, errors } = useForm({
+        name: worshipSchedule.name,
+        date: worshipSchedule.date,
+        pic: worshipSchedule.pic,
+        time_start: worshipSchedule.time_start.substring(0, 5), // Get HH:MM from HH:MM:SS
+        communities: worshipSchedule.communities.map((c) => c.id),
     });
 
-    const submit: FormEventHandler = (e) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        post(route('admin.worship-schedules.store'));
+        put(route('admin.worship-schedules.update', worshipSchedule.id));
     };
 
     const handleCommunityChange = (communityId: number, checked: boolean) => {
@@ -44,28 +54,24 @@ export default function WorshipSchedulesCreate({ communities }: WorshipSchedules
 
     return (
         <AuthenticatedLayout>
-            <Head title="Tambah Jadwal Ibadah" />
+            <Head title={`Edit Jadwal - ${worshipSchedule.name}`} />
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center gap-4">
-                    <Link href={route('admin.worship-schedules.index')}>
+                    <Link href={route('admin.worship-schedules.show', worshipSchedule.id)}>
                         <Button variant="outline" size="sm">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Kembali
                         </Button>
                     </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Tambah Jadwal Ibadah</h1>
-                        <p className="text-muted-foreground">Buat jadwal ibadah baru untuk jemaat ST. Paulus Kwimi</p>
-                    </div>
                 </div>
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Form Jadwal Ibadah</CardTitle>
+                        <CardTitle>Form Edit Jadwal Ibadah</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <form onSubmit={submit} className="space-y-6">
+                        <form onSubmit={handleSubmit} className="space-y-6">
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                 <div className="md:col-span-2">
                                     <Label htmlFor="name">Nama Ibadah *</Label>
@@ -147,14 +153,14 @@ export default function WorshipSchedulesCreate({ communities }: WorshipSchedules
                             </div>
 
                             <div className="flex justify-end space-x-4">
-                                <Link href={route('admin.worship-schedules.index')}>
+                                <Link href={route('admin.worship-schedules.show', worshipSchedule.id)}>
                                     <Button type="button" variant="outline">
                                         Batal
                                     </Button>
                                 </Link>
                                 <Button type="submit" disabled={processing}>
                                     <Save className="mr-2 h-4 w-4" />
-                                    {processing ? 'Menyimpan...' : 'Simpan Jadwal'}
+                                    {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                 </Button>
                             </div>
                         </form>

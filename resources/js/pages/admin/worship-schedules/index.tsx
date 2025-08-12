@@ -3,8 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
-import { Clock, Edit, Eye, MapPin, Plus, Trash2 } from 'lucide-react';
+import { Head, Link, router } from '@inertiajs/react';
+import { Calendar, Clock, Edit, Eye, Plus, Trash2, User } from 'lucide-react';
 
 interface Community {
     id: number;
@@ -13,11 +13,10 @@ interface Community {
 
 interface WorshipSchedule {
     id: number;
-    nama: string;
-    waktu: string;
-    hari: string;
-    tempat?: string;
-    keterangan?: string;
+    name: string;
+    date: string;
+    pic: string;
+    time_start: string;
     created_at: string;
     updated_at: string;
     communities: Community[];
@@ -34,22 +33,22 @@ interface WorshipSchedulesIndexProps {
 export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSchedulesIndexProps) {
     const handleDelete = (id: number) => {
         if (confirm('Apakah Anda yakin ingin menghapus jadwal ibadah ini?')) {
-            // TODO: Implement delete functionality
-            console.log('Delete worship schedule:', id);
+            router.delete(route('admin.worship-schedules.destroy', id));
         }
     };
 
-    const getDayColor = (hari: string) => {
-        const colors: { [key: string]: string } = {
-            Minggu: 'bg-red-100 text-red-800',
-            Senin: 'bg-blue-100 text-blue-800',
-            Selasa: 'bg-green-100 text-green-800',
-            Rabu: 'bg-yellow-100 text-yellow-800',
-            Kamis: 'bg-purple-100 text-purple-800',
-            Jumat: 'bg-pink-100 text-pink-800',
-            Sabtu: 'bg-indigo-100 text-indigo-800',
-        };
-        return colors[hari] || 'bg-gray-100 text-gray-800';
+    const formatDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('id-ID', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+    };
+
+    const formatTime = (timeString: string) => {
+        return timeString.substring(0, 5); // Get HH:MM from HH:MM:SS
     };
 
     return (
@@ -61,8 +60,8 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Jadwal Ibadah</h1>
                         <p className="text-muted-foreground">Kelola jadwal ibadah untuk jemaat ST. Paulus Kwimi</p>
-                    </div>
-                    <Link href="/admin/worship-schedules/create">
+                    </div>{' '}
+                    <Link href={route('admin.worship-schedules.create')}>
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />
                             Tambah Jadwal
@@ -78,8 +77,8 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                     <CardContent className="p-6">
                         {worshipSchedules.data.length === 0 ? (
                             <div className="py-8 text-center">
-                                <p className="text-muted-foreground">Belum ada jadwal ibadah</p>
-                                <Link href="/admin/worship-schedules/create">
+                                <p className="text-muted-foreground">Belum ada jadwal ibadah</p>{' '}
+                                <Link href={route('admin.worship-schedules.create')}>
                                     <Button className="mt-4">
                                         <Plus className="mr-2 h-4 w-4" />
                                         Buat Jadwal Pertama
@@ -91,9 +90,9 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Nama Ibadah</TableHead>
-                                        <TableHead>Hari</TableHead>
+                                        <TableHead>Tanggal</TableHead>
                                         <TableHead>Waktu</TableHead>
-                                        <TableHead>Tempat</TableHead>
+                                        <TableHead>Penanggung Jawab</TableHead>
                                         <TableHead>Komunitas</TableHead>
                                         <TableHead className="text-right">Aksi</TableHead>
                                     </TableRow>
@@ -101,23 +100,24 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                 <TableBody>
                                     {worshipSchedules.data.map((schedule) => (
                                         <TableRow key={schedule.id}>
-                                            <TableCell className="font-medium">{schedule.nama}</TableCell>
+                                            <TableCell className="font-medium">{schedule.name}</TableCell>
                                             <TableCell>
-                                                <Badge className={getDayColor(schedule.hari)}>{schedule.hari}</Badge>
-                                            </TableCell>
-                                            <TableCell className="flex items-center gap-2">
-                                                <Clock className="h-4 w-4" />
-                                                {schedule.waktu}
+                                                <div className="flex items-center gap-2">
+                                                    <Calendar className="h-4 w-4" />
+                                                    {formatDate(schedule.date)}
+                                                </div>
                                             </TableCell>
                                             <TableCell>
-                                                {schedule.tempat ? (
-                                                    <div className="flex items-center gap-2">
-                                                        <MapPin className="h-4 w-4" />
-                                                        {schedule.tempat}
-                                                    </div>
-                                                ) : (
-                                                    <span className="text-muted-foreground">-</span>
-                                                )}
+                                                <div className="flex items-center gap-2">
+                                                    <Clock className="h-4 w-4" />
+                                                    {formatTime(schedule.time_start)}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <User className="h-4 w-4" />
+                                                    {schedule.pic}
+                                                </div>
                                             </TableCell>
                                             <TableCell>
                                                 {schedule.communities && schedule.communities.length > 0 ? (
@@ -134,18 +134,18 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                                         )}
                                                     </div>
                                                 ) : (
-                                                    <span className="text-muted-foreground">-</span>
+                                                    <span className="text-muted-foreground">Semua komunitas</span>
                                                 )}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/worship-schedules/${schedule.id}`}>
+                                                        <Link href={route('admin.worship-schedules.show', schedule.id)}>
                                                             <Eye className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/worship-schedules/${schedule.id}/edit`}>
+                                                        <Link href={route('admin.worship-schedules.edit', schedule.id)}>
                                                             <Edit className="h-4 w-4" />
                                                         </Link>
                                                     </Button>

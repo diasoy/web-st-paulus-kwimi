@@ -40,14 +40,16 @@ class WorshipScheduleController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'waktu' => 'required|date_format:H:i',
-            'hari' => 'required|string|max:20',
-            'tempat' => 'nullable|string|max:255',
-            'keterangan' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'date' => 'required|date',
+            'pic' => 'required|string|max:255',
+            'time_start' => 'required|date_format:H:i',
             'communities' => 'array',
             'communities.*' => 'exists:communities,id'
         ]);
+
+        // Convert time format for storage
+        $validated['time_start'] = $validated['time_start'] . ':00';
 
         $worshipSchedule = WorshipSchedule::create($validated);
         
@@ -91,14 +93,16 @@ class WorshipScheduleController extends Controller
     public function update(Request $request, WorshipSchedule $worshipSchedule)
     {
         $validated = $request->validate([
-            'nama' => 'required|string|max:255',
-            'waktu' => 'required|date_format:H:i',
-            'hari' => 'required|string|max:20',
-            'tempat' => 'nullable|string|max:255',
-            'keterangan' => 'nullable|string',
+            'name' => 'required|string|max:255',
+            'date' => 'required|date',
+            'pic' => 'required|string|max:255',
+            'time_start' => 'required|date_format:H:i',
             'communities' => 'array',
             'communities.*' => 'exists:communities,id'
         ]);
+
+        // Convert time format for storage
+        $validated['time_start'] = $validated['time_start'] . ':00';
 
         $worshipSchedule->update($validated);
         

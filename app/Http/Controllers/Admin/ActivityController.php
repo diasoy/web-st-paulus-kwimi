@@ -35,12 +35,11 @@ class ActivityController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'date' => 'required|date',
-            'time' => 'nullable|string',
+            'time_start' => 'nullable|date_format:H:i',
             'location' => 'nullable|string|max:255',
-            'status' => 'required|in:planned,ongoing,completed,cancelled'
         ]);
 
         Activity::create($validated);
@@ -75,12 +74,11 @@ class ActivityController extends Controller
     public function update(Request $request, Activity $activity)
     {
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
             'date' => 'required|date',
-            'time' => 'nullable|string',
+            'time_start' => 'nullable|date_format:H:i',
             'location' => 'nullable|string|max:255',
-            'status' => 'required|in:planned,ongoing,completed,cancelled'
         ]);
 
         $activity->update($validated);

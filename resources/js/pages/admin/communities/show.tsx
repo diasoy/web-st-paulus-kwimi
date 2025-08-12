@@ -10,7 +10,7 @@ interface User {
     id: number;
     name: string;
     email: string;
-    phone?: string;
+    phone_number?: string;
     created_at: string;
 }
 
@@ -59,10 +59,10 @@ export default function CommunityShow({ community }: CommunityShowProps) {
                 </div>
 
                 {/* Judul halaman */}
-                <div>
+                {/* <div>
                     <h1 className="text-3xl font-bold tracking-tight">Detail Komunitas Basis</h1>
                     <p className="text-muted-foreground">Informasi lengkap komunitas basis</p>
-                </div>
+                </div> */}
 
                 {/* Informasi Komunitas */}
                 <Card>
@@ -132,10 +132,10 @@ export default function CommunityShow({ community }: CommunityShowProps) {
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    {user.phone ? (
+                                                    {user.phone_number ? (
                                                         <div className="flex items-center gap-2">
                                                             <Phone className="h-4 w-4 text-muted-foreground" />
-                                                            {user.phone}
+                                                            {user.phone_number}
                                                         </div>
                                                     ) : (
                                                         <span className="text-muted-foreground">-</span>

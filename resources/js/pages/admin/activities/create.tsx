@@ -2,21 +2,18 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Save } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { ChangeEvent, FormEventHandler } from 'react';
 
 export default function ActivitiesCreate() {
     const { data, setData, post, processing, errors } = useForm({
-        title: '',
+        name: '',
         description: '',
         date: '',
-        time: '',
+        time_start: '',
         location: '',
-        status: 'planned',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -24,18 +21,11 @@ export default function ActivitiesCreate() {
         post(route('admin.activities.store'));
     };
 
-    const statusOptions = [
-        { value: 'planned', label: 'Direncanakan' },
-        { value: 'ongoing', label: 'Berlangsung' },
-        { value: 'completed', label: 'Selesai' },
-        { value: 'cancelled', label: 'Dibatalkan' },
-    ];
-
     return (
         <AuthenticatedLayout>
             <Head title="Tambah Agenda Kegiatan" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <div className="flex items-center gap-4">
                     <Link href="/admin/activities">
                         <Button variant="outline" size="sm">
@@ -53,37 +43,35 @@ export default function ActivitiesCreate() {
                     <CardHeader>
                         <CardTitle>Form Agenda Kegiatan</CardTitle>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-6">
                         <form onSubmit={submit} className="space-y-6">
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                {' '}
                                 <div className="md:col-span-2">
-                                    <Label htmlFor="title">Judul Kegiatan *</Label>
+                                    <Label htmlFor="name">Nama Kegiatan *</Label>
                                     <Input
-                                        id="title"
+                                        id="name"
                                         type="text"
-                                        value={data.title}
-                                        onChange={(e) => setData('title', e.target.value)}
-                                        placeholder="Masukkan judul kegiatan"
-                                        className={errors.title ? 'border-red-500' : ''}
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        placeholder="Masukkan nama kegiatan"
+                                        className={errors.name ? 'border-red-500' : ''}
                                         required
                                     />
-                                    {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
+                                    {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
                                 </div>
-
                                 <div className="md:col-span-2">
-                                    <Label htmlFor="description">Deskripsi Kegiatan *</Label>
-                                    <Textarea
+                                    <Label htmlFor="description">Deskripsi Kegiatan *</Label>{' '}
+                                    <textarea
                                         id="description"
                                         value={data.description}
-                                        onChange={(e) => setData('description', e.target.value)}
+                                        onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setData('description', e.target.value)}
                                         placeholder="Deskripsi detail tentang kegiatan"
-                                        className={errors.description ? 'border-red-500' : ''}
+                                        className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${errors.description ? 'border-red-500' : ''}`}
                                         rows={4}
-                                        required
                                     />
                                     {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
                                 </div>
-
                                 <div>
                                     <Label htmlFor="date">Tanggal Kegiatan *</Label>
                                     <Input
@@ -95,21 +83,19 @@ export default function ActivitiesCreate() {
                                         required
                                     />
                                     {errors.date && <p className="mt-1 text-sm text-red-500">{errors.date}</p>}
-                                </div>
-
+                                </div>{' '}
                                 <div>
-                                    <Label htmlFor="time">Waktu Kegiatan</Label>
+                                    <Label htmlFor="time_start">Waktu Mulai</Label>
                                     <Input
-                                        id="time"
-                                        type="text"
-                                        value={data.time}
-                                        onChange={(e) => setData('time', e.target.value)}
-                                        placeholder="Contoh: 08:00 - 12:00"
-                                        className={errors.time ? 'border-red-500' : ''}
+                                        id="time_start"
+                                        type="time"
+                                        value={data.time_start}
+                                        onChange={(e) => setData('time_start', e.target.value)}
+                                        placeholder="Contoh: 08:00"
+                                        className={errors.time_start ? 'border-red-500' : ''}
                                     />
-                                    {errors.time && <p className="mt-1 text-sm text-red-500">{errors.time}</p>}
+                                    {errors.time_start && <p className="mt-1 text-sm text-red-500">{errors.time_start}</p>}
                                 </div>
-
                                 <div className="md:col-span-2">
                                     <Label htmlFor="location">Lokasi Kegiatan</Label>
                                     <Input
@@ -120,24 +106,7 @@ export default function ActivitiesCreate() {
                                         placeholder="Contoh: Gereja ST. Paulus Kwimi"
                                         className={errors.location ? 'border-red-500' : ''}
                                     />
-                                    {errors.location && <p className="mt-1 text-sm text-red-500">{errors.location}</p>}
-                                </div>
-
-                                <div className="md:col-span-2">
-                                    <Label htmlFor="status">Status Kegiatan *</Label>
-                                    <Select value={data.status} onValueChange={(value) => setData('status', value)}>
-                                        <SelectTrigger className={errors.status ? 'border-red-500' : ''}>
-                                            <SelectValue placeholder="Pilih status kegiatan" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            {statusOptions.map((option) => (
-                                                <SelectItem key={option.value} value={option.value}>
-                                                    {option.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectContent>
-                                    </Select>
-                                    {errors.status && <p className="mt-1 text-sm text-red-500">{errors.status}</p>}
+                                    {errors.location && <p className="mt-1 text-sm text-red-500">{errors.location}</p>}{' '}
                                 </div>
                             </div>
 

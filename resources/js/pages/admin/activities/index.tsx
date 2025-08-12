@@ -1,6 +1,5 @@
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
@@ -8,12 +7,11 @@ import { Calendar, Clock, Edit, Eye, MapPin, Plus, Trash2 } from 'lucide-react';
 
 interface Activity {
     id: number;
-    title: string;
+    name: string;
     description: string;
     date: string;
-    time?: string;
+    time_start: string;
     location?: string;
-    status: 'planned' | 'ongoing' | 'completed' | 'cancelled';
     created_at: string;
     updated_at: string;
 }
@@ -33,31 +31,18 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
         }
     };
 
-    const getStatusColor = (status: string) => {
-        const colors: { [key: string]: string } = {
-            planned: 'bg-blue-100 text-blue-800',
-            ongoing: 'bg-yellow-100 text-yellow-800',
-            completed: 'bg-green-100 text-green-800',
-            cancelled: 'bg-red-100 text-red-800',
-        };
-        return colors[status] || 'bg-gray-100 text-gray-800';
-    };
-
-    const getStatusText = (status: string) => {
-        const statusText: { [key: string]: string } = {
-            planned: 'Direncanakan',
-            ongoing: 'Berlangsung',
-            completed: 'Selesai',
-            cancelled: 'Dibatalkan',
-        };
-        return statusText[status] || status;
-    };
-
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('id-ID', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
+        });
+    };
+
+    const formatTime = (timeString: string) => {
+        return new Date(`2000-01-01 ${timeString}`).toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit',
         });
     };
     return (
@@ -76,13 +61,8 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                             Tambah Kegiatan
                         </Button>
                     </Link>
-                </div>
-
+                </div>{' '}
                 <Card>
-                    {' '}
-                    <CardHeader>
-                        <CardTitle>Daftar Agenda Kegiatan</CardTitle>
-                    </CardHeader>
                     <CardContent className="p-6">
                         {activities.data.length === 0 ? (
                             <div className="py-8 text-center">
@@ -96,22 +76,23 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                             </div>
                         ) : (
                             <Table>
+                                {' '}
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>Judul Kegiatan</TableHead>
                                         <TableHead>Tanggal</TableHead>
                                         <TableHead>Waktu</TableHead>
                                         <TableHead>Tempat</TableHead>
-                                        <TableHead>Status</TableHead>
                                         <TableHead className="text-right">Aksi</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {activities.data.map((activity) => (
                                         <TableRow key={activity.id}>
+                                            {' '}
                                             <TableCell className="font-medium">
                                                 <div>
-                                                    <div className="font-semibold">{activity.title}</div>
+                                                    <div className="font-semibold">{activity.name}</div>
                                                     <div className="max-w-xs truncate text-sm text-muted-foreground">{activity.description}</div>
                                                 </div>
                                             </TableCell>
@@ -120,12 +101,12 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                                     <Calendar className="h-4 w-4" />
                                                     {formatDate(activity.date)}
                                                 </div>
-                                            </TableCell>
+                                            </TableCell>{' '}
                                             <TableCell>
-                                                {activity.time ? (
+                                                {activity.time_start ? (
                                                     <div className="flex items-center gap-2">
                                                         <Clock className="h-4 w-4" />
-                                                        {activity.time}
+                                                        {formatTime(activity.time_start)}
                                                     </div>
                                                 ) : (
                                                     <span className="text-muted-foreground">-</span>
@@ -139,10 +120,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                                     </div>
                                                 ) : (
                                                     <span className="text-muted-foreground">-</span>
-                                                )}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge className={getStatusColor(activity.status)}>{getStatusText(activity.status)}</Badge>
+                                                )}{' '}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
@@ -168,7 +146,6 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                         )}
                     </CardContent>
                 </Card>
-
                 {/* Pagination */}
                 {activities.links && activities.links.length > 3 && (
                     <div className="flex justify-center space-x-2">

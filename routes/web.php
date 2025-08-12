@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\CommunityController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Umat\UmatDashboardController;
+use App\Http\Controllers\Umat\UmatWorshipScheduleController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -44,9 +45,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Umat Routes - Hanya bisa melihat pengumuman
     Route::middleware('role_id:2')->prefix('umat')->name('umat.')->group(function () {
         Route::get('dashboard', [UmatDashboardController::class, 'index'])->name('dashboard');
-        Route::get('profile', [UmatDashboardController::class, 'profile'])->name('profile');
-        Route::get('announcements', [AnnouncementController::class, 'index'])->name('pengumuman');
-        // Removed POST route - umat tidak bisa membuat pengumuman
+        Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
+        Route::get('worship-schedules', [UmatWorshipScheduleController::class, 'index'])->name('worship-schedules.index');
+        Route::get('worship-schedules/{worshipSchedule}', [UmatWorshipScheduleController::class, 'show'])->name('worship-schedules.show');
     });
 });
 

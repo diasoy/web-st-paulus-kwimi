@@ -48,7 +48,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
     };
 
     const formatTime = (timeString: string) => {
-        return timeString.substring(0, 5); // Get HH:MM from HH:MM:SS
+        return timeString.substring(0, 5); 
     };
 
     return (

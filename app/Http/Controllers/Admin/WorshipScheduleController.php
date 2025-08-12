@@ -17,7 +17,7 @@ class WorshipScheduleController extends Controller
     {
         $worshipSchedules = WorshipSchedule::with('communities')->latest()->paginate(10);
         
-        return Inertia::render('admin/worship-schedules/index', [
+    return Inertia::render('admin/worship-schedules/index', [
             'worshipSchedules' => $worshipSchedules
         ]);
     }

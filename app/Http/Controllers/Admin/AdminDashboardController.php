@@ -4,6 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Community;
+use App\Models\Announcement;
+use App\Models\Activity;
+use App\Models\WorshipSchedule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -15,15 +20,54 @@ class AdminDashboardController extends Controller
      */
     public function index(): Response
     {
+        // Totals
         $stats = [
             'total_users' => User::count(),
             'total_admin' => User::where('role_id', 1)->count(),
             'total_umat' => User::where('role_id', 2)->count(),
-            'recent_users' => User::latest()->take(5)->get(),
+            'total_communities' => Community::count(),
+            'total_announcements' => Announcement::count(),
+            'total_activities' => Activity::count(),
+            'total_worship_schedules' => WorshipSchedule::count(),
         ];
 
+        // Recent items
+        $recent_users = User::latest()->take(5)->get(['id', 'name', 'email', 'role_id', 'created_at']);
+        $recent_announcements = Announcement::latest()->take(5)->get(['id', 'title', 'is_publish', 'created_at', 'image_url']);
+
+        // Upcoming worship schedules (next 5)
+        $upcoming_worship = WorshipSchedule::where('date', '>=', Carbon::today()->toDateString())
+            ->orderBy('date')
+            ->orderBy('time_start')
+            ->take(5)
+            ->get(['id', 'name', 'date', 'time_start', 'pic']);
+
+        // Monthly new users for last 6 months
+        $start = Carbon::now()->startOfMonth()->subMonths(5);
+        $countsByMonth = User::selectRaw('DATE_FORMAT(created_at, "%Y-%m") as ym, COUNT(*) as count')
+            ->where('created_at', '>=', $start)
+            ->groupBy('ym')
+            ->orderBy('ym')
+            ->pluck('count', 'ym');
+
+        $series_labels = [];
+        $series_data = [];
+        for ($i = 0; $i < 6; $i++) {
+            $month = (clone $start)->addMonths($i);
+            $ym = $month->format('Y-m');
+            $series_labels[] = $month->isoFormat('MMM');
+            $series_data[] = (int) ($countsByMonth[$ym] ?? 0);
+        }
+
         return Inertia::render('admin/dashboard', [
-            'stats' => $stats
+            'stats' => $stats,
+            'recent_users' => $recent_users,
+            'recent_announcements' => $recent_announcements,
+            'upcoming_worship' => $upcoming_worship,
+            'monthly_users' => [
+                'labels' => $series_labels,
+                'data' => $series_data,
+            ],
         ]);
     }
 

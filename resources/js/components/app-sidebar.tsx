@@ -64,12 +64,17 @@ export function AppSidebar() {
             {
                 title: 'Pengumuman',
                 href: '/umat/announcements',
-                icon: Bell,
+                icon: MessageSquare,
             },
             {
                 title: 'Jadwal Ibadah',
                 href: '/umat/worship-schedules',
-                icon: Calendar,
+                icon: CalendarDays,
+            },
+            {
+                title: 'Agenda Kegiatan',
+                href: '/umat/activities',
+                icon: Activity,
             },
             {
                 title: 'Pengaturan',

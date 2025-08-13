@@ -9,6 +9,7 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Umat\UmatDashboardController;
 use App\Http\Controllers\Umat\UmatWorshipScheduleController;
+use App\Http\Controllers\Umat\UmatActivityController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -42,13 +43,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('communities', CommunityController::class);
     });
     
-    // Umat Routes - Hanya bisa melihat pengumuman
+    // Umat Routes - Hanya bisa melihat pengumuman dan kegiatan
     Route::middleware('role_id:2')->prefix('umat')->name('umat.')->group(function () {
         Route::get('dashboard', [UmatDashboardController::class, 'index'])->name('dashboard');
         Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
         Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
         Route::get('worship-schedules', [UmatWorshipScheduleController::class, 'index'])->name('worship-schedules.index');
         Route::get('worship-schedules/{worshipSchedule}', [UmatWorshipScheduleController::class, 'show'])->name('worship-schedules.show');
+        
+        // Activities for Umat
+        Route::get('activities', [UmatActivityController::class, 'index'])->name('activities.index');
+        Route::get('activities/{activity}', [UmatActivityController::class, 'show'])->name('activities.show');
+        Route::get('activities/archive/all', [UmatActivityController::class, 'archive'])->name('activities.archive');
     });
 });
 

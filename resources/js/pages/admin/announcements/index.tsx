@@ -1,10 +1,10 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
+import { Edit, Eye, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface Announcement {
@@ -28,6 +28,8 @@ interface AnnouncementsIndexProps {
 export default function AnnouncementsIndex({ announcements }: AnnouncementsIndexProps) {
     const { props } = usePage<{ flash?: { success?: string; error?: string } }>();
     const [deletingId, setDeletingId] = useState<number | null>(null);
+    const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
+    const [search, setSearch] = useState<string>(params.get('search') || '');
 
     const handleDelete = (id: number, title: string) => {
         if (!confirm(`Hapus pengumuman:\n\n"${title}"?`)) return;
@@ -58,10 +60,55 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                         <h1 className="text-3xl font-bold tracking-tight">Kelola Pengumuman</h1>
                         <p className="text-muted-foreground">Kelola semua pengumuman untuk jemaat ST. Paulus Kwimi</p>
                     </div>
-                    <Link href={route('admin.announcements.create')}>
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Tambah Pengumuman
+                </div>
+
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 flex-1 items-center gap-2">
+                        <div className="relative w-full max-w-sm">
+                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                onKeyDown={(e) =>
+                                    e.key === 'Enter' &&
+                                    router.get(
+                                        route('admin.announcements.index'),
+                                        { search },
+                                        { preserveState: true, replace: true, preserveScroll: true },
+                                    )
+                                }
+                                placeholder="Cari pengumuman..."
+                                className="h-9 pl-8 text-sm"
+                            />
+                        </div>
+                        <Button
+                            size="sm"
+                            onClick={() =>
+                                router.get(
+                                    route('admin.announcements.index'),
+                                    { search },
+                                    { preserveState: true, replace: true, preserveScroll: true },
+                                )
+                            }
+                        >
+                            Cari
+                        </Button>
+                        {search && (
+                            <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                    router.get(route('admin.announcements.index'), {}, { preserveState: true, replace: true, preserveScroll: true })
+                                }
+                            >
+                                Reset
+                            </Button>
+                        )}
+                    </div>
+                    <Link href={route('admin.announcements.create')} className="shrink-0">
+                        <Button className="px-2 sm:px-4">
+                            <Plus className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Tambah Pengumuman</span>
                         </Button>
                     </Link>
                 </div>
@@ -73,84 +120,82 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                     <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{props.flash.error}</div>
                 )}
 
-                <Card>
-                    <CardContent className="p-6">
-                        {announcements.data.length === 0 ? (
-                            <div className="py-8 text-center">
-                                <p className="text-muted-foreground">Belum ada pengumuman</p>
-                                <Link href={route('admin.announcements.create')}>
-                                    <Button className="mt-4">
-                                        <Plus className="mr-2 h-4 w-4" />
-                                        Buat Pengumuman Pertama
-                                    </Button>
-                                </Link>
-                            </div>
-                        ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Judul</TableHead>
-                                        <TableHead>Deskripsi</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Tanggal Dibuat</TableHead>
-                                        <TableHead className="text-right">Aksi</TableHead>
+                {announcements.data.length === 0 ? (
+                    <div className="py-8 text-center">
+                        <p className="text-muted-foreground">Belum ada pengumuman</p>
+                        <Link href={route('admin.announcements.create')}>
+                            <Button className="mt-4">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Buat Pengumuman Pertama
+                            </Button>
+                        </Link>
+                    </div>
+                ) : (
+                    <div className="rounded-md border">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="bg-muted/60">
+                                    <TableHead>Judul</TableHead>
+                                    <TableHead>Deskripsi</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead>Tanggal Dibuat</TableHead>
+                                    <TableHead className="text-right">Aksi</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {announcements.data.map((announcement) => (
+                                    <TableRow key={announcement.id}>
+                                        <TableCell className="font-medium">
+                                            <div className="flex items-center gap-3">
+                                                {announcement.image_url ? (
+                                                    <img
+                                                        src={`/storage/${announcement.image_url}`}
+                                                        alt={announcement.title}
+                                                        className="h-10 w-14 rounded object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="h-10 w-14 rounded bg-muted" />
+                                                )}
+                                                <span className="font-semibold">{announcement.title}</span>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell className="max-w-md">
+                                            <div className="truncate">{announcement.description}</div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant={announcement.is_publish ? 'default' : 'secondary'}>
+                                                {announcement.is_publish ? 'Published' : 'Draft'}
+                                            </Badge>
+                                        </TableCell>
+                                        <TableCell className="text-sm text-muted-foreground">{formatDate(announcement.created_at)}</TableCell>
+                                        <TableCell className="text-right">
+                                            <div className="flex justify-end gap-2">
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={route('admin.announcements.show', announcement.id)}>
+                                                        <Eye className="h-4 w-4" />
+                                                    </Link>
+                                                </Button>
+                                                <Button variant="outline" size="sm" asChild>
+                                                    <Link href={route('admin.announcements.edit', announcement.id)}>
+                                                        <Edit className="h-4 w-4" />
+                                                    </Link>
+                                                </Button>
+                                                <Button
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    onClick={() => handleDelete(announcement.id, announcement.title)}
+                                                    disabled={deletingId === announcement.id}
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </TableCell>
                                     </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {announcements.data.map((announcement) => (
-                                        <TableRow key={announcement.id}>
-                                            <TableCell className="font-medium">
-                                                <div className="flex items-center gap-3">
-                                                    {announcement.image_url ? (
-                                                        <img
-                                                            src={`/storage/${announcement.image_url}`}
-                                                            alt={announcement.title}
-                                                            className="h-10 w-14 rounded object-cover"
-                                                        />
-                                                    ) : (
-                                                        <div className="h-10 w-14 rounded bg-muted" />
-                                                    )}
-                                                    <span className="font-semibold">{announcement.title}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="max-w-md">
-                                                <div className="truncate">{announcement.description}</div>
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge variant={announcement.is_publish ? 'default' : 'secondary'}>
-                                                    {announcement.is_publish ? 'Published' : 'Draft'}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-sm text-muted-foreground">{formatDate(announcement.created_at)}</TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <Button variant="outline" size="sm" asChild>
-                                                        <Link href={route('admin.announcements.show', announcement.id)}>
-                                                            <Eye className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button variant="outline" size="sm" asChild>
-                                                        <Link href={route('admin.announcements.edit', announcement.id)}>
-                                                            <Edit className="h-4 w-4" />
-                                                        </Link>
-                                                    </Button>
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        onClick={() => handleDelete(announcement.id, announcement.title)}
-                                                        disabled={deletingId === announcement.id}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        )}
-                    </CardContent>
-                </Card>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
+                )}
 
                 {announcements.links && announcements.links.length > 3 && (
                     <div className="flex justify-center space-x-2">

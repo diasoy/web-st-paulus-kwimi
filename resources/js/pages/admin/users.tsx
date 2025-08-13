@@ -1,11 +1,10 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Eye, Filter, Search, Trash2, User as UserIcon, Users } from 'lucide-react';
+import { Edit, Eye, Filter, RotateCcw, Search, Trash2, User as UserIcon, Users, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 interface User {
@@ -89,55 +88,54 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                     <p className="text-muted-foreground">Kelola semua pengguna sistem ST. Paulus Kwimi</p>
                 </div>
 
-                {/* Filters */}
-                <Card className="p-2">
-                    <CardContent className="p-2">
-                        <div className="flex flex-col gap-2 sm:flex-row">
-                            <div className="relative flex-1">
-                                <Search className="absolute top-2 left-2 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    type="text"
-                                    placeholder="Cari nama atau email..."
-                                    className="pl-8 text-sm"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-                                />
-                            </div>
-                            <select
-                                className="rounded-md border border-input bg-background px-2 py-1 text-sm"
-                                value={roleFilter}
-                                onChange={(e) => setRoleFilter(e.target.value)}
-                            >
-                                <option value="umat">Umat</option>
-                                <option value="admin">Admin</option>
-                            </select>
-                            <div className="flex gap-1">
-                                <Button onClick={handleSearch} variant="default" size="sm" className="px-2 py-1 text-sm">
-                                    <Filter className="mr-1 h-4 w-4" />
-                                    Filter
-                                </Button>
-                                <Button onClick={handleReset} variant="outline" size="sm" className="px-2 py-1 text-sm">
-                                    Reset
-                                </Button>
-                            </div>
+                {/* Toolbar (Search + Filters) */}
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 flex-1 items-center gap-2">
+                        <div className="relative w-full max-w-sm">
+                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                type="text"
+                                placeholder="Cari nama atau email..."
+                                className="h-9 pl-8 text-sm"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                            />
                         </div>
-                    </CardContent>
-                </Card>
+                        <select
+                            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+                            value={roleFilter}
+                            onChange={(e) => setRoleFilter(e.target.value)}
+                        >
+                            <option value="umat">Umat</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                        <div className="flex gap-2">
+                            <Button onClick={handleSearch} variant="default" size="sm" className="px-2 sm:px-4" title="Filter">
+                                <Filter className="h-4 w-4 sm:mr-2" />
+                                <span className="hidden sm:inline">Filter</span>
+                            </Button>
+                            <Button onClick={handleReset} variant="outline" size="sm" className="px-2 sm:px-4" title="Reset">
+                                <RotateCcw className="h-4 w-4 sm:mr-2" />
+                                <span className="hidden sm:inline">Reset</span>
+                            </Button>
+                        </div>
+                    </div>
+                    <Link href={route('admin.users.create')} className="shrink-0">
+                        <Button className="px-2 sm:px-4">
+                            <Plus className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Tambah Pengguna</span>
+                        </Button>
+                    </Link>
+                </div>
 
                 {/* Users List */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Users className="h-5 w-5" />
-                            Daftar Pengguna ({users.total})
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
+                <div>
+                    <div className="rounded-md border">
                         {users.data.length > 0 ? (
                             <Table>
                                 <TableHeader>
-                                    <TableRow>
+                                    <TableRow className="bg-muted/60">
                                         <TableHead>Nama Pengguna</TableHead>
                                         <TableHead>Komunitas Basis</TableHead>
                                         <TableHead>Gender</TableHead>
@@ -212,38 +210,31 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                                 <p className="text-muted-foreground">Coba ubah filter pencarian Anda</p>
                             </div>
                         )}
-
-                        {/* Pagination */}
-                        {users.data.length > 0 && (
-                            <div className="mt-6 flex items-center justify-between border-t pt-6">
-                                <div className="text-sm text-muted-foreground">
-                                    Menampilkan {users.data.length} dari {users.total} pengguna
-                                </div>
-                                <div className="flex gap-2">
-                                    {users.links.map((link, index) =>
-                                        link.url ? (
-                                            <Button
-                                                key={index}
-                                                variant={link.active ? 'default' : 'outline'}
-                                                size="sm"
-                                                onClick={() => router.visit(link.url!)}
-                                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                            />
-                                        ) : (
-                                            <Button
-                                                key={index}
-                                                variant="outline"
-                                                size="sm"
-                                                disabled
-                                                dangerouslySetInnerHTML={{ __html: link.label }}
-                                            />
-                                        ),
-                                    )}
-                                </div>
+                    </div>
+                    {/* Pagination */}
+                    {users.data.length > 0 && (
+                        <div className="mt-6 flex items-center justify-between border-t pt-6">
+                            <div className="text-sm text-muted-foreground">
+                                Menampilkan {users.data.length} dari {users.total} pengguna
                             </div>
-                        )}
-                    </CardContent>
-                </Card>
+                            <div className="flex gap-2">
+                                {users.links.map((link, index) =>
+                                    link.url ? (
+                                        <Button
+                                            key={index}
+                                            variant={link.active ? 'default' : 'outline'}
+                                            size="sm"
+                                            onClick={() => router.visit(link.url!)}
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                        />
+                                    ) : (
+                                        <Button key={index} variant="outline" size="sm" disabled dangerouslySetInnerHTML={{ __html: link.label }} />
+                                    ),
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </AuthenticatedLayout>
     );

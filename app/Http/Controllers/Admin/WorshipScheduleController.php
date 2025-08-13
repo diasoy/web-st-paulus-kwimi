@@ -13,11 +13,17 @@ class WorshipScheduleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $worshipSchedules = WorshipSchedule::with('communities')->latest()->paginate(10);
-        
-    return Inertia::render('admin/worship-schedules/index', [
+        $search = $request->query('search');
+        $query = WorshipSchedule::with('communities');
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('pic', 'like', "%{$search}%");
+        }
+        $worshipSchedules = $query->latest()->paginate(10)->withQueryString();
+
+        return Inertia::render('admin/worship-schedules/index', [
             'worshipSchedules' => $worshipSchedules
         ]);
     }
@@ -28,7 +34,7 @@ class WorshipScheduleController extends Controller
     public function create()
     {
         $communities = Community::all();
-        
+
         return Inertia::render('admin/worship-schedules/create', [
             'communities' => $communities
         ]);
@@ -52,7 +58,7 @@ class WorshipScheduleController extends Controller
         $validated['time_start'] = $validated['time_start'] . ':00';
 
         $worshipSchedule = WorshipSchedule::create($validated);
-        
+
         if (isset($validated['communities'])) {
             $worshipSchedule->communities()->sync($validated['communities']);
         }
@@ -67,7 +73,7 @@ class WorshipScheduleController extends Controller
     public function show(WorshipSchedule $worshipSchedule)
     {
         $worshipSchedule->load('communities');
-        
+
         return Inertia::render('admin/worship-schedules/show', [
             'worshipSchedule' => $worshipSchedule
         ]);
@@ -80,7 +86,7 @@ class WorshipScheduleController extends Controller
     {
         $worshipSchedule->load('communities');
         $communities = Community::all();
-        
+
         return Inertia::render('admin/worship-schedules/edit', [
             'worshipSchedule' => $worshipSchedule,
             'communities' => $communities
@@ -105,7 +111,7 @@ class WorshipScheduleController extends Controller
         $validated['time_start'] = $validated['time_start'] . ':00';
 
         $worshipSchedule->update($validated);
-        
+
         if (isset($validated['communities'])) {
             $worshipSchedule->communities()->sync($validated['communities']);
         }

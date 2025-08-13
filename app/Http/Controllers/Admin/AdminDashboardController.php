@@ -36,7 +36,7 @@ class AdminDashboardController extends Controller
             ->with(['community:id,name', 'role:id,name'])
             ->when($request->search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             })
             ->when($request->role, function ($query, $role) {
                 // Map role string to role_id
@@ -78,7 +78,7 @@ class AdminDashboardController extends Controller
     public function showUser(User $user): Response
     {
         $user->load(['community:id,name', 'role:id,name']);
-        
+
         return Inertia::render('admin/users/show', [
             'user' => [
                 'id' => $user->id,
@@ -108,13 +108,13 @@ class AdminDashboardController extends Controller
     {
         // Debug: log yang sedang diakses
         \Log::info('EditUser called for user ID: ' . $user->id);
-        
+
         $user->load(['community:id,name', 'role:id,name']);
         $communities = \App\Models\Community::all(['id', 'name']);
-        
+
         \Log::info('User data: ', $user->toArray());
         \Log::info('Communities count: ' . $communities->count());
-        
+
         return Inertia::render('admin/users/edit', [
             'user' => [
                 'id' => $user->id,
@@ -171,5 +171,56 @@ class AdminDashboardController extends Controller
 
         return redirect()->route('admin.users')
             ->with('success', 'Pengguna berhasil dihapus secara permanen.');
+    }
+
+    /**
+     * Show the form for creating a new user
+     */
+    public function createUser(): Response
+    {
+        $communities = \App\Models\Community::all(['id', 'name']);
+
+        return Inertia::render('admin/users/create', [
+            'communities' => $communities,
+        ]);
+    }
+
+    /**
+     * Store a newly created user in storage
+     */
+    public function storeUser(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username',
+            'email' => 'required|email|unique:users,email',
+            'phone_number' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
+            'birth_date' => 'nullable|date',
+            'gender' => 'required|in:male,female',
+            'status' => 'required|in:active,inactive',
+            'community_id' => 'nullable|exists:communities,id',
+            'role' => 'required|in:admin,umat',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+
+        $data = [
+            'name' => $validated['name'],
+            'username' => $validated['username'],
+            'email' => $validated['email'],
+            'phone_number' => $validated['phone_number'] ?? null,
+            'address' => $validated['address'] ?? null,
+            'birth_date' => $validated['birth_date'] ?? null,
+            'gender' => $validated['gender'],
+            'status' => $validated['status'],
+            'community_id' => $validated['community_id'] ?? null,
+            'role_id' => $validated['role'] === 'admin' ? 1 : 2,
+            'password' => \Hash::make($validated['password']),
+        ];
+
+        User::create($data);
+
+        return redirect()->route('admin.users')
+            ->with('success', 'Pengguna baru berhasil ditambahkan.');
     }
 }

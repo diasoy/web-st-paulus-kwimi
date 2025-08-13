@@ -13,10 +13,16 @@ class AnnouncementController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $announcements = Announcement::latest()->paginate(10);
-        
+        $search = $request->query('search');
+        $query = Announcement::query();
+        if ($search) {
+            $query->where('title', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
+        }
+        $announcements = $query->latest()->paginate(10)->withQueryString();
+
         return Inertia::render('admin/announcements/index', [
             'announcements' => $announcements
         ]);

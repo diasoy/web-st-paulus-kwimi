@@ -13,10 +13,17 @@ class ActivityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $activities = Activity::latest()->paginate(10);
-        
+        $search = $request->query('search');
+        $query = Activity::query();
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%")
+                ->orWhere('location', 'like', "%{$search}%");
+        }
+        $activities = $query->latest()->paginate(10)->withQueryString();
+
         return Inertia::render('admin/activities/index', [
             'activities' => $activities
         ]);

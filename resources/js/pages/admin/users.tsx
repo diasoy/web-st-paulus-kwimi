@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Eye, Filter, RotateCcw, Search, Trash2, User as UserIcon, Users, Plus } from 'lucide-react';
+import { Edit, Eye, Filter, Plus, RotateCcw, Search, Trash2, User as UserIcon, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface User {
@@ -121,12 +121,12 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                             </Button>
                         </div>
                     </div>
-                    <Link href={route('admin.users.create')} className="shrink-0">
-                        <Button className="px-2 sm:px-4">
+                    <Button asChild className="shrink-0 px-2 sm:px-4">
+                        <Link href={route('admin.users.create')}>
                             <Plus className="h-4 w-4 sm:mr-2" />
                             <span className="hidden sm:inline">Tambah Pengguna</span>
-                        </Button>
-                    </Link>
+                        </Link>
+                    </Button>
                 </div>
 
                 {/* Users List */}

@@ -90,34 +90,34 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                 </div>
 
                 {/* Filters */}
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex flex-col gap-4 sm:flex-row">
+                <Card className="p-2">
+                    <CardContent className="p-2">
+                        <div className="flex flex-col gap-2 sm:flex-row">
                             <div className="relative flex-1">
-                                <Search className="absolute top-3 left-3 h-4 w-4 text-muted-foreground" />
+                                <Search className="absolute top-2 left-2 h-4 w-4 text-muted-foreground" />
                                 <Input
                                     type="text"
                                     placeholder="Cari nama atau email..."
-                                    className="pl-10"
+                                    className="pl-8 text-sm"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                                 />
                             </div>
                             <select
-                                className="rounded-md border border-input bg-background px-3 py-2"
+                                className="rounded-md border border-input bg-background px-2 py-1 text-sm"
                                 value={roleFilter}
                                 onChange={(e) => setRoleFilter(e.target.value)}
                             >
                                 <option value="umat">Umat</option>
                                 <option value="admin">Admin</option>
                             </select>
-                            <div className="flex gap-2">
-                                <Button onClick={handleSearch} variant="default">
-                                    <Filter className="mr-2 h-4 w-4" />
+                            <div className="flex gap-1">
+                                <Button onClick={handleSearch} variant="default" size="sm" className="px-2 py-1 text-sm">
+                                    <Filter className="mr-1 h-4 w-4" />
                                     Filter
                                 </Button>
-                                <Button onClick={handleReset} variant="outline">
+                                <Button onClick={handleReset} variant="outline" size="sm" className="px-2 py-1 text-sm">
                                     Reset
                                 </Button>
                             </div>

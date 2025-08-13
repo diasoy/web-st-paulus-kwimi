@@ -1,9 +1,9 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Edit, Eye, Plus, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -11,7 +11,6 @@ interface Announcement {
     id: number;
     title: string;
     description: string;
-    content?: string;
     image_url?: string;
     is_publish: boolean;
     created_at: string;
@@ -27,13 +26,16 @@ interface AnnouncementsIndexProps {
 }
 
 export default function AnnouncementsIndex({ announcements }: AnnouncementsIndexProps) {
-    const [deleteId, setDeleteId] = useState<number | null>(null);
+    const { props } = usePage<{ flash?: { success?: string; error?: string } }>();
+    const [deletingId, setDeletingId] = useState<number | null>(null);
 
-    const handleDelete = (id: number) => {
-        if (confirm('Apakah Anda yakin ingin menghapus pengumuman ini?')) {
-            // TODO: Implement delete functionality
-            console.log('Delete announcement:', id);
-        }
+    const handleDelete = (id: number, title: string) => {
+        if (!confirm(`Hapus pengumuman:\n\n"${title}"?`)) return;
+        setDeletingId(id);
+        router.delete(route('admin.announcements.destroy', id), {
+            preserveScroll: true,
+            onFinish: () => setDeletingId(null),
+        });
     };
 
     const formatDate = (dateString: string) => {
@@ -56,7 +58,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                         <h1 className="text-3xl font-bold tracking-tight">Kelola Pengumuman</h1>
                         <p className="text-muted-foreground">Kelola semua pengumuman untuk jemaat ST. Paulus Kwimi</p>
                     </div>
-                    <Link href="/admin/announcements/create">
+                    <Link href={route('admin.announcements.create')}>
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />
                             Tambah Pengumuman
@@ -64,16 +66,19 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                     </Link>
                 </div>
 
+                {props.flash?.success && (
+                    <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{props.flash.success}</div>
+                )}
+                {props.flash?.error && (
+                    <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{props.flash.error}</div>
+                )}
+
                 <Card>
-                    {' '}
-                    <CardHeader>
-                        <CardTitle>Daftar Pengumuman</CardTitle>
-                    </CardHeader>
                     <CardContent className="p-6">
                         {announcements.data.length === 0 ? (
                             <div className="py-8 text-center">
                                 <p className="text-muted-foreground">Belum ada pengumuman</p>
-                                <Link href="/admin/announcements/create">
+                                <Link href={route('admin.announcements.create')}>
                                     <Button className="mt-4">
                                         <Plus className="mr-2 h-4 w-4" />
                                         Buat Pengumuman Pertama
@@ -95,8 +100,18 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                     {announcements.data.map((announcement) => (
                                         <TableRow key={announcement.id}>
                                             <TableCell className="font-medium">
-                                                {announcement.title}
-                                                {announcement.image_url && <span className="ml-2 text-blue-600">📷</span>}
+                                                <div className="flex items-center gap-3">
+                                                    {announcement.image_url ? (
+                                                        <img
+                                                            src={`/storage/${announcement.image_url}`}
+                                                            alt={announcement.title}
+                                                            className="h-10 w-14 rounded object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="h-10 w-14 rounded bg-muted" />
+                                                    )}
+                                                    <span className="font-semibold">{announcement.title}</span>
+                                                </div>
                                             </TableCell>
                                             <TableCell className="max-w-md">
                                                 <div className="truncate">{announcement.description}</div>
@@ -110,16 +125,21 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/announcements/${announcement.id}`}>
+                                                        <Link href={route('admin.announcements.show', announcement.id)}>
                                                             <Eye className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/announcements/${announcement.id}/edit`}>
+                                                        <Link href={route('admin.announcements.edit', announcement.id)}>
                                                             <Edit className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
-                                                    <Button variant="destructive" size="sm" onClick={() => handleDelete(announcement.id)}>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => handleDelete(announcement.id, announcement.title)}
+                                                        disabled={deletingId === announcement.id}
+                                                    >
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -132,7 +152,6 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                     </CardContent>
                 </Card>
 
-                {/* Pagination */}
                 {announcements.links && announcements.links.length > 3 && (
                     <div className="flex justify-center space-x-2">
                         {announcements.links.map((link: any, index: number) => (

@@ -6,21 +6,37 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { ArrowLeft, Save, Upload, X } from 'lucide-react';
+import { FormEventHandler, useRef } from 'react';
 
 export default function AnnouncementsCreate() {
     const { data, setData, post, processing, errors } = useForm({
         title: '',
         description: '',
-        content: '',
-        image_url: '',
-        is_publish: false,
+        image: null as File | null,
+        is_publish: false as boolean,
     });
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.announcements.store'));
+        post(route('admin.announcements.store'), {
+            forceFormData: true,
+            preserveScroll: true,
+        });
+    };
+
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        setData('image', file);
+    };
+
+    const removeImage = () => {
+        setData('image', null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     return (
@@ -28,23 +44,20 @@ export default function AnnouncementsCreate() {
             <Head title="Tambah Pengumuman" />
 
             <div className="space-y-6">
-                <div className="flex items-center gap-4">
-                    <Link href="/admin/announcements">
-                        <Button variant="outline" size="sm">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Tambah Pengumuman</h1>
-                        <p className="text-muted-foreground">Buat pengumuman baru untuk jemaat ST. Paulus Kwimi</p>
-                    </div>
+                {/* Opsi 3: Header dengan breadcrumb style (uncomment untuk menggunakan) */}
+                <div className="space-y-2">
+                    <nav className="flex items-center text-sm text-muted-foreground">
+                        <Link href={route('admin.announcements.index')} className="hover:text-foreground">
+                            Pengumuman
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <span className="text-foreground">Tambah Baru</span>
+                    </nav>
+                    <h1 className="text-2xl font-bold tracking-tight">Tambah Pengumuman</h1>
                 </div>
+               
 
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Form Pengumuman</CardTitle>
-                    </CardHeader>
                     <CardContent>
                         <form onSubmit={submit} className="space-y-6">
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -63,12 +76,12 @@ export default function AnnouncementsCreate() {
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <Label htmlFor="description">Deskripsi Singkat *</Label>
+                                    <Label htmlFor="description">Deskripsi *</Label>
                                     <Textarea
                                         id="description"
                                         value={data.description}
                                         onChange={(e) => setData('description', e.target.value)}
-                                        placeholder="Deskripsi singkat pengumuman"
+                                        placeholder="Deskripsi pengumuman"
                                         className={errors.description ? 'border-red-500' : ''}
                                         rows={3}
                                         required
@@ -77,38 +90,57 @@ export default function AnnouncementsCreate() {
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <Label htmlFor="content">Konten Detail</Label>
-                                    <Textarea
-                                        id="content"
-                                        value={data.content}
-                                        onChange={(e) => setData('content', e.target.value)}
-                                        placeholder="Konten detail pengumuman (opsional)"
-                                        className={errors.content ? 'border-red-500' : ''}
-                                        rows={6}
-                                    />
-                                    {errors.content && <p className="mt-1 text-sm text-red-500">{errors.content}</p>}
-                                </div>
-
-                                <div className="md:col-span-2">
-                                    <Label htmlFor="image_url">URL Gambar</Label>
-                                    <Input
-                                        id="image_url"
-                                        type="url"
-                                        value={data.image_url}
-                                        onChange={(e) => setData('image_url', e.target.value)}
-                                        placeholder="https://example.com/image.jpg"
-                                        className={errors.image_url ? 'border-red-500' : ''}
-                                    />
-                                    {errors.image_url && <p className="mt-1 text-sm text-red-500">{errors.image_url}</p>}
-                                    <p className="mt-1 text-sm text-muted-foreground">URL gambar untuk pengumuman (opsional)</p>
+                                    <Label>Gambar (opsional)</Label>
+                                    <div className="mt-2 space-y-3">
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                ref={fileInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageSelect}
+                                                className="hidden"
+                                                id="image-upload"
+                                            />
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className={`${errors.image ? 'border-red-500' : ''}`}
+                                            >
+                                                <Upload className="mr-2 h-4 w-4" />
+                                                Pilih Gambar
+                                            </Button>
+                                            {data.image && (
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm text-muted-foreground">
+                                                        {data.image.name}
+                                                    </span>
+                                                    <Button
+                                                        type="button"
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={removeImage}
+                                                        className="h-6 w-6 p-0"
+                                                    >
+                                                        <X className="h-3 w-3" />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                        {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
+                                        <p className="text-sm text-muted-foreground">
+                                            Unggah gambar untuk pengumuman (jpg, png, webp).
+                                        </p>
+                                    </div>
                                 </div>
 
                                 <div className="md:col-span-2">
                                     <div className="flex items-center space-x-2">
                                         <Checkbox
                                             id="is_publish"
-                                            checked={data.is_publish}
-                                            onCheckedChange={(checked) => setData('is_publish', checked as boolean)}
+                                            checked={Boolean(data.is_publish)}
+                                            onCheckedChange={(checked) => setData('is_publish', Boolean(checked))}
                                         />
                                         <Label htmlFor="is_publish" className="text-sm">
                                             Publikasikan pengumuman
@@ -121,7 +153,7 @@ export default function AnnouncementsCreate() {
                             </div>
 
                             <div className="flex justify-end space-x-4">
-                                <Link href="/admin/announcements">
+                                <Link href={route('admin.announcements.index')}>
                                     <Button type="button" variant="outline">
                                         Batal
                                     </Button>

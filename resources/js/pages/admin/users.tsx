@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { Edit, Eye, Filter, Search, Trash2, User as UserIcon, Users } from 'lucide-react';
 import { useState } from 'react';
 
@@ -41,12 +41,13 @@ interface UsersManagementProps {
 }
 
 export default function UsersManagement({ users, filters }: UsersManagementProps) {
+    const { props } = usePage<{ flash?: { success?: string; error?: string } }>();
     const [search, setSearch] = useState(filters.search || '');
     const [roleFilter, setRoleFilter] = useState(filters.role || 'umat');
 
     const handleSearch = () => {
         router.get(
-            '/admin/users',
+            route('admin.users'),
             {
                 search: search,
                 role: roleFilter,
@@ -61,12 +62,12 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
     const handleReset = () => {
         setSearch('');
         setRoleFilter('umat');
-        router.get('/admin/users', { role: 'umat' });
+        router.get(route('admin.users'), { role: 'umat' });
     };
 
     const handleDelete = (id: number, name: string) => {
         if (confirm(`Apakah Anda yakin ingin menghapus pengguna "${name}" secara permanen?`)) {
-            router.delete(`/admin/users/${id}`);
+            router.delete(route('admin.users.destroy', id));
         }
     };
 
@@ -75,6 +76,14 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
             <Head title="Manajemen Pengguna" />
 
             <div className="space-y-6 p-6">
+                {/* Flash messages */}
+                {props.flash?.success && (
+                    <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{props.flash.success}</div>
+                )}
+                {props.flash?.error && (
+                    <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{props.flash.error}</div>
+                )}
+
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Manajemen Pengguna</h1>
                     <p className="text-muted-foreground">Kelola semua pengguna sistem ST. Paulus Kwimi</p>
@@ -178,12 +187,12 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/users/${user.id}`}>
+                                                        <Link href={route('admin.users.show', user.id)}>
                                                             <Eye className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/users/${user.id}/edit`}>
+                                                        <Link href={route('admin.users.edit', user.id)}>
                                                             <Edit className="h-4 w-4" />
                                                         </Link>
                                                     </Button>

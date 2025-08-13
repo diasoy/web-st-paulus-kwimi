@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class AnnouncementController extends Controller
 {
@@ -37,12 +38,24 @@ class AnnouncementController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'content' => 'nullable|string',
-            'image_url' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'is_publish' => 'boolean'
         ]);
 
-        Announcement::create($validated);
+        // Prepare data
+        $data = [
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'is_publish' => $validated['is_publish'] ?? false,
+        ];
+
+        // Handle image upload to local storage (public disk)
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('announcements', 'public');
+            $data['image_url'] = $path; // store relative path like announcements/xxx.jpg
+        }
+
+        Announcement::create($data);
 
         return redirect()->route('admin.announcements.index')
             ->with('success', 'Pengumuman berhasil dibuat.');
@@ -76,12 +89,26 @@ class AnnouncementController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'content' => 'nullable|string',
-            'image_url' => 'nullable|url',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
             'is_publish' => 'boolean'
         ]);
 
-        $announcement->update($validated);
+        $data = [
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'is_publish' => $validated['is_publish'] ?? $announcement->is_publish,
+        ];
+
+        // If new image uploaded, replace old one
+        if ($request->hasFile('image')) {
+            if ($announcement->image_url) {
+                Storage::disk('public')->delete($announcement->image_url);
+            }
+            $path = $request->file('image')->store('announcements', 'public');
+            $data['image_url'] = $path;
+        }
+
+        $announcement->update($data);
 
         return redirect()->route('admin.announcements.index')
             ->with('success', 'Pengumuman berhasil diperbarui.');
@@ -92,6 +119,11 @@ class AnnouncementController extends Controller
      */
     public function destroy(Announcement $announcement)
     {
+        // Delete stored image if exists
+        if ($announcement->image_url) {
+            Storage::disk('public')->delete($announcement->image_url);
+        }
+
         $announcement->delete();
 
         return redirect()->route('admin.announcements.index')

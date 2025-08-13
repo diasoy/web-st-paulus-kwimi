@@ -11,11 +11,23 @@ class CommunityController extends Controller
 {    /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $allowedSorts = ['name', 'users_count', 'created_at'];
+        $sort = $request->query('sort', 'name');
+        $direction = $request->query('direction', 'asc');
+
+        if (!in_array($sort, $allowedSorts, true)) {
+            $sort = 'name';
+        }
+        if (!in_array(strtolower($direction), ['asc', 'desc'], true)) {
+            $direction = 'asc';
+        }
+
         $communities = Community::withCount('users')
-            ->latest()
-            ->paginate(10);
+            ->orderBy($sort, $direction)
+            ->paginate(10)
+            ->withQueryString();
 
         return Inertia::render('admin/communities/index', [
             'communities' => $communities,

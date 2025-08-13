@@ -4,8 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save } from 'lucide-react';
-import { ChangeEvent, FormEventHandler } from 'react';
+import { ArrowLeft, Save, Upload, X } from 'lucide-react';
+import { ChangeEvent, FormEventHandler, useRef } from 'react';
 
 export default function ActivitiesCreate() {
     const { data, setData, post, processing, errors } = useForm({
@@ -14,11 +14,39 @@ export default function ActivitiesCreate() {
         date: '',
         time_start: '',
         location: '',
+        image: null as File | null,
     });
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const toHHmm = (val?: string | null) => {
+        if (!val) return '';
+        if (/^\d{2}:\d{2}/.test(val)) return val.substring(0, 5);
+        try {
+            const d = new Date(`2000-01-01T${val}`);
+            const h = String(d.getHours()).padStart(2, '0');
+            const m = String(d.getMinutes()).padStart(2, '0');
+            return `${h}:${m}`;
+        } catch {
+            return '';
+        }
+    };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('admin.activities.store'));
+        // Ensure time_start is HH:mm (or empty)
+        setData('time_start', toHHmm(data.time_start));
+        post(route('admin.activities.store'), { forceFormData: true, preserveScroll: true });
+    };
+
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        setData('image', file);
+    };
+
+    const removeImage = () => {
+        setData('image', null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     return (
@@ -89,8 +117,8 @@ export default function ActivitiesCreate() {
                                     <Input
                                         id="time_start"
                                         type="time"
-                                        value={data.time_start}
-                                        onChange={(e) => setData('time_start', e.target.value)}
+                                        value={toHHmm(data.time_start)}
+                                        onChange={(e) => setData('time_start', toHHmm(e.target.value))}
                                         placeholder="Contoh: 08:00"
                                         className={errors.time_start ? 'border-red-500' : ''}
                                     />
@@ -107,6 +135,35 @@ export default function ActivitiesCreate() {
                                         className={errors.location ? 'border-red-500' : ''}
                                     />
                                     {errors.location && <p className="mt-1 text-sm text-red-500">{errors.location}</p>}{' '}
+                                </div>
+                                <div className="md:col-span-2">
+                                    <Label>Gambar (opsional)</Label>
+                                    <div className="mt-2 space-y-3">
+                                        <div className="flex items-center gap-3">
+                                            <input
+                                                ref={fileInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageSelect}
+                                                className="hidden"
+                                                id="activity-image-upload"
+                                            />
+                                            <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className={`${errors.image ? 'border-red-500' : ''}`}>
+                                                <Upload className="mr-2 h-4 w-4" />
+                                                Pilih Gambar
+                                            </Button>
+                                            {data.image && (
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm text-muted-foreground">{data.image.name}</span>
+                                                    <Button type="button" variant="ghost" size="sm" onClick={removeImage} className="h-6 w-6 p-0">
+                                                        <X className="h-3 w-3" />
+                                                    </Button>
+                                                </div>
+                                            )}
+                                        </div>
+                                        {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
+                                        <p className="text-sm text-muted-foreground">Unggah gambar (jpg, png, webp).</p>
+                                    </div>
                                 </div>
                             </div>
 

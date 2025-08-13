@@ -5,8 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save } from 'lucide-react';
-import { FormEvent } from 'react';
+import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { FormEvent, useRef } from 'react';
 
 interface Activity {
     id: number;
@@ -17,6 +17,7 @@ interface Activity {
     location?: string;
     created_at: string;
     updated_at: string;
+    image_url?: string | null;
 }
 
 interface ActivityEditProps {
@@ -24,17 +25,36 @@ interface ActivityEditProps {
 }
 
 export default function ActivityEdit({ activity }: ActivityEditProps) {
-    const { data, setData, put, processing, errors } = useForm({
+    // Normalize possible "HH:MM:SS" or other time strings to "HH:MM"
+    const toHHmm = (val?: string | null) => {
+        if (!val) return '';
+        if (/^\d{2}:\d{2}/.test(val)) return val.substring(0, 5);
+        try {
+            const d = new Date(`2000-01-01T${val}`);
+            const h = String(d.getHours()).padStart(2, '0');
+            const m = String(d.getMinutes()).padStart(2, '0');
+            return `${h}:${m}`;
+        } catch {
+            return '';
+        }
+    };
+
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'PUT' as const,
         name: activity.name || '',
         description: activity.description || '',
         date: activity.date || '',
-        time_start: activity.time_start || '',
+        time_start: toHHmm(activity.time_start),
         location: activity.location || '',
+        image: null as File | null,
     });
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        put(`/admin/activities/${activity.id}`);
+        setData('time_start', toHHmm(data.time_start));
+        post(route('admin.activities.update', activity.id), { forceFormData: true, preserveScroll: true });
     };
 
     return (
@@ -43,7 +63,7 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
-                    <Link href={`/admin/activities/${activity.id}`}>
+                    <Link href={route('admin.activities.show', activity.id)}>
                         <Button variant="outline">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Kembali
@@ -114,16 +134,34 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
                                 {errors.description && <p className="text-sm text-red-600">{errors.description}</p>}
                             </div>
 
+                            <div className="md:col-span-2">
+                                {activity.image_url && (
+                                    <>
+                                        <Label>Gambar Saat Ini</Label>
+                                        <div className="mt-2">
+                                            <img src={`/storage/${activity.image_url}`} alt={activity.name} className="h-40 rounded-md border object-cover" />
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                            <div className="md:col-span-2">
+                                <Label htmlFor="image">Ganti Gambar (opsional)</Label>
+                                <Input
+                                    id="image"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setData('image', e.target.files && e.target.files[0] ? (e.target.files[0] as unknown as File) : null)}
+                                    className={errors.image ? 'border-red-500' : ''}
+                                />
+                                {errors.image && <p className="mt-1 text-sm text-red-500">{errors.image}</p>}
+                            </div>
+
                             <div className="flex gap-4 pt-4">
                                 <Button type="submit" disabled={processing}>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                 </Button>
-                                <Link href={`/admin/activities/${activity.id}`}>
-                                    <Button type="button" variant="outline">
-                                        Batal
-                                    </Button>
-                                </Link>
                             </div>
                         </form>
                     </CardContent>

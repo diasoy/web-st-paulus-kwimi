@@ -3,7 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, Clock, Edit, Eye, MapPin, Plus, Trash2 } from 'lucide-react';
+import { Calendar, Clock, Edit, Eye, MapPin, Plus, Trash2, Image as ImageIcon } from 'lucide-react';
 
 interface Activity {
     id: number;
@@ -14,6 +14,7 @@ interface Activity {
     location?: string;
     created_at: string;
     updated_at: string;
+    image_url?: string | null;
 }
 
 interface ActivitiesIndexProps {
@@ -27,7 +28,7 @@ interface ActivitiesIndexProps {
 export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
     const handleDelete = (id: number) => {
         if (confirm('Apakah Anda yakin ingin menghapus agenda kegiatan ini?')) {
-            router.delete(`/admin/activities/${id}`);
+            router.delete(route('admin.activities.destroy', id));
         }
     };
 
@@ -55,7 +56,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                         <h1 className="text-3xl font-bold tracking-tight">Agenda Kegiatan</h1>
                         <p className="text-muted-foreground">Kelola agenda kegiatan untuk jemaat ST. Paulus Kwimi</p>
                     </div>
-                    <Link href="/admin/activities/create">
+                    <Link href={route('admin.activities.create')}>
                         <Button>
                             <Plus className="mr-2 h-4 w-4" />
                             Tambah Kegiatan
@@ -89,11 +90,19 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                 <TableBody>
                                     {activities.data.map((activity) => (
                                         <TableRow key={activity.id}>
-                                            {' '}
                                             <TableCell className="font-medium">
-                                                <div>
-                                                    <div className="font-semibold">{activity.name}</div>
-                                                    <div className="max-w-xs truncate text-sm text-muted-foreground">{activity.description}</div>
+                                                <div className="flex items-center gap-3">
+                                                    {activity.image_url ? (
+                                                        <img src={`/storage/${activity.image_url}`} alt={activity.name} className="h-10 w-14 rounded object-cover" />
+                                                    ) : (
+                                                        <div className="flex h-10 w-14 items-center justify-center rounded bg-muted text-muted-foreground">
+                                                            <ImageIcon className="h-4 w-4" />
+                                                        </div>
+                                                    )}
+                                                    <div>
+                                                        <div className="font-semibold">{activity.name}</div>
+                                                        <div className="max-w-xs truncate text-sm text-muted-foreground">{activity.description}</div>
+                                                    </div>
                                                 </div>
                                             </TableCell>
                                             <TableCell>
@@ -125,12 +134,12 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/activities/${activity.id}`}>
+                                                        <Link href={route('admin.activities.show', activity.id)}>
                                                             <Eye className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link href={`/admin/activities/${activity.id}/edit`}>
+                                                        <Link href={route('admin.activities.edit', activity.id)}>
                                                             <Edit className="h-4 w-4" />
                                                         </Link>
                                                     </Button>

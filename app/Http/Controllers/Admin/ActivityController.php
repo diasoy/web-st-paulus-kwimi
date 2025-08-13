@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage;
 
 class ActivityController extends Controller
 {
@@ -40,9 +41,23 @@ class ActivityController extends Controller
             'date' => 'required|date',
             'time_start' => 'nullable|date_format:H:i',
             'location' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
         ]);
 
-        Activity::create($validated);
+        $data = [
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'date' => $validated['date'],
+            'time_start' => $validated['time_start'] ?? null,
+            'location' => $validated['location'] ?? null,
+        ];
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('activities', 'public');
+            $data['image_url'] = $path; // relative path like activities/xxx.jpg
+        }
+
+        Activity::create($data);
 
         return redirect()->route('admin.activities.index')
             ->with('success', 'Agenda Kegiatan berhasil dibuat.');
@@ -79,9 +94,26 @@ class ActivityController extends Controller
             'date' => 'required|date',
             'time_start' => 'nullable|date_format:H:i',
             'location' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png,webp|max:2048',
         ]);
 
-        $activity->update($validated);
+        $data = [
+            'name' => $validated['name'],
+            'description' => $validated['description'] ?? null,
+            'date' => $validated['date'],
+            'time_start' => $validated['time_start'] ?? null,
+            'location' => $validated['location'] ?? null,
+        ];
+
+        if ($request->hasFile('image')) {
+            if ($activity->image_url) {
+                Storage::disk('public')->delete($activity->image_url);
+            }
+            $path = $request->file('image')->store('activities', 'public');
+            $data['image_url'] = $path;
+        }
+
+        $activity->update($data);
 
         return redirect()->route('admin.activities.index')
             ->with('success', 'Agenda Kegiatan berhasil diperbarui.');
@@ -92,6 +124,10 @@ class ActivityController extends Controller
      */
     public function destroy(Activity $activity)
     {
+        if ($activity->image_url) {
+            Storage::disk('public')->delete($activity->image_url);
+        }
+
         $activity->delete();
 
         return redirect()->route('admin.activities.index')

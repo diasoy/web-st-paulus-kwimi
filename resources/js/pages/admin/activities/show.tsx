@@ -13,6 +13,7 @@ interface Activity {
     location?: string;
     created_at: string;
     updated_at: string;
+    image_url?: string | null;
 }
 
 interface ActivityShowProps {
@@ -42,13 +43,13 @@ export default function ActivityShow({ activity }: ActivityShowProps) {
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
-                    <Link href="/admin/activities">
+                    <Link href={route('admin.activities.index')}>
                         <Button variant="outline">
                             <ArrowLeft className="mr-2 h-4 w-4" />
                             Kembali
                         </Button>
                     </Link>
-                    <Link href={`/admin/activities/${activity.id}/edit`}>
+                    <Link href={route('admin.activities.edit', activity.id)}>
                         <Button>
                             <Edit className="mr-2 h-4 w-4" />
                             Edit Kegiatan
@@ -66,6 +67,10 @@ export default function ActivityShow({ activity }: ActivityShowProps) {
                                 <div>
                                     <h2 className="text-2xl font-bold">{activity.name}</h2>
                                 </div>
+
+                                {activity.image_url && (
+                                    <img src={`/storage/${activity.image_url}`} alt={activity.name} className="w-full max-w-xl rounded-md border" />
+                                )}
 
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
                                     <div className="flex items-center gap-3">

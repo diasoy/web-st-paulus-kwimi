@@ -1,17 +1,19 @@
-import AppLogoIcon from './app-logo-icon';
-import { Church } from 'lucide-react';
 
 export default function AppLogo() {
-  return (
-    <div className="flex items-center">
-      <div className="p-2 bg-primary/10 rounded-full flex items-center justify-center">
-        <Church className="h-6 w-6 text-primary" />
-      </div>
-      <div className="ml-2 text-left">
-        <span className="truncate leading-tight font-semibold text-sm">
-          ST Paulus Kwimi
-        </span>
-      </div>
-    </div>
-  );
+    return (
+        <>
+            <div className="flex aspect-square size-8 items-center justify-center rounded-md text-sidebar-primary-foreground">
+                <img
+                    src="/images/logo.png"
+                    alt="Logo"
+                    width={32}
+                    height={32}
+                    className="h-6 w-6"
+                />
+            </div>
+            <div className="ml-1 grid flex-1 text-left text-sm">
+                <span className="mb-0.5 truncate leading-tight font-semibold">Gereja St Paulus Kwimi</span>
+            </div>
+        </>
+    );
 }

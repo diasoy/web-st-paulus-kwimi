@@ -1,24 +1,12 @@
-import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Activity, Bell, BookOpen, Calendar, CalendarDays, Folder, LayoutGrid, MessageSquare, Settings, UserCheck, UsersIcon, User } from 'lucide-react';
+import { Activity, Bell, Calendar, CalendarDays, LayoutGrid, MessageSquare, Settings, UsersIcon, User } from 'lucide-react';
 import AppLogo from './app-logo';
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
-    },
-];
+
 
 export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
@@ -74,19 +62,19 @@ export function AppSidebar() {
                 icon: LayoutGrid,
             },
             {
-                title: 'Profil Saya',
-                href: '/umat/profile',
-                icon: UserCheck,
-            },
-            {
                 title: 'Pengumuman',
                 href: '/umat/announcements',
-                icon: Bell,
+                icon: MessageSquare,
             },
             {
                 title: 'Jadwal Ibadah',
-                href: '/umat/schedule',
-                icon: Calendar,
+                href: '/umat/worship-schedules',
+                icon: CalendarDays,
+            },
+            {
+                title: 'Agenda Kegiatan',
+                href: '/umat/activities',
+                icon: Activity,
             },
             {
                 title: 'Pengaturan',
@@ -115,7 +103,6 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>

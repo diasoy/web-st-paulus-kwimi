@@ -1,0 +1,283 @@
+import React, { useState } from 'react';
+import { Head, Link } from '@inertiajs/react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
+import { Calendar, MapPin, Clock, Eye, Archive, Image as ImageIcon } from 'lucide-react';
+import { formatDistanceToNow, format, isToday, isTomorrow, isThisWeek, isPast } from 'date-fns';
+import { id } from 'date-fns/locale';
+
+interface Activity {
+    id: number;
+    name: string;
+    description: string;
+    date: string;
+    time_start: string;
+    location?: string;
+    image_url?: string;
+    created_at: string;
+    updated_at: string;
+}
+
+interface PaginatedActivities {
+    data: Activity[];
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
+    links: Array<{
+        url: string | null;
+        label: string;
+        active: boolean;
+    }>;
+}
+
+interface Props {
+    activities: PaginatedActivities;
+}
+
+export default function ActivitiesIndex({ activities }: Props) {
+    const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+
+    const handleImageError = (activityId: number) => {
+        setImageErrors(prev => ({
+            ...prev,
+            [activityId]: true
+        }));
+    };
+
+    const formatDate = (dateString: string) => {
+        try {
+            const date = new Date(dateString);
+            return {
+                full: format(date, 'EEEE, dd MMMM yyyy', { locale: id }),
+                short: format(date, 'dd MMM yyyy', { locale: id }),
+                dayName: format(date, 'EEEE', { locale: id }),
+                relative: formatDistanceToNow(date, {
+                    addSuffix: true,
+                    locale: id
+                })
+            };
+        } catch {
+            return {
+                full: 'Tanggal tidak valid',
+                short: 'Invalid',
+                dayName: 'Invalid',
+                relative: 'Invalid'
+            };
+        }
+    };
+
+    const formatTime = (timeString: string) => {
+        try {
+            if (!timeString) return 'Waktu belum ditentukan';
+            const time = new Date(`2000-01-01 ${timeString}`);
+            return format(time, 'HH:mm', { locale: id }) + ' WITA';
+        } catch {
+            return 'Waktu tidak valid';
+        }
+    };
+
+    const getDateBadgeInfo = (dateString: string) => {
+        try {
+            const date = new Date(dateString);
+            if (isToday(date)) {
+                return { text: 'Hari Ini', color: 'bg-red-500 text-white' };
+            }
+            if (isTomorrow(date)) {
+                return { text: 'Besok', color: 'bg-orange-500 text-white' };
+            }
+            if (isThisWeek(date)) {
+                return { text: 'Minggu Ini', color: 'bg-blue-500 text-white' };
+            }
+            if (isPast(date)) {
+                return { text: 'Sudah Lewat', color: 'bg-gray-400 text-white' };
+            }
+            return { text: 'Mendatang', color: 'bg-church-primary text-white' };
+        } catch {
+            return { text: 'Invalid', color: 'bg-gray-400 text-white' };
+        }
+    };
+
+    return (
+        <AppLayout>
+            <Head title="Agenda Kegiatan" />
+
+            <div className="min-h-screen bg-gradient-to-br from-church-cream via-white to-church-light">
+                <div className="container mx-auto px-4 py-8">
+                    {/* Header */}
+                    <div className="mb-8">
+                        <div className="flex items-center justify-between mb-6">
+                            <div className="flex items-center">
+                                <div className="bg-church-primary/10 p-3 rounded-full mr-4">
+                                    <Calendar className="h-8 w-8 text-church-primary" />
+                                </div>
+                                <div>
+                                    <h1 className="text-4xl font-bold text-church-dark">
+                                        Agenda Kegiatan
+                                    </h1>
+                                    <p className="text-lg text-church-text/80">
+                                        Kegiatan dan acara Gereja St. Paulus Kwimi
+                                    </p>
+                                </div>
+                            </div>
+
+                            <Link href="/umat/activities/archive/all">
+                                <Button variant="outline" className="border-church-primary/20 text-church-primary hover:bg-church-primary/10">
+                                    <Archive className="h-4 w-4 mr-2" />
+                                    Arsip Kegiatan
+                                </Button>
+                            </Link>
+                        </div>
+
+                        {/* Stats Card */}
+                        <div className="bg-white/70 backdrop-blur-sm rounded-lg p-6 border border-church-primary/10">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                <div className="text-center">
+                                    <p className="text-2xl font-bold text-church-dark">{activities.total}</p>
+                                    <p className="text-church-text/70 text-sm">Total Kegiatan</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-2xl font-bold text-church-dark">{activities.current_page}</p>
+                                    <p className="text-church-text/70 text-sm">Halaman Saat Ini</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-2xl font-bold text-church-dark">{activities.last_page}</p>
+                                    <p className="text-church-text/70 text-sm">Total Halaman</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-2xl font-bold text-church-dark">{activities.per_page}</p>
+                                    <p className="text-church-text/70 text-sm">Per Halaman</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Activities Grid */}
+                    {activities.data.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                            {activities.data.map((activity) => {
+                                const dateInfo = formatDate(activity.date);
+                                const timeInfo = formatTime(activity.time_start);
+                                const badgeInfo = getDateBadgeInfo(activity.date);
+
+                                return (
+                                    <Card key={activity.id} className="group hover:shadow-lg transition-all duration-300 border-church-primary/20 bg-white/80 backdrop-blur-sm overflow-hidden">
+                                        <div className="relative">
+                                            {activity.image_url && !imageErrors[activity.id] ? (
+                                                <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                                                    <img
+                                                        src={activity.image_url}
+                                                        alt={activity.name}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        onError={() => handleImageError(activity.id)}
+                                                        loading="lazy"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                                                </div>
+                                            ) : (
+                                                <div className="aspect-video bg-gradient-to-br from-church-primary/10 to-church-secondary/10 flex items-center justify-center">
+                                                    <ImageIcon className="h-12 w-12 text-church-primary/50" />
+                                                </div>
+                                            )}
+
+                                            {/* Date Badge */}
+                                            <div className="absolute top-3 right-3">
+                                                <Badge className={`${badgeInfo.color} border-0 shadow-lg`}>
+                                                    {badgeInfo.text}
+                                                </Badge>
+                                            </div>
+                                        </div>
+
+                                        <CardHeader className="pb-3">
+                                            <CardTitle className="text-xl text-church-dark group-hover:text-church-primary transition-colors duration-300 line-clamp-2">
+                                                {activity.name}
+                                            </CardTitle>
+
+                                            <div className="space-y-2 text-sm text-church-text/80">
+                                                <div className="flex items-center">
+                                                    <Calendar className="h-4 w-4 mr-2 text-church-primary" />
+                                                    <span title={dateInfo.full}>{dateInfo.short}</span>
+                                                </div>
+
+                                                <div className="flex items-center">
+                                                    <Clock className="h-4 w-4 mr-2 text-church-secondary" />
+                                                    <span>{timeInfo}</span>
+                                                </div>
+
+                                                {activity.location && (
+                                                    <div className="flex items-center">
+                                                        <MapPin className="h-4 w-4 mr-2 text-church-accent" />
+                                                        <span className="truncate">{activity.location}</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </CardHeader>
+
+                                        <CardContent className="pt-0">
+                                            {activity.description && (
+                                                <p className="text-church-text/80 text-sm mb-4 line-clamp-3">
+                                                    {activity.description}
+                                                </p>
+                                            )}
+
+                                            <Link
+                                                href={`/umat/activities/${activity.id}`}
+                                                className="inline-flex items-center px-4 py-2 text-sm bg-church-primary text-white rounded-lg hover:bg-church-primary/90 transition-colors duration-300"
+                                            >
+                                                <Eye className="h-4 w-4 mr-2" />
+                                                Lihat Detail
+                                            </Link>
+                                        </CardContent>
+                                    </Card>
+                                );
+                            })}
+                        </div>
+                    ) : (
+                        <div className="text-center py-16">
+                            <div className="bg-church-primary/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Calendar className="h-12 w-12 text-church-primary/50" />
+                            </div>
+                            <h3 className="text-xl font-semibold text-church-dark mb-2">
+                                Belum Ada Kegiatan
+                            </h3>
+                            <p className="text-church-text/70 max-w-md mx-auto">
+                                Kegiatan atau acara gereja akan ditampilkan di sini ketika sudah dijadwalkan.
+                            </p>
+                        </div>
+                    )}
+
+                    {/* Pagination */}
+                    {activities.last_page > 1 && (
+                        <div className="flex justify-center items-center space-x-2">
+                            {activities.links.map((link, index) => {
+                                if (!link.url) {
+                                    return (
+                                        <span
+                                            key={index}
+                                            className="px-3 py-2 text-church-text/50 bg-white/50 rounded-md border border-church-primary/10"
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                        />
+                                    );
+                                }
+
+                                return (
+                                    <Link
+                                        key={index}
+                                        href={link.url}
+                                        className={`px-3 py-2 rounded-md border transition-colors duration-300 ${link.active
+                                                ? 'bg-church-primary text-white border-church-primary'
+                                                : 'bg-white/70 text-church-dark border-church-primary/20 hover:bg-church-primary/10'
+                                            }`}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            </div>
+        </AppLayout>
+    );
+}

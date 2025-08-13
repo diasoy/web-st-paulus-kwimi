@@ -23,7 +23,7 @@ export default function AdminDashboard({ stats }: AdminDashboardProps) {
         <AuthenticatedLayout>
             <Head title="Admin Dashboard" />
             
-            <div className="space-y-6">
+            <div className="space-y-6 mx-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
                     <p className="text-muted-foreground">

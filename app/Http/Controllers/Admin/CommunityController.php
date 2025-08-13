@@ -16,6 +16,7 @@ class CommunityController extends Controller
         $allowedSorts = ['name', 'users_count', 'created_at'];
         $sort = $request->query('sort', 'name');
         $direction = $request->query('direction', 'asc');
+        $search = $request->query('search');
 
         if (!in_array($sort, $allowedSorts, true)) {
             $sort = 'name';
@@ -24,7 +25,13 @@ class CommunityController extends Controller
             $direction = 'asc';
         }
 
-        $communities = Community::withCount('users')
+        $query = Community::withCount('users');
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        $communities = $query
             ->orderBy($sort, $direction)
             ->paginate(10)
             ->withQueryString();
@@ -41,8 +48,8 @@ class CommunityController extends Controller
     {
         return Inertia::render('admin/communities/create');
     }    /**
-     * Store a newly created resource in storage.
-     */
+         * Store a newly created resource in storage.
+         */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -54,8 +61,8 @@ class CommunityController extends Controller
         return redirect()->route('admin.communities.index')
             ->with('success', 'Komunitas basis berhasil dibuat.');
     }    /**
-     * Display the specified resource.
-     */
+         * Display the specified resource.
+         */
     public function show(Community $community)
     {
         $community->load('users');
@@ -74,8 +81,8 @@ class CommunityController extends Controller
             'community' => $community,
         ]);
     }    /**
-     * Update the specified resource in storage.
-     */
+         * Update the specified resource in storage.
+         */
     public function update(Request $request, Community $community)
     {
         $validated = $request->validate([

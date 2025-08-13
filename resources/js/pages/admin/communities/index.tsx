@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
+import { ArrowDown, ArrowUp, ChevronsUpDown, Edit, Eye, Plus, Search, Trash2, Users } from 'lucide-react';
 import { useState } from 'react';
-import { Edit, Eye, Plus, Trash2, Users, ChevronsUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 
 interface Community {
     id: number;
@@ -25,6 +26,7 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
     const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
     const [sortBy, setSortBy] = useState<string>(params.get('sort') || 'name');
     const [sortDir, setSortDir] = useState<'asc' | 'desc'>((params.get('direction') as 'asc' | 'desc') || 'asc');
+    const [search, setSearch] = useState<string>(params.get('search') || '');
 
     const toggleSort = (field: string) => {
         const nextDir: 'asc' | 'desc' = field === sortBy ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
@@ -32,17 +34,30 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
         setSortDir(nextDir);
         router.get(
             typeof window !== 'undefined' ? window.location.pathname : '/admin/communities',
-            { sort: field, direction: nextDir },
+            { sort: field, direction: nextDir, search },
             { preserveState: true, replace: true, preserveScroll: true },
         );
     };
 
     const SortIcon = ({ field }: { field: string }) => {
         if (field !== sortBy) return <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />;
-        return sortDir === 'asc' ? (
-            <ArrowUp className="ml-1 h-4 w-4" />
-        ) : (
-            <ArrowDown className="ml-1 h-4 w-4" />
+        return sortDir === 'asc' ? <ArrowUp className="ml-1 h-4 w-4" /> : <ArrowDown className="ml-1 h-4 w-4" />;
+    };
+
+    const handleSearch = () => {
+        router.get(
+            typeof window !== 'undefined' ? window.location.pathname : '/admin/communities',
+            { search, sort: sortBy, direction: sortDir },
+            { preserveState: true, replace: true, preserveScroll: true },
+        );
+    };
+
+    const handleReset = () => {
+        setSearch('');
+        router.get(
+            typeof window !== 'undefined' ? window.location.pathname : '/admin/communities',
+            { sort: sortBy, direction: sortDir },
+            { preserveState: true, replace: true, preserveScroll: true },
         );
     };
     const handleDelete = (id: number) => {
@@ -68,10 +83,33 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                         <h1 className="text-3xl font-bold tracking-tight">Kelola Komunitas Basis</h1>
                         <p className="text-muted-foreground">Kelola semua komunitas basis jemaat ST. Paulus Kwimi</p>
                     </div>
-                    <Link href="/admin/communities/create">
-                        <Button>
-                            <Plus className="mr-2 h-4 w-4" />
-                            Tambah Komunitas
+                </div>
+                {/* Search / Filters */}
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex min-w-0 flex-1 items-center gap-2">
+                        <div className="relative w-full max-w-sm">
+                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                            <Input
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                placeholder="Cari komunitas..."
+                                className="h-9 pl-8 text-sm"
+                            />
+                        </div>
+                        <Button size="sm" onClick={handleSearch}>
+                            Cari
+                        </Button>
+                        {search && (
+                            <Button size="sm" variant="outline" onClick={handleReset}>
+                                Reset
+                            </Button>
+                        )}
+                    </div>
+                    <Link href="/admin/communities/create" className="shrink-0 sm:ml-4">
+                        <Button className="px-2 sm:px-4">
+                            <Plus className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Tambah Komunitas</span>
                         </Button>
                     </Link>
                 </div>

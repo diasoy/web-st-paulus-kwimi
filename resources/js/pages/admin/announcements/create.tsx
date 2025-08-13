@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save, Upload, X } from 'lucide-react';
+import { Save, Upload, X } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
 
 export default function AnnouncementsCreate() {
@@ -43,7 +43,7 @@ export default function AnnouncementsCreate() {
         <AuthenticatedLayout>
             <Head title="Tambah Pengumuman" />
 
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 {/* Opsi 3: Header dengan breadcrumb style (uncomment untuk menggunakan) */}
                 <div className="space-y-2">
                     <nav className="flex items-center text-sm text-muted-foreground">
@@ -55,7 +55,6 @@ export default function AnnouncementsCreate() {
                     </nav>
                     <h1 className="text-2xl font-bold tracking-tight">Tambah Pengumuman</h1>
                 </div>
-               
 
                 <Card>
                     <CardContent>
@@ -113,25 +112,15 @@ export default function AnnouncementsCreate() {
                                             </Button>
                                             {data.image && (
                                                 <div className="flex items-center gap-2">
-                                                    <span className="text-sm text-muted-foreground">
-                                                        {data.image.name}
-                                                    </span>
-                                                    <Button
-                                                        type="button"
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={removeImage}
-                                                        className="h-6 w-6 p-0"
-                                                    >
+                                                    <span className="text-sm text-muted-foreground">{data.image.name}</span>
+                                                    <Button type="button" variant="ghost" size="sm" onClick={removeImage} className="h-6 w-6 p-0">
                                                         <X className="h-3 w-3" />
                                                     </Button>
                                                 </div>
                                             )}
                                         </div>
                                         {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
-                                        <p className="text-sm text-muted-foreground">
-                                            Unggah gambar untuk pengumuman (jpg, png, webp).
-                                        </p>
+                                        <p className="text-sm text-muted-foreground">Unggah gambar untuk pengumuman (jpg, png, webp).</p>
                                     </div>
                                 </div>
 

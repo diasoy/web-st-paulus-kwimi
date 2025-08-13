@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save, Upload, X } from 'lucide-react';
+import { Save, Upload, X } from 'lucide-react';
 import { ChangeEvent, FormEventHandler, useRef } from 'react';
 
 export default function ActivitiesCreate() {
@@ -54,17 +54,15 @@ export default function ActivitiesCreate() {
             <Head title="Tambah Agenda Kegiatan" />
 
             <div className="space-y-6 p-6">
-                <div className="flex items-center gap-4">
-                    <Link href="/admin/activities">
-                        <Button variant="outline" size="sm">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Tambah Agenda Kegiatan</h1>
-                        <p className="text-muted-foreground">Buat agenda kegiatan baru untuk jemaat ST. Paulus Kwimi</p>
-                    </div>
+                <div className="space-y-2">
+                    <nav className="flex items-center text-sm text-muted-foreground">
+                        <Link href={route('admin.activities.index')} className="hover:text-foreground">
+                            Agenda Kegiatan
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <span className="text-foreground">Tambah Baru</span>
+                    </nav>
+                    <h1 className="text-2xl font-bold tracking-tight">Tambah Agenda Kegiatan</h1>
                 </div>
 
                 <Card>
@@ -148,7 +146,13 @@ export default function ActivitiesCreate() {
                                                 className="hidden"
                                                 id="activity-image-upload"
                                             />
-                                            <Button type="button" variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} className={`${errors.image ? 'border-red-500' : ''}`}>
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className={`${errors.image ? 'border-red-500' : ''}`}
+                                            >
                                                 <Upload className="mr-2 h-4 w-4" />
                                                 Pilih Gambar
                                             </Button>

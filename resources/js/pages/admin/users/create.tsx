@@ -35,14 +35,15 @@ export default function CreateUser({ communities }: CreateUserProps) {
         <AuthenticatedLayout>
             <Head title="Tambah Pengguna" />
             <div className="space-y-6 p-6">
-                <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Tambah Pengguna</h1>
-                        <p className="text-muted-foreground">Buat akun pengguna baru</p>
-                    </div>
-                    <Button asChild>
-                        <Link href={route('admin.users')}>Kembali</Link>
-                    </Button>
+                <div className="space-y-2">
+                    <nav className="flex items-center text-sm text-muted-foreground">
+                        <Link href={route('admin.users')} className="hover:text-foreground">
+                            Pengguna
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <span className="text-foreground">Tambah Baru</span>
+                    </nav>
+                    <h1 className="text-2xl font-bold tracking-tight">Tambah Pengguna</h1>
                 </div>
 
                 <Card>

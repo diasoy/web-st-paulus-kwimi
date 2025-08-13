@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 interface Announcement {
@@ -39,17 +39,19 @@ export default function AnnouncementsEdit({ announcement }: { announcement: Anno
             <Head title={`Edit Pengumuman - ${announcement.title}`} />
 
             <div className="space-y-6 p-6">
-                <div className="flex items-center gap-4">
-                    <Link href={route('admin.announcements.show', announcement.id)}>
-                        <Button variant="outline" size="sm">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Edit Pengumuman</h1>
-                        <p className="text-muted-foreground">Perbarui pengumuman untuk jemaat</p>
-                    </div>
+                <div className="space-y-2">
+                    <nav className="flex items-center text-sm text-muted-foreground">
+                        <Link href={route('admin.announcements.index')} className="hover:text-foreground">
+                            Pengumuman
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <Link href={route('admin.announcements.show', announcement.id)} className="hover:text-foreground">
+                            Detail
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <span className="text-foreground">Edit</span>
+                    </nav>
+                    <h1 className="text-2xl font-bold tracking-tight">Edit Pengumuman</h1>
                 </div>
 
                 <Card>

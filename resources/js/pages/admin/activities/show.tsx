@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Clock, Edit, MapPin } from 'lucide-react';
+import { Calendar, Clock, Edit, MapPin } from 'lucide-react';
 
 interface Activity {
     id: number;
@@ -43,12 +43,16 @@ export default function ActivityShow({ activity }: ActivityShowProps) {
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
-                    <Link href={route('admin.activities.index')}>
-                        <Button variant="outline">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
+                    <div className="space-y-2">
+                        <nav className="flex items-center text-sm text-muted-foreground">
+                            <Link href={route('admin.activities.index')} className="hover:text-foreground">
+                                Agenda Kegiatan
+                            </Link>
+                            <span className="mx-2">/</span>
+                            <span className="text-foreground">Detail</span>
+                        </nav>
+                        <h1 className="text-2xl font-bold tracking-tight">Detail Kegiatan</h1>
+                    </div>
                     <Link href={route('admin.activities.edit', activity.id)}>
                         <Button>
                             <Edit className="mr-2 h-4 w-4" />

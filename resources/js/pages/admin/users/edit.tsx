@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { FormEvent } from 'react';
 
 interface UserEdit {
@@ -69,14 +69,19 @@ export default function UserEdit({ user, communities }: UserEditProps) {
             <Head title={`Edit Pengguna - ${user.name}`} />
 
             <div className="space-y-6 p-6">
-                {' '}
-                <div className="flex items-center justify-between">
-                    <Link href={route('admin.users.show', user.id)}>
-                        <Button variant="outline">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
+                <div className="space-y-2">
+                    <nav className="flex items-center text-sm text-muted-foreground">
+                        <Link href={route('admin.users')} className="hover:text-foreground">
+                            Pengguna
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <Link href={route('admin.users.show', user.id)} className="hover:text-foreground">
+                            Detail
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <span className="text-foreground">Edit</span>
+                    </nav>
+                    <h1 className="text-2xl font-bold tracking-tight">Edit Pengguna</h1>
                 </div>
                 <Card>
                     <CardHeader>

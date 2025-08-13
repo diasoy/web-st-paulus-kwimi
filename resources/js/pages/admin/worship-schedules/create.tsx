@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { FormEventHandler } from 'react';
 
 interface Community {
@@ -47,17 +47,15 @@ export default function WorshipSchedulesCreate({ communities }: WorshipSchedules
             <Head title="Tambah Jadwal Ibadah" />
 
             <div className="space-y-6 p-6">
-                <div className="flex items-center gap-4">
-                    <Link href={route('admin.worship-schedules.index')}>
-                        <Button variant="outline" size="sm">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Tambah Jadwal Ibadah</h1>
-                        <p className="text-muted-foreground">Buat jadwal ibadah baru untuk jemaat ST. Paulus Kwimi</p>
-                    </div>
+                <div className="space-y-2">
+                    <nav className="flex items-center text-sm text-muted-foreground">
+                        <Link href={route('admin.worship-schedules.index')} className="hover:text-foreground">
+                            Jadwal Ibadah
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <span className="text-foreground">Tambah Baru</span>
+                    </nav>
+                    <h1 className="text-2xl font-bold tracking-tight">Tambah Jadwal Ibadah</h1>
                 </div>
 
                 <Card>

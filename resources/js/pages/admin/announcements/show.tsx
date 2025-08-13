@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
+import { Edit, Trash2 } from 'lucide-react';
 
 interface Announcement {
     id: number;
@@ -31,12 +31,16 @@ export default function AnnouncementShow({ announcement }: { announcement: Annou
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
-                    <Link href={route('admin.announcements.index')}>
-                        <Button variant="outline">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
+                    <div className="space-y-2">
+                        <nav className="flex items-center text-sm text-muted-foreground">
+                            <Link href={route('admin.announcements.index')} className="hover:text-foreground">
+                                Pengumuman
+                            </Link>
+                            <span className="mx-2">/</span>
+                            <span className="text-foreground">Detail</span>
+                        </nav>
+                        <h1 className="text-2xl font-bold tracking-tight">Detail Pengumuman</h1>
+                    </div>
                     <div className="flex gap-2">
                         <Link href={route('admin.announcements.edit', announcement.id)}>
                             <Button variant="outline">

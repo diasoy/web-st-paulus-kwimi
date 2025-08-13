@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { Save } from 'lucide-react';
 import { FormEvent, useRef } from 'react';
 
 interface Activity {
@@ -62,13 +62,19 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
             <Head title={`Edit Kegiatan - ${activity.name}`} />
 
             <div className="space-y-6 p-6">
-                <div className="flex items-center justify-between">
-                    <Link href={route('admin.activities.show', activity.id)}>
-                        <Button variant="outline">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
+                <div className="space-y-2">
+                    <nav className="flex items-center text-sm text-muted-foreground">
+                        <Link href={route('admin.activities.index')} className="hover:text-foreground">
+                            Agenda Kegiatan
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <Link href={route('admin.activities.show', activity.id)} className="hover:text-foreground">
+                            Detail
+                        </Link>
+                        <span className="mx-2">/</span>
+                        <span className="text-foreground">Edit</span>
+                    </nav>
+                    <h1 className="text-2xl font-bold tracking-tight">Edit Kegiatan</h1>
                 </div>
 
                 <Card>
@@ -139,7 +145,11 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
                                     <>
                                         <Label>Gambar Saat Ini</Label>
                                         <div className="mt-2">
-                                            <img src={`/storage/${activity.image_url}`} alt={activity.name} className="h-40 rounded-md border object-cover" />
+                                            <img
+                                                src={`/storage/${activity.image_url}`}
+                                                alt={activity.name}
+                                                className="h-40 rounded-md border object-cover"
+                                            />
                                         </div>
                                     </>
                                 )}
@@ -151,7 +161,9 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
                                     id="image"
                                     type="file"
                                     accept="image/*"
-                                    onChange={(e) => setData('image', e.target.files && e.target.files[0] ? (e.target.files[0] as unknown as File) : null)}
+                                    onChange={(e) =>
+                                        setData('image', e.target.files && e.target.files[0] ? (e.target.files[0] as unknown as File) : null)
+                                    }
                                     className={errors.image ? 'border-red-500' : ''}
                                 />
                                 {errors.image && <p className="mt-1 text-sm text-red-500">{errors.image}</p>}

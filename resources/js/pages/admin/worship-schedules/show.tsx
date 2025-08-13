@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Clock, Edit, Trash2, User, Users } from 'lucide-react';
+import { Calendar, Clock, Edit, Trash2, User, Users } from 'lucide-react';
 
 interface Community {
     id: number;
@@ -52,12 +52,16 @@ export default function WorshipScheduleShow({ worshipSchedule }: WorshipSchedule
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
-                    <Link href={route('admin.worship-schedules.index')}>
-                        <Button variant="outline">
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Kembali
-                        </Button>
-                    </Link>
+                    <div className="space-y-2">
+                        <nav className="flex items-center text-sm text-muted-foreground">
+                            <Link href={route('admin.worship-schedules.index')} className="hover:text-foreground">
+                                Jadwal Ibadah
+                            </Link>
+                            <span className="mx-2">/</span>
+                            <span className="text-foreground">Detail</span>
+                        </nav>
+                        <h1 className="text-2xl font-bold tracking-tight">Detail Jadwal Ibadah</h1>
+                    </div>
                     <div className="flex gap-2">
                         <Link href={route('admin.worship-schedules.edit', worshipSchedule.id)}>
                             <Button variant="outline">

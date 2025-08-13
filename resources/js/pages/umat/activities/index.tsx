@@ -38,30 +38,44 @@ interface Props {
 }
 
 export default function ActivitiesIndex({ activities }: Props) {
+    const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+
+    const handleImageError = (activityId: number) => {
+        setImageErrors(prev => ({
+            ...prev,
+            [activityId]: true
+        }));
+    };
+
     const formatDate = (dateString: string) => {
         try {
             const date = new Date(dateString);
             return {
                 full: format(date, 'EEEE, dd MMMM yyyy', { locale: id }),
                 short: format(date, 'dd MMM yyyy', { locale: id }),
-                dayName: format(date, 'EEEE', { locale: id })
+                dayName: format(date, 'EEEE', { locale: id }),
+                relative: formatDistanceToNow(date, {
+                    addSuffix: true,
+                    locale: id
+                })
             };
         } catch {
             return {
                 full: 'Tanggal tidak valid',
                 short: 'Invalid',
-                dayName: 'Invalid'
+                dayName: 'Invalid',
+                relative: 'Invalid'
             };
         }
     };
 
     const formatTime = (timeString: string) => {
         try {
-            if (!timeString) return '-';
+            if (!timeString) return 'Waktu belum ditentukan';
             const time = new Date(`2000-01-01 ${timeString}`);
-            return format(time, 'HH:mm', { locale: id });
+            return format(time, 'HH:mm', { locale: id }) + ' WITA';
         } catch {
-            return '-';
+            return 'Waktu tidak valid';
         }
     };
 
@@ -69,20 +83,20 @@ export default function ActivitiesIndex({ activities }: Props) {
         try {
             const date = new Date(dateString);
             if (isToday(date)) {
-                return { text: 'Hari Ini', variant: 'default' as const, color: 'bg-red-500 text-white' };
+                return { text: 'Hari Ini', color: 'bg-red-500 text-white' };
             }
             if (isTomorrow(date)) {
-                return { text: 'Besok', variant: 'secondary' as const, color: 'bg-orange-500 text-white' };
+                return { text: 'Besok', color: 'bg-orange-500 text-white' };
             }
             if (isThisWeek(date)) {
-                return { text: 'Minggu Ini', variant: 'outline' as const, color: 'bg-blue-500 text-white' };
+                return { text: 'Minggu Ini', color: 'bg-blue-500 text-white' };
             }
             if (isPast(date)) {
-                return { text: 'Sudah Lewat', variant: 'outline' as const, color: 'bg-gray-400 text-white' };
+                return { text: 'Sudah Lewat', color: 'bg-gray-400 text-white' };
             }
-            return { text: 'Mendatang', variant: 'outline' as const, color: 'bg-church-primary text-white' };
+            return { text: 'Mendatang', color: 'bg-church-primary text-white' };
         } catch {
-            return { text: 'Invalid', variant: 'outline' as const, color: 'bg-gray-400 text-white' };
+            return { text: 'Invalid', color: 'bg-gray-400 text-white' };
         }
     };
 
@@ -108,7 +122,7 @@ export default function ActivitiesIndex({ activities }: Props) {
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <Link href="/umat/activities/archive/all">
                                 <Button variant="outline" className="border-church-primary/20 text-church-primary hover:bg-church-primary/10">
                                     <Archive className="h-4 w-4 mr-2" />
@@ -147,69 +161,74 @@ export default function ActivitiesIndex({ activities }: Props) {
                                 const dateInfo = formatDate(activity.date);
                                 const timeInfo = formatTime(activity.time_start);
                                 const badgeInfo = getDateBadgeInfo(activity.date);
-                                
+
                                 return (
                                     <Card key={activity.id} className="group hover:shadow-lg transition-all duration-300 border-church-primary/20 bg-white/80 backdrop-blur-sm overflow-hidden">
-                                        {/* Date Header */}
-                                        <div className="bg-gradient-to-r from-church-primary to-church-secondary p-4 text-white">
-                                            <div className="flex justify-between items-center mb-2">
-                                                <div className={`px-2 py-1 rounded-full text-xs font-medium ${badgeInfo.color}`}>
+                                        <div className="relative">
+                                            {activity.image_url && !imageErrors[activity.id] ? (
+                                                <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                                                    <img
+                                                        src={activity.image_url}
+                                                        alt={activity.name}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        onError={() => handleImageError(activity.id)}
+                                                        loading="lazy"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                                                </div>
+                                            ) : (
+                                                <div className="aspect-video bg-gradient-to-br from-church-primary/10 to-church-secondary/10 flex items-center justify-center">
+                                                    <ImageIcon className="h-12 w-12 text-church-primary/50" />
+                                                </div>
+                                            )}
+
+                                            {/* Date Badge */}
+                                            <div className="absolute top-3 right-3">
+                                                <Badge className={`${badgeInfo.color} border-0 shadow-lg`}>
                                                     {badgeInfo.text}
-                                                </div>
-                                                <div className="text-xs opacity-90">
-                                                    {dateInfo.dayName}
-                                                </div>
-                                            </div>
-                                            <div className="flex items-center justify-between">
-                                                <div className="text-2xl font-bold">
-                                                    {format(new Date(activity.date), 'dd', { locale: id })}
-                                                </div>
-                                                <div className="text-right text-sm">
-                                                    <div className="font-medium">
-                                                        {format(new Date(activity.date), 'MMM yyyy', { locale: id })}
-                                                    </div>
-                                                </div>
+                                                </Badge>
                                             </div>
                                         </div>
 
-                                        <CardHeader className="pb-2">
-                                            <CardTitle className="text-lg text-church-dark group-hover:text-church-primary transition-colors duration-300 line-clamp-2">
+                                        <CardHeader className="pb-3">
+                                            <CardTitle className="text-xl text-church-dark group-hover:text-church-primary transition-colors duration-300 line-clamp-2">
                                                 {activity.name}
                                             </CardTitle>
-                                        </CardHeader>
 
-                                        <CardContent className="pt-0">
-                                            <p className="text-church-text/80 text-sm mb-4 line-clamp-3">
-                                                {activity.description || 'Tidak ada deskripsi tersedia.'}
-                                            </p>
+                                            <div className="space-y-2 text-sm text-church-text/80">
+                                                <div className="flex items-center">
+                                                    <Calendar className="h-4 w-4 mr-2 text-church-primary" />
+                                                    <span title={dateInfo.full}>{dateInfo.short}</span>
+                                                </div>
 
-                                            <div className="space-y-2 mb-4">
-                                                <div className="flex items-center text-sm text-church-text/70">
+                                                <div className="flex items-center">
                                                     <Clock className="h-4 w-4 mr-2 text-church-secondary" />
                                                     <span>{timeInfo}</span>
                                                 </div>
+
                                                 {activity.location && (
-                                                    <div className="flex items-center text-sm text-church-text/70">
+                                                    <div className="flex items-center">
                                                         <MapPin className="h-4 w-4 mr-2 text-church-accent" />
-                                                        <span className="line-clamp-1">{activity.location}</span>
+                                                        <span className="truncate">{activity.location}</span>
                                                     </div>
                                                 )}
                                             </div>
+                                        </CardHeader>
 
-                                            <div className="flex items-center justify-between">
-                                                <div className="text-xs text-church-text/60">
-                                                    {dateInfo.short}
-                                                </div>
-                                                
-                                                <Link
-                                                    href={`/umat/activities/${activity.id}`}
-                                                    className="inline-flex items-center px-3 py-1 text-xs bg-church-primary text-white rounded-full hover:bg-church-primary/90 transition-colors duration-300"
-                                                >
-                                                    <Eye className="h-3 w-3 mr-1" />
-                                                    Lihat Detail
-                                                    <ChevronRight className="h-3 w-3 ml-1" />
-                                                </Link>
-                                            </div>
+                                        <CardContent className="pt-0">
+                                            {activity.description && (
+                                                <p className="text-church-text/80 text-sm mb-4 line-clamp-3">
+                                                    {activity.description}
+                                                </p>
+                                            )}
+
+                                            <Link
+                                                href={`/umat/activities/${activity.id}`}
+                                                className="inline-flex items-center px-4 py-2 text-sm bg-church-primary text-white rounded-lg hover:bg-church-primary/90 transition-colors duration-300"
+                                            >
+                                                <Eye className="h-4 w-4 mr-2" />
+                                                Lihat Detail
+                                            </Link>
                                         </CardContent>
                                     </Card>
                                 );
@@ -224,7 +243,7 @@ export default function ActivitiesIndex({ activities }: Props) {
                                 Belum Ada Kegiatan
                             </h3>
                             <p className="text-church-text/70 max-w-md mx-auto">
-                                Kegiatan gereja akan ditampilkan di sini ketika sudah tersedia.
+                                Kegiatan atau acara gereja akan ditampilkan di sini ketika sudah dijadwalkan.
                             </p>
                         </div>
                     )}
@@ -247,11 +266,10 @@ export default function ActivitiesIndex({ activities }: Props) {
                                     <Link
                                         key={index}
                                         href={link.url}
-                                        className={`px-3 py-2 rounded-md border transition-colors duration-300 ${
-                                            link.active
+                                        className={`px-3 py-2 rounded-md border transition-colors duration-300 ${link.active
                                                 ? 'bg-church-primary text-white border-church-primary'
                                                 : 'bg-white/70 text-church-dark border-church-primary/20 hover:bg-church-primary/10'
-                                        }`}
+                                            }`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />
                                 );

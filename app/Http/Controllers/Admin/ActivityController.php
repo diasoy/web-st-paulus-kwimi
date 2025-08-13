@@ -16,13 +16,29 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $sort = $request->query('sort', 'date');
+        $direction = $request->query('direction', 'desc');
+
+        $sortable = ['name', 'date', 'location', 'created_at'];
+        if (!in_array($sort, $sortable)) {
+            $sort = 'date';
+        }
+        $direction = strtolower($direction) === 'asc' ? 'asc' : 'desc';
+
         $query = Activity::query();
         if ($search) {
             $query->where('name', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%")
                 ->orWhere('location', 'like', "%{$search}%");
         }
-        $activities = $query->latest()->paginate(10)->withQueryString();
+        if ($sort === 'date') {
+            $query->orderBy('date', $direction)
+                ->orderBy('time_start', $direction);
+        } else {
+            $query->orderBy($sort, $direction);
+        }
+
+        $activities = $query->paginate(10)->withQueryString();
 
         return Inertia::render('admin/activities/index', [
             'activities' => $activities

@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, Clock, Edit, Eye, Image as ImageIcon, MapPin, Plus, Search, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, Calendar, ChevronsUpDown, Clock, Edit, Eye, Image as ImageIcon, MapPin, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface Activity {
@@ -29,6 +29,8 @@ interface ActivitiesIndexProps {
 export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
     const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
     const [search, setSearch] = useState<string>(params.get('search') || '');
+    const [sortBy, setSortBy] = useState<string>(params.get('sort') || 'date');
+    const [sortDir, setSortDir] = useState<'asc' | 'desc'>((params.get('direction') as 'asc' | 'desc') || 'desc');
     const handleDelete = (id: number) => {
         if (confirm('Apakah Anda yakin ingin menghapus agenda kegiatan ini?')) {
             router.delete(route('admin.activities.destroy', id));
@@ -71,7 +73,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                     e.key === 'Enter' &&
                                     router.get(
                                         route('admin.activities.index'),
-                                        { search },
+                                        { search, sort: sortBy, direction: sortDir },
                                         { preserveState: true, replace: true, preserveScroll: true },
                                     )
                                 }
@@ -82,7 +84,11 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                         <Button
                             size="sm"
                             onClick={() =>
-                                router.get(route('admin.activities.index'), { search }, { preserveState: true, replace: true, preserveScroll: true })
+                                router.get(
+                                    route('admin.activities.index'),
+                                    { search, sort: sortBy, direction: sortDir },
+                                    { preserveState: true, replace: true, preserveScroll: true },
+                                )
                             }
                         >
                             Cari
@@ -92,7 +98,15 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                 size="sm"
                                 variant="outline"
                                 onClick={() =>
-                                    router.get(route('admin.activities.index'), {}, { preserveState: true, replace: true, preserveScroll: true })
+                                    router.get(
+                                        route('admin.activities.index'),
+                                        { sort: sortBy, direction: sortDir },
+                                        {
+                                            preserveState: true,
+                                            replace: true,
+                                            preserveScroll: true,
+                                        },
+                                    )
                                 }
                             >
                                 Reset
@@ -120,37 +134,126 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                 ) : (
                     <div className="rounded-md border">
                         <Table>
-                            {' '}
                             <TableHeader>
                                 <TableRow className="bg-muted/60">
-                                    <TableHead>Judul Kegiatan</TableHead>
-                                    <TableHead>Tanggal</TableHead>
+                                    <TableHead>Gambar</TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const nextDir: 'asc' | 'desc' = sortBy === 'name' ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+                                                setSortBy('name');
+                                                setSortDir(nextDir);
+                                                router.get(
+                                                    route('admin.activities.index'),
+                                                    { search, sort: 'name', direction: nextDir },
+                                                    {
+                                                        preserveState: true,
+                                                        replace: true,
+                                                        preserveScroll: true,
+                                                    },
+                                                );
+                                            }}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Judul Kegiatan
+                                            {sortBy !== 'name' ? (
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                            ) : sortDir === 'asc' ? (
+                                                <ArrowUp className="ml-1 h-4 w-4" />
+                                            ) : (
+                                                <ArrowDown className="ml-1 h-4 w-4" />
+                                            )}
+                                        </button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const nextDir: 'asc' | 'desc' = sortBy === 'date' ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+                                                setSortBy('date');
+                                                setSortDir(nextDir);
+                                                router.get(
+                                                    route('admin.activities.index'),
+                                                    { search, sort: 'date', direction: nextDir },
+                                                    {
+                                                        preserveState: true,
+                                                        replace: true,
+                                                        preserveScroll: true,
+                                                    },
+                                                );
+                                            }}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Tanggal
+                                            {sortBy !== 'date' ? (
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                            ) : sortDir === 'asc' ? (
+                                                <ArrowUp className="ml-1 h-4 w-4" />
+                                            ) : (
+                                                <ArrowDown className="ml-1 h-4 w-4" />
+                                            )}
+                                        </button>
+                                    </TableHead>
                                     <TableHead>Waktu</TableHead>
-                                    <TableHead>Tempat</TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const nextDir: 'asc' | 'desc' = sortBy === 'location' ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+                                                setSortBy('location');
+                                                setSortDir(nextDir);
+                                                router.get(
+                                                    route('admin.activities.index'),
+                                                    { search, sort: 'location', direction: nextDir },
+                                                    {
+                                                        preserveState: true,
+                                                        replace: true,
+                                                        preserveScroll: true,
+                                                    },
+                                                );
+                                            }}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Tempat
+                                            {sortBy !== 'location' ? (
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                            ) : sortDir === 'asc' ? (
+                                                <ArrowUp className="ml-1 h-4 w-4" />
+                                            ) : (
+                                                <ArrowDown className="ml-1 h-4 w-4" />
+                                            )}
+                                        </button>
+                                    </TableHead>
                                     <TableHead className="text-right">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {activities.data.map((activity) => (
                                     <TableRow key={activity.id}>
-                                        <TableCell className="font-medium">
-                                            <div className="flex items-center gap-3">
-                                                {activity.image_url ? (
-                                                    <img
-                                                        src={`/storage/${activity.image_url}`}
-                                                        alt={activity.name}
-                                                        className="h-10 w-14 rounded object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="flex h-10 w-14 items-center justify-center rounded bg-muted text-muted-foreground">
-                                                        <ImageIcon className="h-4 w-4" />
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <div className="font-semibold">{activity.name}</div>
-                                                    <div className="max-w-xs truncate text-sm text-muted-foreground">{activity.description}</div>
-                                                </div>
+                                        <TableCell>
+                                            {activity.image_url ? (
+                                                <img
+                                                    src={`/storage/${activity.image_url}`}
+                                                    alt={activity.name}
+                                                    className="h-10 w-14 rounded object-cover"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                                        const fallback = (e.currentTarget.nextSibling as HTMLElement) || null;
+                                                        if (fallback) fallback.style.display = 'flex';
+                                                    }}
+                                                />
+                                            ) : null}
+                                            <div
+                                                className="flex h-10 w-14 items-center justify-center rounded bg-muted text-muted-foreground"
+                                                style={{ display: activity.image_url ? 'none' : 'flex' }}
+                                            >
+                                                <ImageIcon className="h-4 w-4" />
                                             </div>
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            <div className="font-semibold">{activity.name}</div>
+                                            <div className="max-w-xs truncate text-sm text-muted-foreground">{activity.description}</div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">

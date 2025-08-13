@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
-import { Calendar, Clock, Edit, Eye, Plus, Search, Trash2, User } from 'lucide-react';
+import { ArrowDown, ArrowUp, Calendar, ChevronsUpDown, Clock, Edit, Eye, Plus, Search, Trash2, User } from 'lucide-react';
 import { useState } from 'react';
 
 interface Community {
@@ -34,6 +34,8 @@ interface WorshipSchedulesIndexProps {
 export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSchedulesIndexProps) {
     const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
     const [search, setSearch] = useState<string>(params.get('search') || '');
+    const [sortBy, setSortBy] = useState<string>(params.get('sort') || 'date');
+    const [sortDir, setSortDir] = useState<'asc' | 'desc'>((params.get('direction') as 'asc' | 'desc') || 'desc');
     const handleDelete = (id: number) => {
         if (confirm('Apakah Anda yakin ingin menghapus jadwal ibadah ini?')) {
             router.delete(route('admin.worship-schedules.destroy', id));
@@ -76,7 +78,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                     e.key === 'Enter' &&
                                     router.get(
                                         route('admin.worship-schedules.index'),
-                                        { search },
+                                        { search, sort: sortBy, direction: sortDir },
                                         { preserveState: true, replace: true, preserveScroll: true },
                                     )
                                 }
@@ -89,7 +91,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                             onClick={() =>
                                 router.get(
                                     route('admin.worship-schedules.index'),
-                                    { search },
+                                    { search, sort: sortBy, direction: sortDir },
                                     { preserveState: true, replace: true, preserveScroll: true },
                                 )
                             }
@@ -103,8 +105,12 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                 onClick={() =>
                                     router.get(
                                         route('admin.worship-schedules.index'),
-                                        {},
-                                        { preserveState: true, replace: true, preserveScroll: true },
+                                        { sort: sortBy, direction: sortDir },
+                                        {
+                                            preserveState: true,
+                                            replace: true,
+                                            preserveScroll: true,
+                                        },
                                     )
                                 }
                             >
@@ -135,10 +141,123 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                         <Table>
                             <TableHeader>
                                 <TableRow className="bg-muted/60">
-                                    <TableHead>Nama Ibadah</TableHead>
-                                    <TableHead>Tanggal</TableHead>
-                                    <TableHead>Waktu</TableHead>
-                                    <TableHead>Penanggung Jawab</TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const nextDir: 'asc' | 'desc' = sortBy === 'name' ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+                                                setSortBy('name');
+                                                setSortDir(nextDir);
+                                                router.get(
+                                                    route('admin.worship-schedules.index'),
+                                                    { search, sort: 'name', direction: nextDir },
+                                                    {
+                                                        preserveState: true,
+                                                        replace: true,
+                                                        preserveScroll: true,
+                                                    },
+                                                );
+                                            }}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Nama Ibadah
+                                            {sortBy !== 'name' ? (
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                            ) : sortDir === 'asc' ? (
+                                                <ArrowUp className="ml-1 h-4 w-4" />
+                                            ) : (
+                                                <ArrowDown className="ml-1 h-4 w-4" />
+                                            )}
+                                        </button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const nextDir: 'asc' | 'desc' = sortBy === 'date' ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+                                                setSortBy('date');
+                                                setSortDir(nextDir);
+                                                router.get(
+                                                    route('admin.worship-schedules.index'),
+                                                    { search, sort: 'date', direction: nextDir },
+                                                    {
+                                                        preserveState: true,
+                                                        replace: true,
+                                                        preserveScroll: true,
+                                                    },
+                                                );
+                                            }}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Tanggal
+                                            {sortBy !== 'date' ? (
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                            ) : sortDir === 'asc' ? (
+                                                <ArrowUp className="ml-1 h-4 w-4" />
+                                            ) : (
+                                                <ArrowDown className="ml-1 h-4 w-4" />
+                                            )}
+                                        </button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const nextDir: 'asc' | 'desc' =
+                                                    sortBy === 'time_start' ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+                                                setSortBy('time_start');
+                                                setSortDir(nextDir);
+                                                router.get(
+                                                    route('admin.worship-schedules.index'),
+                                                    { search, sort: 'time_start', direction: nextDir },
+                                                    {
+                                                        preserveState: true,
+                                                        replace: true,
+                                                        preserveScroll: true,
+                                                    },
+                                                );
+                                            }}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Waktu
+                                            {sortBy !== 'time_start' ? (
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                            ) : sortDir === 'asc' ? (
+                                                <ArrowUp className="ml-1 h-4 w-4" />
+                                            ) : (
+                                                <ArrowDown className="ml-1 h-4 w-4" />
+                                            )}
+                                        </button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const nextDir: 'asc' | 'desc' = sortBy === 'pic' ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+                                                setSortBy('pic');
+                                                setSortDir(nextDir);
+                                                router.get(
+                                                    route('admin.worship-schedules.index'),
+                                                    { search, sort: 'pic', direction: nextDir },
+                                                    {
+                                                        preserveState: true,
+                                                        replace: true,
+                                                        preserveScroll: true,
+                                                    },
+                                                );
+                                            }}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Penanggung Jawab
+                                            {sortBy !== 'pic' ? (
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                            ) : sortDir === 'asc' ? (
+                                                <ArrowUp className="ml-1 h-4 w-4" />
+                                            ) : (
+                                                <ArrowDown className="ml-1 h-4 w-4" />
+                                            )}
+                                        </button>
+                                    </TableHead>
                                     <TableHead>Komunitas</TableHead>
                                     <TableHead className="text-right">Aksi</TableHead>
                                 </TableRow>

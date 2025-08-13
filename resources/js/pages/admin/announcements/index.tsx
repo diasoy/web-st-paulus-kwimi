@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Eye, Plus, Search, Trash2 } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronsUpDown, Edit, Eye, Image as ImageIcon, Plus, Search, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface Announcement {
@@ -30,6 +30,24 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
     const [deletingId, setDeletingId] = useState<number | null>(null);
     const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
     const [search, setSearch] = useState<string>(params.get('search') || '');
+    const [sortBy, setSortBy] = useState<string>(params.get('sort') || 'created_at');
+    const [sortDir, setSortDir] = useState<'asc' | 'desc'>((params.get('direction') as 'asc' | 'desc') || 'desc');
+
+    const toggleSort = (field: string) => {
+        const nextDir: 'asc' | 'desc' = field === sortBy ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+        setSortBy(field);
+        setSortDir(nextDir);
+        router.get(
+            route('admin.announcements.index'),
+            { search, sort: field, direction: nextDir },
+            { preserveState: true, replace: true, preserveScroll: true },
+        );
+    };
+
+    const SortIcon = ({ field }: { field: string }) => {
+        if (field !== sortBy) return <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />;
+        return sortDir === 'asc' ? <ArrowUp className="ml-1 h-4 w-4" /> : <ArrowDown className="ml-1 h-4 w-4" />;
+    };
 
     const handleDelete = (id: number, title: string) => {
         if (!confirm(`Hapus pengumuman:\n\n"${title}"?`)) return;
@@ -73,7 +91,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                     e.key === 'Enter' &&
                                     router.get(
                                         route('admin.announcements.index'),
-                                        { search },
+                                        { search, sort: sortBy, direction: sortDir },
                                         { preserveState: true, replace: true, preserveScroll: true },
                                     )
                                 }
@@ -86,7 +104,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                             onClick={() =>
                                 router.get(
                                     route('admin.announcements.index'),
-                                    { search },
+                                    { search, sort: sortBy, direction: sortDir },
                                     { preserveState: true, replace: true, preserveScroll: true },
                                 )
                             }
@@ -98,7 +116,11 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                 size="sm"
                                 variant="outline"
                                 onClick={() =>
-                                    router.get(route('admin.announcements.index'), {}, { preserveState: true, replace: true, preserveScroll: true })
+                                    router.get(
+                                        route('admin.announcements.index'),
+                                        { sort: sortBy, direction: sortDir },
+                                        { preserveState: true, replace: true, preserveScroll: true },
+                                    )
                                 }
                             >
                                 Reset
@@ -135,30 +157,65 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                         <Table>
                             <TableHeader>
                                 <TableRow className="bg-muted/60">
-                                    <TableHead>Judul</TableHead>
+                                    <TableHead>Gambar</TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSort('title')}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Judul
+                                            <SortIcon field="title" />
+                                        </button>
+                                    </TableHead>
                                     <TableHead>Deskripsi</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Tanggal Dibuat</TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSort('is_publish')}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Status
+                                            <SortIcon field="is_publish" />
+                                        </button>
+                                    </TableHead>
+                                    <TableHead>
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleSort('created_at')}
+                                            className="flex items-center font-semibold hover:text-foreground/90"
+                                        >
+                                            Tanggal Dibuat
+                                            <SortIcon field="created_at" />
+                                        </button>
+                                    </TableHead>
                                     <TableHead className="text-right">Aksi</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {announcements.data.map((announcement) => (
                                     <TableRow key={announcement.id}>
-                                        <TableCell className="font-medium">
-                                            <div className="flex items-center gap-3">
-                                                {announcement.image_url ? (
-                                                    <img
-                                                        src={`/storage/${announcement.image_url}`}
-                                                        alt={announcement.title}
-                                                        className="h-10 w-14 rounded object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="h-10 w-14 rounded bg-muted" />
-                                                )}
-                                                <span className="font-semibold">{announcement.title}</span>
+                                        <TableCell>
+                                            {announcement.image_url ? (
+                                                <img
+                                                    src={`/storage/${announcement.image_url}`}
+                                                    alt={announcement.title}
+                                                    className="h-10 w-14 rounded object-cover"
+                                                    onError={(e) => {
+                                                        (e.currentTarget as HTMLImageElement).style.display = 'none';
+                                                        const fallback = (e.currentTarget.nextSibling as HTMLElement) || null;
+                                                        if (fallback) fallback.style.display = 'flex';
+                                                    }}
+                                                />
+                                            ) : null}
+                                            <div
+                                                className="flex h-10 w-14 items-center justify-center rounded bg-muted text-muted-foreground"
+                                                style={{ display: announcement.image_url ? 'none' : 'flex' }}
+                                            >
+                                                <ImageIcon className="h-4 w-4" />
                                             </div>
                                         </TableCell>
+                                        <TableCell className="font-medium">{announcement.title}</TableCell>
                                         <TableCell className="max-w-md">
                                             <div className="truncate">{announcement.description}</div>
                                         </TableCell>

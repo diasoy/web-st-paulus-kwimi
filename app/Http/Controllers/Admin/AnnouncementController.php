@@ -16,12 +16,22 @@ class AnnouncementController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
+        $sort = $request->query('sort', 'created_at');
+        $direction = $request->query('direction', 'desc');
+
+        // Whitelist sortable columns
+        $sortable = ['title', 'created_at', 'is_publish'];
+        if (!in_array($sort, $sortable)) {
+            $sort = 'created_at';
+        }
+        $direction = strtolower($direction) === 'asc' ? 'asc' : 'desc';
+
         $query = Announcement::query();
         if ($search) {
             $query->where('title', 'like', "%{$search}%")
                 ->orWhere('description', 'like', "%{$search}%");
         }
-        $announcements = $query->latest()->paginate(10)->withQueryString();
+        $announcements = $query->orderBy($sort, $direction)->paginate(10)->withQueryString();
 
         return Inertia::render('admin/announcements/index', [
             'announcements' => $announcements

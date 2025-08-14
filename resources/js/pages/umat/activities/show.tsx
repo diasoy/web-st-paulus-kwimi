@@ -3,7 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { ArrowLeft, Calendar, Clock, MapPin, Image as ImageIcon, Share2, BookmarkPlus } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, MapPin, Image as ImageIcon } from 'lucide-react';
 import { format, formatDistanceToNow, isToday, isTomorrow, isPast } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -117,7 +117,7 @@ export default function ActivityShow({ activity }: Props) {
                         <Link href="/umat/activities">
                             <Button 
                                 variant="outline" 
-                                className="mb-6 border-church-primary/20 text-church-dark hover:bg-church-primary/10"
+                                className="mb-6 bg-secondary text-white hover:bg-secondary/90 hover:cursor-pointer"
                             >
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Kembali ke Agenda Kegiatan
@@ -126,52 +126,30 @@ export default function ActivityShow({ activity }: Props) {
                     </div>
 
                     {/* Main Content */}
-                    <Card className="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm border-church-primary/20 shadow-lg overflow-hidden">
+                    <Card className="max-w-5xl mx-auto bg-white/80 backdrop-blur-sm border-secondary/20 shadow-lg overflow-hidden border">
                         {/* Hero Section with Date */}
-                        <div className="relative bg-gradient-to-r from-church-primary via-church-secondary to-church-accent text-white">
+                        <div className="relative ">
                             {activity.image_url && !imageError ? (
-                                <div className="relative h-64 md:h-80 overflow-hidden">
+                                <div className=" aspect-video bg-gray-100 relative overflow-hidden">
                                     <img
                                         src={activity.image_url}
                                         alt={activity.name}
-                                        className="w-full h-full object-cover"
+                                        className="absolute inset-0 w-full h-full object-cover"
                                         onError={handleImageError}
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                                 </div>
                             ) : (
-                                <div className="h-64 md:h-80 flex items-center justify-center">
-                                    <ImageIcon className="h-24 w-24 text-white/50" />
+                                <div className="aspect-video bg-gradient-to-br from-secondary/10 to-church-secondary/10 flex items-center justify-center">
+                                    <ImageIcon className="h-24 w-24 text-secondary/50" />
                                 </div>
                             )}
-                            
-                            {/* Date Badge Overlay */}
-                            <div className="absolute top-6 right-6">
-                                <div className="bg-white/20 backdrop-blur-sm rounded-lg p-4 text-center">
-                                    <div className="text-3xl font-bold mb-1">
-                                        {dateInfo.dayOnly}
-                                    </div>
-                                    <div className="text-sm font-medium">
-                                        {dateInfo.monthYear}
-                                    </div>
-                                </div>
-                            </div>
 
                             {/* Status Badge */}
-                            <div className="absolute top-6 left-6">
-                                <div className={`px-3 py-1 rounded-full text-sm font-medium ${statusInfo.color}`}>
+                            <div className="absolute top-3 left-3">
+                                <div className={`px-3 py-1 rounded-full bg-secondary text-sm font-medium ${statusInfo.color} border-0 shadow-lg`}>
                                     {statusInfo.text}
                                 </div>
-                            </div>
-
-                            {/* Title Overlay */}
-                            <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                                <h1 className="text-3xl md:text-4xl font-bold mb-2 text-shadow">
-                                    {activity.name}
-                                </h1>
-                                <p className="text-white/90 text-sm">
-                                    {statusInfo.description}
-                                </p>
                             </div>
                         </div>
 
@@ -232,24 +210,6 @@ export default function ActivityShow({ activity }: Props) {
                                         </p>
                                     )}
                                 </div>
-                            </div>
-
-                            {/* Action Buttons */}
-                            <div className="flex flex-wrap gap-4 pt-6 border-t border-church-primary/10">
-                                <Button 
-                                    variant="outline"
-                                    className="border-church-primary/20 text-church-primary hover:bg-church-primary/10"
-                                >
-                                    <BookmarkPlus className="h-4 w-4 mr-2" />
-                                    Simpan Kegiatan
-                                </Button>
-                                <Button 
-                                    variant="outline"
-                                    className="border-church-secondary/20 text-church-secondary hover:bg-church-secondary/10"
-                                >
-                                    <Share2 className="h-4 w-4 mr-2" />
-                                    Bagikan
-                                </Button>
                             </div>
                         </CardContent>
 

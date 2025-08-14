@@ -57,7 +57,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Activities for Umat
         Route::get('activities', [UmatActivityController::class, 'index'])->name('activities.index');
         Route::get('activities/{activity}', [UmatActivityController::class, 'show'])->name('activities.show');
-        Route::get('activities/archive/all', [UmatActivityController::class, 'archive'])->name('activities.archive');
     });
 });
 

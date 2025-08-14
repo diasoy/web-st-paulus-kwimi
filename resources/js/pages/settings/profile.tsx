@@ -240,7 +240,7 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
                         )}
 
                         <div className="flex items-center gap-4">
-                            <Button disabled={processing}>Simpan</Button>
+                            <Button className='text-white hover:cursor-pointer' disabled={processing}>Simpan</Button>
 
                             <Transition
                                 show={recentlySuccessful}

@@ -67,15 +67,16 @@ export function AppSidebar() {
                 icon: MessageSquare,
             },
             {
-                title: 'Jadwal Ibadah',
-                href: '/umat/worship-schedules',
-                icon: CalendarDays,
-            },
-            {
                 title: 'Agenda Kegiatan',
                 href: '/umat/activities',
                 icon: Activity,
             },
+            {
+                title: 'Jadwal Ibadah',
+                href: '/umat/worship-schedules',
+                icon: CalendarDays,
+            },
+            
             {
                 title: 'Pengaturan',
                 href: '/settings/profile',

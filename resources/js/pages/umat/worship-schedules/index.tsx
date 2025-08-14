@@ -58,7 +58,6 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
     return (
         <AppLayout>
             <Head title="Jadwal Ibadah" />
-            
             <div className="container mx-auto px-4 py-8 space-y-8">
                 <div className="flex justify-between items-center">
                     <h1 className="text-3xl font-bold text-gray-900">Jadwal Ibadah</h1>
@@ -75,27 +74,29 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {worshipSchedules.data.map((schedule) => (
-                                <Card key={schedule.id} className={`hover:shadow-lg transition-all duration-300 ${
-                                    isUpcoming(schedule.date) ? 'border-blue-200 bg-blue-50/30' : 'border-gray-200'
-                                }`}>
+                                <Card
+                                    key={schedule.id}
+                                    className={`hover:shadow-lg transition-all duration-300 ${
+                                        isUpcoming(schedule.date) ? 'border-secondary-200 bg-secondary-50/30' : 'border-gray-200'
+                                    } flex flex-col h-full`}
+                                >
                                     <CardHeader className="pb-3">
                                         <div className="flex justify-between items-start">
-                                            <CardTitle className="text-lg text-blue-800 leading-tight">
+                                            <CardTitle className="text-lg leading-tight">
                                                 {schedule.name}
                                             </CardTitle>
                                             {isUpcoming(schedule.date) && (
-                                                <Badge variant="default" className="bg-blue-600">
+                                                <Badge variant="default" className="text-white">
                                                     Mendatang
                                                 </Badge>
                                             )}
                                         </div>
                                     </CardHeader>
-                                    
-                                    <CardContent className="pt-0 space-y-3">
+                                    <CardContent className="pt-0 space-y-3 flex-1 flex flex-col">
                                         {/* Tanggal dan Waktu */}
                                         <div className="space-y-2">
                                             <div className="flex items-center text-gray-700">
-                                                <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
                                                 <span className="text-sm font-medium">
@@ -103,7 +104,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                                 </span>
                                             </div>
                                             <div className="flex items-center text-gray-700">
-                                                <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
                                                 <span className="text-sm font-medium">
@@ -114,7 +115,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
 
                                         {/* PIC */}
                                         <div className="flex items-center text-gray-700">
-                                            <svg className="w-4 h-4 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4 mr-2 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                             <span className="text-sm">
@@ -136,13 +137,14 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                             </div>
                                         )}
 
-                                        {/* Link to detail */}
+                                        <div className="flex-1" />
+                                        {/* Link to detail selalu di bawah */}
                                         <div className="pt-3 border-t">
-                                            <Link 
+                                            <Link
                                                 href={route('umat.worship-schedules.show', schedule.id)}
-                                                className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
+                                                className="text-sm font-medium transition-colors bg-secondary text-white px-3 py-1 rounded hover:bg-secondary/90"
                                             >
-                                                Lihat Detail →
+                                                Lihat Detail
                                             </Link>
                                         </div>
                                     </CardContent>
@@ -161,9 +163,9 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                         href={link.url || '#'}
                                         className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
                                             link.active
-                                                ? 'bg-blue-600 text-white shadow-md'
+                                                ? 'bg-secondary text-white shadow-md'
                                                 : link.url
-                                                ? 'bg-white text-blue-600 border border-blue-200 hover:bg-blue-50 hover:border-blue-300 shadow-sm'
+                                                ? 'bg-white  border border-secondary-200 hover:bg-secondary-50 hover:border-secondary-300 shadow-sm'
                                                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                         }`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}

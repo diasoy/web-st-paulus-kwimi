@@ -1,8 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
-
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
+import { CalendarDays, Clock, Users, ArrowLeft } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 
 interface Community {
     id: number;
@@ -35,7 +36,8 @@ export default function WorshipScheduleShow({ worshipSchedule }: Props) {
     };
 
     const formatTime = (timeString: string) => {
-        return timeString.substring(0, 5);
+        if (!timeString) return 'Waktu belum ditentukan';
+        return timeString.substring(0, 5) + ' WIB';
     };
 
     const isUpcoming = (dateString: string) => {
@@ -47,68 +49,61 @@ export default function WorshipScheduleShow({ worshipSchedule }: Props) {
             <Head title={`Jadwal Ibadah - ${worshipSchedule.name}`} />
             
             <div className="container mx-auto px-4 py-8 space-y-8">
-                <div className="flex justify-between items-center">
-                    <div>
-                        <Link 
-                            href={route('umat.worship-schedules.index')}
-                            className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-2 inline-block"
-                        >
-                            ← Kembali ke Jadwal Ibadah
-                        </Link>
-                        <h1 className="text-3xl font-bold text-gray-900">Detail Jadwal Ibadah</h1>
-                    </div>
+                <div className="flex items-center justify-between gap-4">
+                    <h1 className="text-3xl font-bold text-church-dark">Detail Jadwal Ibadah</h1>
+                    <Link 
+                    
+                        href={route('umat.worship-schedules.index')}
+                    >
+                        <Button variant="outline" className="bg-secondary text-white px-4 py-2 rounded-md hover:cursor-pointer hover:bg-secondary/90 transition-colors">
+                            <ArrowLeft className="h-4 w-4 mr-2" />
+                            Kembali ke Jadwal Ibadah
+                        </Button>
+                    </Link>
                 </div>
 
                 {/* Detail Jadwal */}
-                <Card className={`${
-                    isUpcoming(worshipSchedule.date) ? 'border-blue-200 bg-blue-50/30' : 'border-gray-200'
-                }`}>
+                <Card className={`hover:shadow-lg transition-all duration-300 border-border bg-card`}>
                     <CardHeader>
                         <div className="flex justify-between items-start">
-                            <CardTitle className="text-2xl text-blue-800">
+                            <CardTitle className="text-2xl text-church-dark leading-tight">
                                 {worshipSchedule.name}
                             </CardTitle>
                             {isUpcoming(worshipSchedule.date) && (
-                                <Badge variant="default" className="bg-blue-600">
+                                <Badge className="bg-primary text-white">
                                     Mendatang
                                 </Badge>
                             )}
                         </div>
                     </CardHeader>
                     
-                    <CardContent className="space-y-6">
+                    <CardContent className="pt-0 space-y-6">
                         {/* Informasi Utama */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-4">
-                                <div className="flex items-center p-4 bg-white rounded-lg border">
-                                    <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
+                                <div className="flex items-center p-4 bg-muted/50 rounded-lg border border-border">
+                                    <CalendarDays className="w-6 h-6 mr-3 text-primary" />
                                     <div>
-                                        <h3 className="font-medium text-gray-900">Tanggal</h3>
-                                        <p className="text-gray-600">{formatDate(worshipSchedule.date)}</p>
+                                        <h3 className="font-medium text-foreground">Tanggal</h3>
+                                        <p className="text-muted-foreground">{formatDate(worshipSchedule.date)}</p>
                                     </div>
                                 </div>
                                 
-                                <div className="flex items-center p-4 bg-white rounded-lg border">
-                                    <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
+                                <div className="flex items-center p-4 bg-muted/50 rounded-lg border border-border">
+                                    <Clock className="w-6 h-6 mr-3 text-primary" />
                                     <div>
-                                        <h3 className="font-medium text-gray-900">Waktu</h3>
-                                        <p className="text-gray-600">{formatTime(worshipSchedule.time_start)} WIB</p>
+                                        <h3 className="font-medium text-foreground">Waktu</h3>
+                                        <p className="text-muted-foreground">{formatTime(worshipSchedule.time_start)}</p>
                                     </div>
                                 </div>
                             </div>
                             
                             <div className="space-y-4">
-                                <div className="flex items-center p-4 bg-white rounded-lg border">
-                                    <svg className="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
+                                <div className="flex items-center p-4 bg-muted/50 rounded-lg border border-border">
+                                    <Users className="w-6 h-6 mr-3 text-primary" />
                                     <div>
-                                        <h3 className="font-medium text-gray-900">Penanggung Jawab</h3>
-                                        <p className="text-gray-600">{worshipSchedule.pic}</p>
+                                        <h3 className="font-medium text-foreground">Penanggung Jawab</h3>
+                                        <p className="text-muted-foreground">{worshipSchedule.pic}</p>
                                     </div>
                                 </div>
                             </div>
@@ -116,11 +111,11 @@ export default function WorshipScheduleShow({ worshipSchedule }: Props) {
 
                         {/* Communities */}
                         {worshipSchedule.communities && worshipSchedule.communities.length > 0 && (
-                            <div className="p-4 bg-white rounded-lg border">
-                                <h3 className="font-medium text-gray-900 mb-3">Kombas yang Terlibat</h3>
+                            <div className="p-4 bg-muted/50 rounded-lg border border-border">
+                                <h3 className="font-medium text-foreground mb-3">Komunitas yang Terlibat</h3>
                                 <div className="flex flex-wrap gap-2">
                                     {worshipSchedule.communities.map((community) => (
-                                        <Badge key={community.id} variant="outline" className="text-sm">
+                                        <Badge key={community.id} variant="secondary" className="text-sm">
                                             {community.name}
                                         </Badge>
                                     ))}

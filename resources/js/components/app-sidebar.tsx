@@ -57,11 +57,6 @@ export function AppSidebar() {
         // Menu untuk umat
         return [
             {
-                title: 'Dashboard',
-                href: '/umat/dashboard',
-                icon: LayoutGrid,
-            },
-            {
                 title: 'Pengumuman',
                 href: '/umat/announcements',
                 icon: MessageSquare,

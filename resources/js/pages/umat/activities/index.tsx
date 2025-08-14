@@ -133,27 +133,26 @@ export default function ActivitiesIndex({ activities }: Props) {
                                 const badgeInfo = getDateBadgeInfo(activity.date);
 
                                 return (
-                                    <Card key={activity.id} className="group hover:shadow-lg transition-all duration-300 border-secondary/20 bg-white/80 backdrop-blur-sm overflow-hidden">
+                                    <Card key={activity.id} className="group hover:shadow-lg transition-all duration-300 border-secondary/20 bg-white/80 backdrop-blur-sm overflow-hidden rounded-xl p-0">
                                         <div className="relative">
                                             {activity.image_url && !imageErrors[activity.id] ? (
                                                 <div className="aspect-video bg-gray-100 relative overflow-hidden">
                                                     <img
                                                         src={activity.image_url}
                                                         alt={activity.name}
-                                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        className="absolute inset-0 w-full h-full object-cover rounded-t-xl group-hover:scale-105 transition-transform duration-300"
                                                         onError={() => handleImageError(activity.id)}
                                                         loading="lazy"
                                                     />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                                                 </div>
                                             ) : (
-                                                <div className="aspect-video bg-gradient-to-br from-secondary/10 to-church-secondary/10 flex items-center justify-center">
+                                                <div className="aspect-video bg-gray-100 flex items-center justify-center rounded-t-xl">
                                                     <ImageIcon className="h-12 w-12 text-secondary/50" />
                                                 </div>
                                             )}
-
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none rounded-t-xl" />
                                             {/* Date Badge */}
-                                            <div className="absolute top-3 right-3">
+                                            <div className="absolute top-3 right-3 z-10">
                                                 <Badge className={`${badgeInfo.color} border-0 shadow-lg`}>
                                                     {badgeInfo.text}
                                                 </Badge>
@@ -185,7 +184,7 @@ export default function ActivitiesIndex({ activities }: Props) {
                                             </div>
                                         </CardHeader>
 
-                                        <CardContent className="pt-0">
+                                        <CardContent className="pt-0 pb-5">
                                             <Link
                                                 href={`/umat/activities/${activity.id}`}
                                                 className="inline-flex items-center px-4 py-2 text-sm bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors duration-300"

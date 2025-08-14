@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Eye, User, Image as ImageIcon } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import { BreadcrumbItem } from '@/types';
 
 interface User {
   id: number;
@@ -79,8 +80,15 @@ export default function Announcements({ announcements }: Props) {
     }
   };
 
+  const breadcrumbs: BreadcrumbItem[] = [
+      {
+          title: 'Pengumuman Gereja',
+          href: '/umat/announcements',
+      },
+  ];
+
   return (
-    <AppLayout>
+    <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Pengumuman Gereja" />
 
       <div className="container mx-auto px-4 py-8 space-y-8">
@@ -97,34 +105,32 @@ export default function Announcements({ announcements }: Props) {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {announcements.data.map((announcement) => {
                 const dateInfo = formatDate(announcement.created_at);
                 return (
-                  <Card key={announcement.id} className="group hover:shadow-lg transition-all duration-300 border-secondary/20 bg-white/80 backdrop-blur-sm overflow-hidden flex flex-col h-full">
-                    <div className="relative">
-                      {announcement.image_url && !imageErrors[announcement.id] ? (
-                        <div className="aspect-video bg-gray-100 relative overflow-hidden">
-                          <img
-                            src={announcement.image_url}
-                            alt={announcement.title}
-                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                            onError={() => handleImageError(announcement.id)}
-                            loading="lazy"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                        </div>
-                      ) : (
-                        <div className="aspect-video bg-gradient-to-br from-church-primary/10 to-church-secondary/10 flex items-center justify-center">
-                          <ImageIcon className="h-12 w-12 text-church-primary/50" />
-                        </div>
-                      )}
-                    </div>
+                  <Card key={announcement.id} className="group hover:shadow-lg transition-all duration-300 border-secondary/20 bg-white/80 backdrop-blur-sm overflow-hidden rounded-xl p-0 flex flex-col h-full">
+                    {announcement.image_url && !imageErrors[announcement.id] ? (
+                      <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                        <img
+                          src={announcement.image_url}
+                          alt={announcement.title}
+                          className="absolute inset-0 w-full h-full object-cover rounded-t-xl group-hover:scale-105 transition-transform duration-300"
+                          onError={() => handleImageError(announcement.id)}
+                          loading="lazy"
+                        />
+                      </div>
+                    ) : (
+                      <div className="aspect-video bg-gray-100 flex items-center justify-center rounded-t-xl">
+                        <ImageIcon className="h-12 w-12 text-church-primary/50" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 pointer-events-none rounded-t-xl" />
 
-                    <CardHeader className="pb-2">
-                      <div className="flex flex-row-reverse items-center justify-between mb-2">
+                    <CardHeader>
+                      <div className="flex flex-col-reverse mb-2">
                         <span
-                          className="text-xs text-church-text/60"
+                          className="text-xs text-church-text/60 mt-2"
                           title={dateInfo.full}
                         >
                           {dateInfo.relative}
@@ -136,11 +142,11 @@ export default function Announcements({ announcements }: Props) {
                     </CardHeader>
 
                     <CardContent className="pt-0 flex-1 flex flex-col">
-                      <p className="text-church-text/80 text-sm mb-4 line-clamp-4">
+                      <p className="text-church-text/80 text-sm mb-4 line-clamp-2">
                         {announcement.description}
                       </p>
 
-                      <div className="flex items-center justify-between mt-auto">
+                      <div className="flex items-center justify-between mt-auto pb-5">
                         <Link
                           href={`/umat/announcements/${announcement.id}`}
                           className="inline-flex items-center px-3 py-1 text-xs bg-secondary text-white rounded-full hover:bg-secondary/90 hover:cursor-pointer transition-colors duration-300"
@@ -197,4 +203,4 @@ export default function Announcements({ announcements }: Props) {
       </div>
     </AppLayout>
   );
-} 
+}

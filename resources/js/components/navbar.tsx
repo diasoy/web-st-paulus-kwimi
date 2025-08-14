@@ -18,7 +18,7 @@ export default function Navbar() {
                     <div className="md:hidden">
                         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-9 w-9">
+                                <Button size="icon" className="h-9 w-9 text-white">
                                     <Menu className="h-5 w-5" />
                                     <span className="sr-only">Toggle mobile menu</span>
                                 </Button>
@@ -39,10 +39,10 @@ export default function Navbar() {
                                     ) : (
                                         <div className="flex flex-col space-y-2">
                                             <Link href={route('login')}>
-                                                <Button variant="ghost" size="sm" className="w-full">Masuk</Button>
+                                                <Button size="sm" className="w-full text-white">Masuk</Button>
                                             </Link>
                                             <Link href={route('register')}>
-                                                <Button size="sm" className="w-full">Daftar</Button>
+                                                <Button size="sm" className="w-full text-white">Daftar</Button>
                                             </Link>
                                         </div>
                                     )}
@@ -61,23 +61,25 @@ export default function Navbar() {
 
                 {/* Desktop Navigation */}
                 <nav className="hidden md:flex items-center gap-4 text-sm font-medium">
-                    <a href="#announcements" className="text-muted-foreground hover:text-primary transition-colors">Pengumuman</a>
-                    <a href="#schedules" className="text-muted-foreground hover:text-primary transition-colors">Jadwal Ibadah</a>
-                    <a href="#activities" className="text-muted-foreground hover:text-primary transition-colors">Kegiatan</a>
+                    <div className='flex items-center gap-6 mr-4'>
+                        <a href="#announcements" className="text-muted-foreground hover:text-primary transition-colors">Pengumuman</a>
+                        <a href="#schedules" className="text-muted-foreground hover:text-primary transition-colors">Jadwal Ibadah</a>
+                        <a href="#activities" className="text-muted-foreground hover:text-primary transition-colors">Kegiatan</a>
+                    </div>
 
                     {auth.user ? (
                         <Link href={route('dashboard')}>
                             <Button size="sm">Dashboard</Button>
                         </Link>
                     ) : (
-                        <>
+                        <div className='flex items-center gap-2 '>
                             <Link href={route('login')}>
-                                <Button variant="ghost" size="sm">Masuk</Button>
+                                <Button size="sm" className='text-white'>Masuk</Button>
                             </Link>
                             <Link href={route('register')}>
-                                <Button size="sm">Daftar</Button>
+                                <Button size="sm" className='bg-secondary text-white'>Daftar</Button>
                             </Link>
-                        </>
+                        </div>
                     )}
                 </nav>
             </div>

@@ -39,11 +39,21 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
         }
     };
 
+    // Format date to yyyy-MM-dd for input type="date"
+    const formatDate = (date?: string) => {
+        if (!date) return '';
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return '';
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    };
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT' as const,
         name: activity.name || '',
         description: activity.description || '',
-        date: activity.date || '',
+        date: formatDate(activity.date),
         time_start: toHHmm(activity.time_start),
         location: activity.location || '',
         image: null as File | null,
@@ -170,7 +180,12 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
                             </div>
 
                             <div className="flex gap-4 pt-4">
-                                <Button type="submit" disabled={processing}>
+                                <Button className='bg-white text-black border hover:bg-muted'>
+                               <Link href={route('admin.activities.index')}>
+                                        Batal
+                                    </Link>
+                                </Button>
+                                <Button className="text-white" type="submit" disabled={processing}>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                 </Button>

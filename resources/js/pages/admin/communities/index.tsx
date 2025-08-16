@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -97,7 +98,7 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                                 className="h-9 pl-8 text-sm"
                             />
                         </div>
-                        <Button size="sm" onClick={handleSearch}>
+                        <Button size="sm" className='text-white hover:bg-primary/90' onClick={handleSearch}>
                             Cari
                         </Button>
                         {search && (
@@ -107,9 +108,9 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                         )}
                     </div>
                     <Link href="/admin/communities/create" className="shrink-0 sm:ml-4">
-                        <Button className="px-2 sm:px-4">
+                        <Button className="px-2 sm:px-4 text-white hover:bg-primary/90">
                             <Plus className="h-4 w-4 sm:mr-2" />
-                            <span className="hidden sm:inline">Tambah Komunitas</span>
+                            <span className="hidden sm:inline" >Tambah Komunitas</span>
                         </Button>
                     </Link>
                 </div>
@@ -176,12 +177,12 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                                             <TableCell className="text-sm text-muted-foreground">{formatDate(community.created_at)}</TableCell>
                                             <TableCell className="pr-6 text-right">
                                                 <div className="flex justify-end gap-2">
-                                                    <Button variant="outline" size="sm" asChild>
+                                                    <Button variant="outline" size="sm" asChild className='bg-secondary hover:bg-secondary/90'>
                                                         <Link href={`/admin/communities/${community.id}`}>
                                                             <Eye className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
-                                                    <Button variant="outline" size="sm" asChild>
+                                                    <Button variant="outline" size="sm" asChild className='bg-primary hover:bg-primary/90'>
                                                         <Link href={`/admin/communities/${community.id}/edit`}>
                                                             <Edit className="h-4 w-4" />
                                                         </Link>
@@ -201,15 +202,38 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                 {/* Pagination */}
                 {communities.links && communities.links.length > 3 && (
                     <div className="flex justify-center space-x-2 pt-4">
-                        {communities.links.map((link: any, index: number) => (
-                            <Button key={index} variant={link.active ? 'default' : 'outline'} size="sm" disabled={!link.url} asChild={!!link.url}>
-                                {link.url ? (
-                                    <Link href={link.url} dangerouslySetInnerHTML={{ __html: link.label }} />
-                                ) : (
-                                    <span dangerouslySetInnerHTML={{ __html: link.label }} />
-                                )}
-                            </Button>
-                        ))}
+                        {communities.links.map((link: any, index: number) => {
+                            const baseClass =
+                                'px-3 py-1 rounded-md font-medium transition-all duration-150 border cursor-pointer';
+                            const activeClass =
+                                'bg-secondary text-white border-secondary hover:opacity-80';
+                            const inactiveClass =
+                                'bg-white text-secondary border-secondary hover:opacity-80';
+                            const disabledClass =
+                                'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                            if (link.url) {
+                                return (
+                                    <Link
+                                        key={index}
+                                        href={link.url}
+                                        className={
+                                            baseClass +
+                                            ' ' +
+                                            (link.active ? activeClass : inactiveClass)
+                                        }
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                );
+                            } else {
+                                return (
+                                    <span
+                                        key={index}
+                                        className={baseClass + ' ' + disabledClass}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                );
+                            }
+                        })}
                     </div>
                 )}
             </div>

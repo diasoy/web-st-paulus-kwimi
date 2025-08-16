@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
@@ -38,6 +39,18 @@ interface Props {
 
 export default function ActivitiesIndex({ activities }: Props) {
     const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+    const [filter, setFilter] = useState('default');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const applyFilter = () => {
+        const query: any = { filter };
+        if (filter === 'custom') {
+            query.start_date = startDate;
+            query.end_date = endDate;
+        }
+        router.get('/umat/activities', query, { preserveScroll: true });
+    };
 
     const handleImageError = (activityId: number) => {
         setImageErrors(prev => ({
@@ -122,6 +135,44 @@ export default function ActivitiesIndex({ activities }: Props) {
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    {/* Filter */}
+                    <div className="flex flex-wrap items-center gap-4 mb-8">
+                        <select
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                            className="border rounded-lg px-3 py-2"
+                        >
+                            <option value="default">Semua Mendatang</option>
+                            <option value="week">Seminggu ke Depan</option>
+                            <option value="month">Sebulan ke Depan</option>
+                            <option value="custom">Custom</option>
+                        </select>
+
+                        {filter === 'custom' && (
+                            <>
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    className="border rounded-lg px-3 py-2"
+                                />
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className="border rounded-lg px-3 py-2"
+                                />
+                            </>
+                        )}
+
+                        <button
+                            onClick={applyFilter}
+                            className="bg-secondary text-white px-4 py-2 rounded-lg hover:cursor-pointer"
+                        >
+                            Terapkan
+                        </button>
                     </div>
 
                     {/* Activities Grid */}
@@ -224,7 +275,6 @@ export default function ActivitiesIndex({ activities }: Props) {
                                         />
                                     );
                                 }
-
                                 return (
                                     <Link
                                         key={index}

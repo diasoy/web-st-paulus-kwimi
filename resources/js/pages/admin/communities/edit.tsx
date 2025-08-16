@@ -41,7 +41,6 @@ export default function CommunityEdit({ community }: CommunityEditProps) {
                     </nav>
                     <h1 className="text-2xl font-bold tracking-tight">Edit Komunitas Basis</h1>
                 </div>
-
                 <Card className="max-w-2xl">
                     <CardHeader>
                         <CardTitle>Informasi Komunitas</CardTitle>
@@ -63,11 +62,11 @@ export default function CommunityEdit({ community }: CommunityEditProps) {
 
                             <div className="flex justify-end space-x-2">
                                 <Link href="/admin/communities">
-                                    <Button type="button" variant="outline">
+                                    <Button type="button" variant="outline" className='text-black border hover:bg-muted hover:text-black border'>
                                         Batal
                                     </Button>
                                 </Link>
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" className='text-white hover:bg-primary/90' disabled={processing}>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                 </Button>

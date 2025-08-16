@@ -160,11 +160,11 @@ export default function WorshipScheduleEdit({ worshipSchedule, communities }: Wo
 
                             <div className="flex justify-end space-x-4">
                                 <Link href={route('admin.worship-schedules.show', worshipSchedule.id)}>
-                                    <Button type="button" variant="outline">
+                                    <Button type="button" variant="outline" className='text-black border hover:bg-muted hover:text-black'>
                                         Batal
                                     </Button>
                                 </Link>
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" disabled={processing} className='text-white hover:bg-primary/90'>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                 </Button>

@@ -78,7 +78,7 @@ export default function Welcome({ announcements = [], activities = [], worshipSc
 
   return (
     <>
-      <Head title="Selamat Datang" />
+      <Head title="Selamat Datang Gereja St. Paulus Kwimi" />
 
       <div className="min-h-screen bg-background relative text-foreground">
         {/* Background decorative elements */}

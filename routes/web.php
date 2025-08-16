@@ -13,13 +13,22 @@ use App\Http\Controllers\Umat\UmatActivityController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+use App\Http\Controllers\LandingController;
+use App\Http\Controllers\SitemapController;
+
+Route::get('/', [LandingController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Main dashboard yang akan redirect berdasarkan role
-    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Ubah agar umat diarahkan ke /umat/announcements, bukan /umat/dashboard
+    Route::get('dashboard', function () {
+        $user = auth()->user();
+        if ($user && $user->role_id == 2) {
+            return redirect()->route('umat.announcements.index');
+        }
+        // Default: admin atau lainnya tetap ke dashboard
+        return app(DashboardController::class)->index();
+    })->name('dashboard');
 
     // Admin Routes
     Route::middleware('role_id:1')->prefix('admin')->name('admin.')->group(function () {
@@ -48,7 +57,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Umat Routes - Hanya bisa melihat pengumuman dan kegiatan
     Route::middleware('role_id:2')->prefix('umat')->name('umat.')->group(function () {
-        Route::get('dashboard', [UmatDashboardController::class, 'index'])->name('dashboard');
         Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
         Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
         Route::get('worship-schedules', [UmatWorshipScheduleController::class, 'index'])->name('worship-schedules.index');
@@ -57,9 +65,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Activities for Umat
         Route::get('activities', [UmatActivityController::class, 'index'])->name('activities.index');
         Route::get('activities/{activity}', [UmatActivityController::class, 'show'])->name('activities.show');
-        Route::get('activities/archive/all', [UmatActivityController::class, 'archive'])->name('activities.archive');
     });
 });
+
+// Sitemap route
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\LandingController;
+use App\Http\Controllers\SitemapController;
+
 Route::get('/', [LandingController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -65,6 +67,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('activities/{activity}', [UmatActivityController::class, 'show'])->name('activities.show');
     });
 });
+
+// Sitemap route
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

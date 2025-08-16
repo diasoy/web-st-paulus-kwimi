@@ -14,27 +14,60 @@ class UmatActivityController extends Controller
     /**
      * Display a listing of upcoming activities.
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        // Hanya tampilkan kegiatan yang tanggalnya hari ini atau ke depan
-        $activities = Activity::where('date', '>=', now()->toDateString())
+        $filter = $request->query('filter', 'default');
+        $startDate = now()->toDateString();
+        $endDate = null;
+
+        switch ($filter) {
+            case 'week':
+                $endDate = now()->addWeek()->toDateString();
+                break;
+            case 'month':
+                $endDate = now()->addMonth()->toDateString();
+                break;
+            case 'custom':
+                $startDate = $request->query('start_date', $startDate);
+                $endDate = $request->query('end_date', $startDate);
+                break;
+            default:
+                // default: mulai hari ini tanpa batas akhir
+                break;
+        }
+
+        $query = Activity::query();
+
+        if ($endDate) {
+            $query->whereBetween('date', [$startDate, $endDate]);
+        } else {
+            $query->where('date', '>=', $startDate);
+        }
+
+        $activities = $query
             ->orderBy('date', 'asc')
             ->orderBy('time_start', 'asc')
-            ->paginate(12);
+            ->paginate(12)
+            ->appends($request->query()); // supaya pagination bawa query filter
 
-        // Transform image URLs untuk storage
+        // Transform image URLs
         $activities->getCollection()->transform(function ($activity) {
             if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
-                // Jika bukan URL lengkap, anggap sebagai path di storage
                 $activity->image_url = Storage::url($activity->image_url);
             }
             return $activity;
         });
-        
+
         return Inertia::render("umat/activities/index", [
-            'activities' => $activities
+            'activities' => $activities,
+            'filters' => [
+                'filter' => $filter,
+                'start_date' => $request->query('start_date'),
+                'end_date' => $request->query('end_date')
+            ]
         ]);
     }
+
 
     /**
      * Display the specified activity.
@@ -69,7 +102,7 @@ class UmatActivityController extends Controller
             }
             return $activity;
         });
-        
+
         return Inertia::render("umat/activities/archive", [
             'activities' => $activities
         ]);

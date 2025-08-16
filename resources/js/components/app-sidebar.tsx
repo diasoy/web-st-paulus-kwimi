@@ -57,25 +57,21 @@ export function AppSidebar() {
         // Menu untuk umat
         return [
             {
-                title: 'Dashboard',
-                href: '/umat/dashboard',
-                icon: LayoutGrid,
-            },
-            {
                 title: 'Pengumuman',
                 href: '/umat/announcements',
                 icon: MessageSquare,
-            },
-            {
-                title: 'Jadwal Ibadah',
-                href: '/umat/worship-schedules',
-                icon: CalendarDays,
             },
             {
                 title: 'Agenda Kegiatan',
                 href: '/umat/activities',
                 icon: Activity,
             },
+            {
+                title: 'Jadwal Ibadah',
+                href: '/umat/worship-schedules',
+                icon: CalendarDays,
+            },
+            
             {
                 title: 'Pengaturan',
                 href: '/settings/profile',

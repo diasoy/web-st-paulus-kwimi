@@ -145,7 +145,7 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
 
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Jadwal Misa</CardTitle>
+                            <CardTitle className="text-sm font-medium">Jadwal Ibadah</CardTitle>
                             <ListChecks className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
@@ -216,7 +216,7 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Jadwal Misa Mendatang</CardTitle>
+                        <CardTitle>Jadwal Ibadah Mendatang</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-3">

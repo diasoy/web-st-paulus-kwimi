@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RegisterForm, Community } from '@/types/auth/register';
+import { Link } from '@inertiajs/react';
+import { ArrowLeft } from 'lucide-react';
 
 interface Props {
     communities: Community[];
@@ -55,6 +57,14 @@ export default function Register({ communities }: Props) {
                     {/* Left Side - Church Information */}
                     <div className="space-y-10">
                         <div className="text-center lg:text-left">
+                        <div className="mb-4">
+                            <Link href="/">
+                                <Button variant="outline" size="sm" className="hidden lg:flex rounded-lg bg-secondary hover:bg-secondary/90">
+                                    <ArrowLeft />
+                                    Kembali ke Home
+                                </Button>
+                            </Link>
+                        </div>
                             <div className="flex justify-center lg:justify-start items-center mb-8">
                                 <div className="p-3 bg-primary/10 rounded-2xl backdrop-blur-sm border border-border shadow-lg mr-4">
                                     <img src="/images/logo.png" alt="Logo" className='w-16 h-16 object-contain' />
@@ -115,6 +125,14 @@ export default function Register({ communities }: Props) {
 
                     {/* Right Side - Registration Form */}
                     <div className="w-full">
+                        <div className="w-full text-center">
+                            <Link href="/">
+                                <Button variant="outline" size="sm" className="rounded-lg bg-secondary hover:bg-secondary/90 lg:hidden mb-6">
+                                    <ArrowLeft />
+                                    Kembali ke Home
+                                </Button>
+                            </Link>
+                        </div>
                         <div className="bg-card/80 backdrop-blur-xl p-10 rounded-3xl church-shadow border border-border hover:shadow-2xl transition-all duration-500">
                             <div className="text-center mb-10">
                                 <h2 className="text-3xl font-bold text-foreground mb-3">Daftar Akun Baru</h2>

@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Trash2 } from 'lucide-react';
+import { Arrow } from '@radix-ui/react-tooltip';
+import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 
 interface Announcement {
     id: number;
@@ -42,12 +43,20 @@ export default function AnnouncementShow({ announcement }: { announcement: Annou
                         <h1 className="text-2xl font-bold tracking-tight">Detail Pengumuman</h1>
                     </div>
                     <div className="flex gap-2">
+                        <Link href={route('admin.announcements.index')}>
+                            <Button variant="outline" className="bg-secondary hover:bg-secondary/90 text-white">
+                                <ArrowLeft  />
+                                Kembali ke Pengumuman
+                            </Button>
+                        </Link>
+
                         <Link href={route('admin.announcements.edit', announcement.id)}>
-                            <Button variant="outline">
-                                <Edit className="mr-2 h-4 w-4" />
+                            <Button variant="outline" className="bg-primary hover:bg-primary/90 text-white">
+                                <Edit  />
                                 Edit
                             </Button>
                         </Link>
+
                         <Button variant="destructive" onClick={handleDelete}>
                             <Trash2 className="mr-2 h-4 w-4" />
                             Hapus
@@ -66,8 +75,8 @@ export default function AnnouncementShow({ announcement }: { announcement: Annou
                     <CardHeader>
                         <CardTitle className="flex items-center justify-between">
                             <span>{announcement.title}</span>
-                            <Badge variant={announcement.is_publish ? 'default' : 'secondary'}>
-                                {announcement.is_publish ? 'Published' : 'Draft'}
+                            <Badge variant={announcement.is_publish ? 'default' : 'secondary'} className='text-white'>
+                                {announcement.is_publish ? 'Dipublish' : 'Draft'}
                             </Badge>
                         </CardTitle>
                     </CardHeader>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -101,6 +102,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                         </div>
                         <Button
                             size="sm"
+                            className='bg-primary hover:bg-primary/90 text-white'
                             onClick={() =>
                                 router.get(
                                     route('admin.announcements.index'),
@@ -128,7 +130,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                         )}
                     </div>
                     <Link href={route('admin.announcements.create')} className="shrink-0">
-                        <Button className="px-2 sm:px-4">
+                        <Button className="px-2 sm:px-4 text-white bg-primary hover:bg-primary/90">
                             <Plus className="h-4 w-4 sm:mr-2" />
                             <span className="hidden sm:inline">Tambah Pengumuman</span>
                         </Button>
@@ -220,19 +222,19 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                             <div className="truncate">{announcement.description}</div>
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant={announcement.is_publish ? 'default' : 'secondary'}>
-                                                {announcement.is_publish ? 'Published' : 'Draft'}
+                                            <Badge className='text-white' variant={announcement.is_publish ? 'default' : 'secondary'}>
+                                                {announcement.is_publish ? 'Dipublish' : 'Draft'}
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-sm text-muted-foreground">{formatDate(announcement.created_at)}</TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex justify-end gap-2">
-                                                <Button variant="outline" size="sm" asChild>
+                                                <Button variant="outline" size="sm" asChild className='bg-secondary hover:bg-secondary/90'>
                                                     <Link href={route('admin.announcements.show', announcement.id)}>
                                                         <Eye className="h-4 w-4" />
                                                     </Link>
                                                 </Button>
-                                                <Button variant="outline" size="sm" asChild>
+                                                <Button variant="outline" size="sm" asChild className='bg-primary hover:bg-primary/90'>
                                                     <Link href={route('admin.announcements.edit', announcement.id)}>
                                                         <Edit className="h-4 w-4" />
                                                     </Link>
@@ -256,15 +258,38 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
 
                 {announcements.links && announcements.links.length > 3 && (
                     <div className="flex justify-center space-x-2">
-                        {announcements.links.map((link: any, index: number) => (
-                            <Button key={index} variant={link.active ? 'default' : 'outline'} size="sm" disabled={!link.url} asChild={!!link.url}>
-                                {link.url ? (
-                                    <Link href={link.url} dangerouslySetInnerHTML={{ __html: link.label }} />
-                                ) : (
-                                    <span dangerouslySetInnerHTML={{ __html: link.label }} />
-                                )}
-                            </Button>
-                        ))}
+                        {announcements.links.map((link: any, index: number) => {
+                            const baseClass =
+                                'px-3 py-1 rounded-md font-medium transition-all duration-150 border cursor-pointer';
+                            const activeClass =
+                                'bg-secondary text-white border-secondary hover:opacity-80';
+                            const inactiveClass =
+                                'bg-white text-secondary border-secondary hover:opacity-80';
+                            const disabledClass =
+                                'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                            if (link.url) {
+                                return (
+                                    <Link
+                                        key={index}
+                                        href={link.url}
+                                        className={
+                                            baseClass +
+                                            ' ' +
+                                            (link.active ? activeClass : inactiveClass)
+                                        }
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                );
+                            } else {
+                                return (
+                                    <span
+                                        key={index}
+                                        className={baseClass + ' ' + disabledClass}
+                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                    />
+                                );
+                            }
+                        })}
                     </div>
                 )}
             </div>

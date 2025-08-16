@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { Calendar, Clock, Edit, MapPin } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Edit, MapPin } from 'lucide-react';
 
 interface Activity {
     id: number;
@@ -53,12 +53,18 @@ export default function ActivityShow({ activity }: ActivityShowProps) {
                         </nav>
                         <h1 className="text-2xl font-bold tracking-tight">Detail Kegiatan</h1>
                     </div>
-                    <Link href={route('admin.activities.edit', activity.id)}>
-                        <Button>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit Kegiatan
+                    <div className='flex gap-4'><Link href={route('admin.activities.index')}>
+                        <Button className='bg-secondary text-white hover:bg-secondary/90'>
+                            <ArrowLeft />
+                            Kembali ke Agenda
                         </Button>
                     </Link>
+                        <Link href={route('admin.activities.edit', activity.id)}>
+                            <Button className='bg-primary text-white hover:bg-primary/90'>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit Kegiatan
+                            </Button>
+                        </Link></div>
                 </div>
 
                 <div className="grid gap-6">

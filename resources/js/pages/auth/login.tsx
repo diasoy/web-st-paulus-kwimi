@@ -1,5 +1,5 @@
-import { Head, useForm } from '@inertiajs/react';
-import { LoaderCircle, Users, Book, Shield, Eye, EyeOff } from 'lucide-react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { LoaderCircle, Users, Book, Shield, Eye, EyeOff, ArrowLeft } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 import InputError from '@/components/input-error';
@@ -39,7 +39,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
   return (
     <div className="min-h-screen bg-background relative overflow-hidden">
       <Head title="Login" />
-      
+
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl"></div>
@@ -52,23 +52,33 @@ export default function Login({ status, canResetPassword }: LoginProps) {
           {/* Left Side - Church Information */}
           <div className="space-y-10">
             <div className="text-center lg:text-left">
-              <div className="flex justify-center lg:justify-start items-center mb-8">
-                <div className="p-3 bg-primary/10 rounded-2xl backdrop-blur-sm border border-border shadow-lg mr-4">
-                  <img src="/images/logo.png" alt="Logo" className='w-16 h-16 object-contain' />
-                </div>
-                <div>
-                  <h1 className="text-4xl lg:text-5xl font-bold church-text-gradient leading-tight">
-                    Selamat Datang
-                  </h1>
-                  <h2 className="text-3xl lg:text-4xl font-bold church-text-gradient">
-                    Kembali
-                  </h2>
-                </div>
+              <div className="mb-4">
+                <Link href="/">
+                  <Button variant="outline" size="sm" className="hidden lg:flex rounded-lg bg-secondary hover:bg-secondary/90">
+                    <ArrowLeft />
+                    Kembali ke Home
+                  </Button>
+                </Link>
               </div>
+              <div>
+                <div className="flex justify-center lg:justify-start items-center mb-8">
+                  <div className="p-3 bg-primary/10 rounded-2xl backdrop-blur-sm border border-border shadow-lg mr-4">
+                    <img src="/images/logo.png" alt="Logo" className='w-16 h-16 object-contain' />
+                  </div>
+                  <div>
+                    <h1 className="text-4xl lg:text-5xl font-bold church-text-gradient leading-tight">
+                      Selamat Datang
+                    </h1>
+                    <h2 className="text-3xl lg:text-4xl font-bold church-text-gradient">
+                      Kembali
+                    </h2>
+                  </div>
+                </div>
 
-              <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
-                Masuk ke akun Anda untuk mengakses komunitas <span className="font-semibold text-primary">Gereja St. Paulus Kwimi</span>
-              </p>
+                <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
+                  Masuk ke akun Anda untuk mengakses komunitas <span className="font-semibold text-primary">Gereja St. Paulus Kwimi</span>
+                </p>
+              </div>
             </div>
 
             <div className="space-y-8">
@@ -110,8 +120,18 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             </div>
           </div>
 
+
+
+
           {/* Right Side - Login Form */}
-          <div className="w-full">
+          <div className="w-full text-center">
+            <Link href="/">
+              <Button variant="outline" size="sm" className="rounded-lg bg-secondary hover:bg-secondary/90 lg:hidden mb-6">
+                <ArrowLeft />
+                Kembali ke Home
+              </Button>
+            </Link>
+
             <div className="bg-card/80 backdrop-blur-xl p-10 rounded-3xl church-shadow border border-border transition-all duration-500">
               <div className="text-center mb-10">
                 <h2 className="text-3xl font-bold text-foreground mb-3">Masuk ke Akun</h2>
@@ -127,7 +147,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
               <form className="space-y-7" onSubmit={submit}>
                 <div className="grid gap-6">
                   <div className="grid gap-3">
-                    <Label htmlFor="email" className="text-foreground font-semibold">Alamat Email</Label>
+                    <Label htmlFor="email" className="text-foreground font-semibold text-left justify-start">Alamat Email</Label>
                     <div className="relative">
                       <Input
                         id="email"
@@ -150,9 +170,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     <div className="flex items-center">
                       <Label htmlFor="password" className="text-foreground font-semibold">Kata Sandi</Label>
                       {canResetPassword && (
-                        <TextLink 
-                          href={route('password.request')} 
-                          className="ml-auto text-sm text-primary hover:text-primary/80 font-medium transition-colors duration-200" 
+                        <TextLink
+                          href={route('password.request')}
+                          className="ml-auto text-sm text-primary hover:text-primary/80 font-medium transition-colors duration-200"
                           tabIndex={7}
                         >
                           Lupa kata sandi?
@@ -204,10 +224,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     </div>
                   </div>
 
-                  <Button 
-                    type="submit" 
-                    className="mt-8 w-full h-12 hover:opacity-90 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:cursor-pointer text-white" 
-                    tabIndex={5} 
+                  <Button
+                    type="submit"
+                    className="mt-8 w-full h-12 hover:opacity-90 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:cursor-pointer text-white"
+                    tabIndex={5}
                     disabled={processing}
                   >
                     {processing && <LoaderCircle className="h-5 w-5 animate-spin mr-3" />}
@@ -217,8 +237,8 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                 <div className="text-center text-slate-600 mt-8 pt-6 border-t border-slate-200">
                   Belum memiliki akun?{' '}
-                  <TextLink 
-                    href={route('register')} 
+                  <TextLink
+                    href={route('register')}
                     tabIndex={6}
                     className="font-semibold transition-colors duration-200"
                   >

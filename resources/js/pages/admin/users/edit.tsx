@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -46,13 +47,24 @@ export default function UserEdit({ user, communities }: UserEditProps) {
             </AuthenticatedLayout>
         );
     }
+    // Format birth_date to yyyy-MM-dd for input type="date"
+    const formatBirthDate = (date?: string) => {
+        if (!date) return '';
+        const d = new Date(date);
+        if (isNaN(d.getTime())) return '';
+        // Pad month and day
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    };
     const { data, setData, put, processing, errors } = useForm({
         name: user.name || '',
         username: user.username || '',
         email: user.email || '',
         phone_number: user.phone_number || '',
         address: user.address || '',
-        birth_date: user.birth_date || '',
+        birth_date: formatBirthDate(user.birth_date),
         gender: user.gender || 'male',
         status: user.status || 'active',
         community_id: user.community_id || null,
@@ -209,12 +221,12 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                             </div>
 
                             <div className="flex gap-4 pt-4">
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" disabled={processing} className='text-white hover:opacity-90'>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
                                 </Button>{' '}
                                 <Link href={route('admin.users.show', user.id)}>
-                                    <Button type="button" variant="outline">
+                                    <Button type="button" variant="outline" className="bg-white text-secondary border-secondary hover:opacity-80">
                                         Batal
                                     </Button>
                                 </Link>

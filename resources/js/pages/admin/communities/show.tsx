@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { Edit, Mail, Phone, User, Users } from 'lucide-react';
+import { ArrowLeft, Edit, Mail, Phone, User, Users } from 'lucide-react';
 
 interface User {
     id: number;
@@ -54,12 +54,20 @@ export default function CommunityShow({ community }: CommunityShowProps) {
                         </nav>
                         <h1 className="text-2xl font-bold tracking-tight">Detail Komunitas Basis</h1>
                     </div>
+                    <div className='flex gap-4 items-center'>
+                        <Link href={route('admin.communities.index')}>
+                        <Button variant="outline" size="sm" className="rounded-lg bg-secondary hover:bg-secondary/90">
+                        <ArrowLeft/>
+                            Kembali ke Detail
+                        </Button>
+                    </Link>
                     <Link href={`/admin/communities/${community.id}/edit`}>
-                        <Button>
+                        <Button className='text-white hover:bg-primary/90' size="sm">
                             <Edit className="mr-2 h-4 w-4" />
                             Edit Komunitas
                         </Button>
                     </Link>
+                    </div>
                 </div>
 
                 {/* Judul halaman */}

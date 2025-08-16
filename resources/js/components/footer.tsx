@@ -27,8 +27,8 @@ export default function Footer() {
                     <div className="col-span-1">
                         <h4 className="text-lg font-semibold mb-4">Kontak</h4>
                         <ul className="space-y-2 text-sm text-muted-foreground">
-                            <li className="flex items-center"><Phone className="h-4 w-4 mr-2" /> (021) 1234567</li>
-                            <li className="flex items-center"><Church className="h-4 w-4 mr-2" /> Jl. Gereja No. 1, Sentani</li>
+                            <li className="flex items-center"><Phone className="h-4 w-4 mr-2" />0813-4414-5543</li>
+                            <li className="flex items-center"><Church className="h-4 w-4 mr-2" />Jln.Kubina Rt/Rw, 01/001, Kampung Kwimi, Distrik Arso, Kabupaten Keerom, Papua</li>
                             <li className="flex items-center"><MessageSquare className="h-4 w-4 mr-2" /> info@stpauluskwimi.org</li>
                         </ul>
                     </div>

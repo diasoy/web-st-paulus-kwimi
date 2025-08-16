@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { Calendar, MapPin, Clock, Eye, Archive, Image as ImageIcon } from 'lucide-react';
+import { Calendar, MapPin, Clock, Eye, Image as ImageIcon } from 'lucide-react';
 import { formatDistanceToNow, format, isToday, isTomorrow, isThisWeek, isPast } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -39,6 +39,18 @@ interface Props {
 
 export default function ActivitiesIndex({ activities }: Props) {
     const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+    const [filter, setFilter] = useState('default');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+
+    const applyFilter = () => {
+        const query: any = { filter };
+        if (filter === 'custom') {
+            query.start_date = startDate;
+            query.end_date = endDate;
+        }
+        router.get('/umat/activities', query, { preserveScroll: true });
+    };
 
     const handleImageError = (activityId: number) => {
         setImageErrors(prev => ({
@@ -94,7 +106,7 @@ export default function ActivitiesIndex({ activities }: Props) {
             if (isPast(date)) {
                 return { text: 'Sudah Lewat', color: 'bg-gray-400 text-white' };
             }
-            return { text: 'Mendatang', color: 'bg-church-primary text-white' };
+            return { text: 'Mendatang', color: 'bg-secondary text-white' };
         } catch {
             return { text: 'Invalid', color: 'bg-gray-400 text-white' };
         }
@@ -110,8 +122,8 @@ export default function ActivitiesIndex({ activities }: Props) {
                     <div className="mb-8">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center">
-                                <div className="bg-church-primary/10 p-3 rounded-full mr-4">
-                                    <Calendar className="h-8 w-8 text-church-primary" />
+                                <div className="bg-secondary/10 p-3 rounded-full mr-4">
+                                    <Calendar className="h-8 w-8 text-secondary" />
                                 </div>
                                 <div>
                                     <h1 className="text-4xl font-bold text-church-dark">
@@ -122,36 +134,45 @@ export default function ActivitiesIndex({ activities }: Props) {
                                     </p>
                                 </div>
                             </div>
-
-                            <Link href="/umat/activities/archive/all">
-                                <Button variant="outline" className="border-church-primary/20 text-church-primary hover:bg-church-primary/10">
-                                    <Archive className="h-4 w-4 mr-2" />
-                                    Arsip Kegiatan
-                                </Button>
-                            </Link>
                         </div>
+                    </div>
 
-                        {/* Stats Card */}
-                        <div className="bg-white/70 backdrop-blur-sm rounded-lg p-6 border border-church-primary/10">
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                                <div className="text-center">
-                                    <p className="text-2xl font-bold text-church-dark">{activities.total}</p>
-                                    <p className="text-church-text/70 text-sm">Total Kegiatan</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-2xl font-bold text-church-dark">{activities.current_page}</p>
-                                    <p className="text-church-text/70 text-sm">Halaman Saat Ini</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-2xl font-bold text-church-dark">{activities.last_page}</p>
-                                    <p className="text-church-text/70 text-sm">Total Halaman</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-2xl font-bold text-church-dark">{activities.per_page}</p>
-                                    <p className="text-church-text/70 text-sm">Per Halaman</p>
-                                </div>
-                            </div>
-                        </div>
+                    {/* Filter */}
+                    <div className="flex flex-wrap items-center gap-4 mb-8">
+                        <select
+                            value={filter}
+                            onChange={(e) => setFilter(e.target.value)}
+                            className="border rounded-lg px-3 py-2"
+                        >
+                            <option value="default">Semua Mendatang</option>
+                            <option value="week">Seminggu ke Depan</option>
+                            <option value="month">Sebulan ke Depan</option>
+                            <option value="custom">Custom</option>
+                        </select>
+
+                        {filter === 'custom' && (
+                            <>
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    className="border rounded-lg px-3 py-2"
+                                />
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className="border rounded-lg px-3 py-2"
+                                />
+                            </>
+                        )}
+
+                        <button
+                            onClick={applyFilter}
+                            className="bg-secondary text-white px-4 py-2 rounded-lg hover:cursor-pointer"
+                        >
+                            Terapkan
+                        </button>
                     </div>
 
                     {/* Activities Grid */}
@@ -163,27 +184,26 @@ export default function ActivitiesIndex({ activities }: Props) {
                                 const badgeInfo = getDateBadgeInfo(activity.date);
 
                                 return (
-                                    <Card key={activity.id} className="group hover:shadow-lg transition-all duration-300 border-church-primary/20 bg-white/80 backdrop-blur-sm overflow-hidden">
+                                    <Card key={activity.id} className="group hover:shadow-lg transition-all duration-300 border-secondary/20 bg-white/80 backdrop-blur-sm overflow-hidden rounded-xl p-0">
                                         <div className="relative">
                                             {activity.image_url && !imageErrors[activity.id] ? (
                                                 <div className="aspect-video bg-gray-100 relative overflow-hidden">
                                                     <img
                                                         src={activity.image_url}
                                                         alt={activity.name}
-                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        className="absolute inset-0 w-full h-full object-cover rounded-t-xl group-hover:scale-105 transition-transform duration-300"
                                                         onError={() => handleImageError(activity.id)}
                                                         loading="lazy"
                                                     />
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                                                 </div>
                                             ) : (
-                                                <div className="aspect-video bg-gradient-to-br from-church-primary/10 to-church-secondary/10 flex items-center justify-center">
-                                                    <ImageIcon className="h-12 w-12 text-church-primary/50" />
+                                                <div className="aspect-video bg-gray-100 flex items-center justify-center rounded-t-xl">
+                                                    <ImageIcon className="h-12 w-12 text-secondary/50" />
                                                 </div>
                                             )}
-
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none rounded-t-xl" />
                                             {/* Date Badge */}
-                                            <div className="absolute top-3 right-3">
+                                            <div className="absolute top-3 right-3 z-10">
                                                 <Badge className={`${badgeInfo.color} border-0 shadow-lg`}>
                                                     {badgeInfo.text}
                                                 </Badge>
@@ -191,13 +211,13 @@ export default function ActivitiesIndex({ activities }: Props) {
                                         </div>
 
                                         <CardHeader className="pb-3">
-                                            <CardTitle className="text-xl text-church-dark group-hover:text-church-primary transition-colors duration-300 line-clamp-2">
+                                            <CardTitle className="text-xl text-church-dark group-hover:text-secondary transition-colors duration-300 line-clamp-2">
                                                 {activity.name}
                                             </CardTitle>
 
                                             <div className="space-y-2 text-sm text-church-text/80">
                                                 <div className="flex items-center">
-                                                    <Calendar className="h-4 w-4 mr-2 text-church-primary" />
+                                                    <Calendar className="h-4 w-4 mr-2 text-secondary" />
                                                     <span title={dateInfo.full}>{dateInfo.short}</span>
                                                 </div>
 
@@ -215,16 +235,10 @@ export default function ActivitiesIndex({ activities }: Props) {
                                             </div>
                                         </CardHeader>
 
-                                        <CardContent className="pt-0">
-                                            {activity.description && (
-                                                <p className="text-church-text/80 text-sm mb-4 line-clamp-3">
-                                                    {activity.description}
-                                                </p>
-                                            )}
-
+                                        <CardContent className="pt-0 pb-5">
                                             <Link
                                                 href={`/umat/activities/${activity.id}`}
-                                                className="inline-flex items-center px-4 py-2 text-sm bg-church-primary text-white rounded-lg hover:bg-church-primary/90 transition-colors duration-300"
+                                                className="inline-flex items-center px-4 py-2 text-sm bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors duration-300"
                                             >
                                                 <Eye className="h-4 w-4 mr-2" />
                                                 Lihat Detail
@@ -236,8 +250,8 @@ export default function ActivitiesIndex({ activities }: Props) {
                         </div>
                     ) : (
                         <div className="text-center py-16">
-                            <div className="bg-church-primary/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Calendar className="h-12 w-12 text-church-primary/50" />
+                            <div className="bg-secondary/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Calendar className="h-12 w-12 text-secondary/50" />
                             </div>
                             <h3 className="text-xl font-semibold text-church-dark mb-2">
                                 Belum Ada Kegiatan
@@ -256,19 +270,18 @@ export default function ActivitiesIndex({ activities }: Props) {
                                     return (
                                         <span
                                             key={index}
-                                            className="px-3 py-2 text-church-text/50 bg-white/50 rounded-md border border-church-primary/10"
+                                            className="px-3 py-2 text-church-text/50 bg-white/50 rounded-md border border-secondary/10"
                                             dangerouslySetInnerHTML={{ __html: link.label }}
                                         />
                                     );
                                 }
-
                                 return (
                                     <Link
                                         key={index}
                                         href={link.url}
                                         className={`px-3 py-2 rounded-md border transition-colors duration-300 ${link.active
-                                                ? 'bg-church-primary text-white border-church-primary'
-                                                : 'bg-white/70 text-church-dark border-church-primary/20 hover:bg-church-primary/10'
+                                            ? 'bg-secondary text-white border-secondary'
+                                            : 'bg-white/70 text-church-dark border-secondary/20 hover:bg-secondary/10'
                                             }`}
                                         dangerouslySetInnerHTML={{ __html: link.label }}
                                     />

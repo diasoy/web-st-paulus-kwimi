@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { ArrowLeft, Calendar, User, Eye, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Calendar, User, Image as ImageIcon } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -40,12 +40,12 @@ export default function AnnouncementShow({ announcement }: Props) {
         try {
             const date = new Date(dateString);
             return {
-                relative: formatDistanceToNow(date, { 
-                    addSuffix: true, 
-                    locale: id 
+                relative: formatDistanceToNow(date, {
+                    addSuffix: true,
+                    locale: id
                 }),
-                full: format(date, 'EEEE, dd MMMM yyyy HH:mm', { 
-                    locale: id 
+                full: format(date, 'EEEE, dd MMMM yyyy HH:mm', {
+                    locale: id
                 })
             };
         } catch {
@@ -62,14 +62,14 @@ export default function AnnouncementShow({ announcement }: Props) {
         <AppLayout>
             <Head title={`${announcement.title} - Pengumuman`} />
 
-            <div className="min-h-screen bg-gradient-to-br from-church-cream via-white to-church-light">
+            <div className="min-h-screen">
                 <div className="container mx-auto px-4 py-8">
                     {/* Header Navigation */}
                     <div className="mb-8">
-                        <Link href="/announcements">
-                            <Button 
-                                variant="outline" 
-                                className="mb-6 border-church-primary/20 text-church-dark hover:bg-church-primary/10"
+                        <Link href="/umat/announcements">
+                            <Button
+                                variant="outline"
+                                className="bg-secondary text-white px-4 py-2 rounded-md hover:cursor-pointer hover:bg-secondary/90 transition-colors"
                             >
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Kembali ke Pengumuman
@@ -78,44 +78,34 @@ export default function AnnouncementShow({ announcement }: Props) {
                     </div>
 
                     {/* Main Content */}
-                    <Card className="max-w-4xl mx-auto bg-white/90 backdrop-blur-sm border-church-primary/20 shadow-lg overflow-hidden">
+                    <Card className="max-w-4xl mx-auto bg-white/80 backdrop-blur-sm border-secondary/20 shadow-lg overflow-hidden">
                         {/* Image Header */}
                         {announcement.image_url && !imageError ? (
-                            <div className="relative w-full h-96 overflow-hidden">
+                            <div className="relative aspect-video bg-gray-100 overflow-hidden">
                                 <img
                                     src={announcement.image_url}
                                     alt={announcement.title}
-                                    className="w-full h-full object-cover"
+                                    className="absolute inset-0 w-full h-full object-cover"
                                     onError={handleImageError}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
-                                
-                                {/* Title Overlay */}
-                                <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
-                                    <Badge className="mb-4 bg-church-primary/90 text-white hover:bg-church-primary">
-                                        Dipublish
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                            </div>
+                        ) : (
+                            <div className="aspect-video bg-gradient-to-br from-church-primary/10 to-church-secondary/10 flex items-center justify-center">
+                                <ImageIcon className="h-16 w-16 text-church-primary/50" />
+                                <div className="absolute bottom-0 left-0 right-0 p-8 text-church-dark">
+                                    <Badge className="mb-4 bg-church-primary/10 text-church-primary border-0">
+                                        {announcement.is_publish ? 'Dipublish' : 'Draft'}
                                     </Badge>
-                                    <h1 className="text-4xl font-bold mb-2 text-shadow">
+                                    <h1 className="text-4xl font-bold">
                                         {announcement.title}
                                     </h1>
                                 </div>
                             </div>
-                        ) : (
-                            <div className="bg-gradient-to-br from-church-primary/10 to-church-secondary/10 p-8">
-                                <div className="flex items-center justify-center h-32 mb-6">
-                                    <ImageIcon className="h-16 w-16 text-church-primary/50" />
-                                </div>
-                                <Badge className="mb-4 bg-church-primary/10 text-church-primary hover:bg-church-primary/20">
-                                    Dipublish
-                                </Badge>
-                                <h1 className="text-4xl font-bold text-church-dark">
-                                    {announcement.title}
-                                </h1>
-                            </div>
                         )}
 
                         {/* Meta Information */}
-                        <div className="bg-church-cream/50 px-8 py-6 border-b border-church-primary/10">
+                        <div className="bg-church-cream/50 px-8 py-6 border-b border-secondary/10">
                             <div className="flex flex-wrap items-center gap-6 text-sm text-church-text/80">
                                 <div className="flex items-center">
                                     <User className="h-4 w-4 mr-2" />
@@ -125,10 +115,6 @@ export default function AnnouncementShow({ announcement }: Props) {
                                     <Calendar className="h-4 w-4 mr-2" />
                                     <span title={dateInfo.full}>{dateInfo.relative}</span>
                                 </div>
-                                <div className="flex items-center">
-                                    <Eye className="h-4 w-4 mr-2" />
-                                    <span>{dateInfo.full}</span>
-                                </div>
                             </div>
                         </div>
 
@@ -136,11 +122,11 @@ export default function AnnouncementShow({ announcement }: Props) {
                         <CardContent className="p-8">
                             {/* Description */}
                             <div className="mb-8">
-                                <h2 className="text-2xl font-semibold text-church-dark mb-4">
-                                    Ringkasan
-                                </h2>
+                               <h1 className="text-2xl font-bold mb-4 text-shadow">
+                                {announcement.title}
+                            </h1>
                                 <div className="prose prose-lg max-w-none">
-                                    <p className="text-church-text leading-relaxed text-lg">
+                                    <p className="text-church-text leading-relaxed text-lg text-justify whitespace-pre-wrap">
                                         {announcement.description}
                                     </p>
                                 </div>
@@ -148,7 +134,7 @@ export default function AnnouncementShow({ announcement }: Props) {
 
                             {/* Detailed Content */}
                             {announcement.content && announcement.content.trim() !== '' && (
-                                <div className="border-t border-church-primary/10 pt-8">
+                                <div className="border-t border-secondary/10 pt-8">
                                     <h2 className="text-2xl font-semibold text-church-dark mb-4">
                                         Detail Lengkap
                                     </h2>
@@ -162,7 +148,7 @@ export default function AnnouncementShow({ announcement }: Props) {
                         </CardContent>
 
                         {/* Footer */}
-                        <div className="bg-church-cream/30 px-8 py-6 border-t border-church-primary/10">
+                        <div className="bg-church-cream/30 px-8 py-6 border-t border-secondary/10">
                             <div className="flex items-center justify-between">
                                 <div className="text-sm text-church-text/70">
                                     Terakhir diperbarui: {format(new Date(announcement.updated_at), 'dd MMMM yyyy HH:mm', { locale: id })}

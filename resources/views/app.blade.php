@@ -30,23 +30,13 @@
             }
         </style>
 
-    <title inertia>{{ config('app.name', 'St Paulus Kwimi') }}</title>
+        <title inertia>{{ config('app.name', 'St Paulus Kwimi') }}</title>
 
         <link rel="icon" href="/images/logo.png" sizes="any">
         <link rel="apple-touch-icon" href="/images/logo.png">
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
-         <meta name="description" content="Selamat datang di Gereja St. Paulus Kwimi. Temukan informasi jadwal ibadah, agenda kegiatan, dan pengumuman terbaru untuk jemaat." />
-        <meta name="keywords" content="gereja, st paulus kwimi, ibadah, kegiatan, pengumuman, jemaat, kristen, papua, gereja terdekat, komunitas, paulus, kwimi" />
-        <meta property="og:title" content="Gereja St. Paulus Kwimi" />
-        <meta property="og:description" content="Informasi jadwal ibadah, agenda kegiatan, dan pengumuman terbaru untuk jemaat Gereja St. Paulus Kwimi." />
-        <meta property="og:image" content="/images/logo.png" />
-        <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://stpauluskwimi.my.id/" />
-        <meta name="publisher" content="Gereja St. Paulus Kwimi"/>
-        
 
         @routes
         @viteReactRefresh

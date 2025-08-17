@@ -1,4 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// Mapping label pagination agar tidak tampil 'pagination.next' di frontend
+const labelMap: Record<string, string> = {
+    'pagination.next': 'Berikutnya',
+    'pagination.previous': 'Sebelumnya',
+    'pagination.first': 'Pertama',
+    'pagination.last': 'Terakhir',
+};
+
+const getLabel = (label: string) => labelMap[label] || label;
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -266,12 +274,13 @@ export default function ActivitiesIndex({ activities }: Props) {
                     {activities.last_page > 1 && (
                         <div className="flex justify-center items-center space-x-2">
                             {activities.links.map((link, index) => {
+                                const label = getLabel(link.label);
                                 if (!link.url) {
                                     return (
                                         <span
                                             key={index}
                                             className="px-3 py-2 text-church-text/50 bg-white/50 rounded-md border border-secondary/10"
-                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                            dangerouslySetInnerHTML={{ __html: label }}
                                         />
                                     );
                                 }
@@ -283,7 +292,7 @@ export default function ActivitiesIndex({ activities }: Props) {
                                             ? 'bg-secondary text-white border-secondary'
                                             : 'bg-white/70 text-church-dark border-secondary/20 hover:bg-secondary/10'
                                             }`}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        dangerouslySetInnerHTML={{ __html: label }}
                                     />
                                 );
                             })}

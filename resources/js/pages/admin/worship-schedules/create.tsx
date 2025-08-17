@@ -106,7 +106,7 @@ export default function WorshipSchedulesCreate({ communities }: WorshipSchedules
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <Label htmlFor="pic">Penanggung Jawab *</Label>
+                                    <Label htmlFor="pic">Pemimpin*</Label>
                                     <Input
                                         id="pic"
                                         type="text"
@@ -146,11 +146,11 @@ export default function WorshipSchedulesCreate({ communities }: WorshipSchedules
 
                             <div className="flex justify-end space-x-4">
                                 <Link href={route('admin.worship-schedules.index')}>
-                                    <Button type="button" variant="outline">
+                                    <Button type="button" variant="outline" className='bg-white border hover:bg-white hover:cursor-pointer text-black hover:text-black'>
                                         Batal
                                     </Button>
                                 </Link>
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" className='bg-primary text-white hover:bg-primary/80' disabled={processing}>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Jadwal'}
                                 </Button>

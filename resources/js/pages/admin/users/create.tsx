@@ -153,10 +153,10 @@ export default function CreateUser({ communities }: CreateUserProps) {
                                 />
                             </div>
                             <div className="flex justify-end gap-2 pt-2 md:col-span-2">
-                                <Button type="button" variant="outline" onClick={() => reset()}>
-                                    Reset
+                                <Button className='bg-white border hover:bg-white hover:cursor-pointer text-black hover:text-black' type="button" variant="outline" onClick={() => reset()}>
+                                    Batal
                                 </Button>
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" className='bg-primary text-white hover:bg-primary/80' disabled={processing}>
                                     <Plus className="mr-2 h-4 w-4" />
                                     Simpan
                                 </Button>

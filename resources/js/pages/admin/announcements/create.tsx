@@ -8,6 +8,7 @@ import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Save, Upload, X } from 'lucide-react';
 import { FormEventHandler, useRef } from 'react';
+import { useState } from 'react';
 
 export default function AnnouncementsCreate() {
     const { data, setData, post, processing, errors } = useForm({
@@ -16,6 +17,7 @@ export default function AnnouncementsCreate() {
         image: null as File | null,
         is_publish: false as boolean,
     });
+        const [imageError, setImageError] = useState('');
 
     const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -29,7 +31,13 @@ export default function AnnouncementsCreate() {
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setData('image', file);
+            if (file && file.size > 2 * 1024 * 1024) { // 2MB
+                setImageError('Ukuran gambar maksimal 2MB. Silakan pilih gambar lain.');
+                setData('image', null);
+            } else {
+                setImageError('');
+                setData('image', file);
+            }
     };
 
     const removeImage = () => {
@@ -105,11 +113,15 @@ export default function AnnouncementsCreate() {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className={`${errors.image ? 'border-red-500' : ''}`}
+                                                className={`${errors.image ? 'border-red-500' : ''} hover:cursor-pointer hover:bg-white`}
+                                                style={{ cursor: 'pointer' }}
                                             >
-                                                <Upload className="mr-2 h-4 w-4" />
-                                                Pilih Gambar
+                                                <Upload className="mr-2 h-4 w-4" style={{ color: 'black' }} />
+                                                <span style={{ color: 'black' }}>Pilih Gambar</span>
                                             </Button>
+                                                {imageError && (
+                                                    <div style={{ color: 'red', fontSize: '0.875rem', marginLeft: 8 }}>{imageError}</div>
+                                                )}
                                             {data.image && (
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-sm text-muted-foreground">{data.image.name}</span>
@@ -143,11 +155,11 @@ export default function AnnouncementsCreate() {
 
                             <div className="flex justify-end space-x-4">
                                 <Link href={route('admin.announcements.index')}>
-                                    <Button type="button" variant="outline">
+                                    <Button type="button" variant="outline" className="text-black border hover:bg-muted hover:text-black">
                                         Batal
                                     </Button>
                                 </Link>
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" disabled={processing} className='bg-primary text-white hover:bg-primary/90'>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Pengumuman'}
                                 </Button>

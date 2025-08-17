@@ -106,7 +106,7 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">{stats.total_umat}</div>
-                            <p className="text-xs text-muted-foreground">Jemaat terdaftar</p>
+                            <p className="text-xs text-muted-foreground">Umat terdaftar</p>
                         </CardContent>
                     </Card>
 

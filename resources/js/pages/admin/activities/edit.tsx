@@ -5,8 +5,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Save } from 'lucide-react';
-import { FormEvent, useRef } from 'react';
+import { Save, X } from 'lucide-react';
+import { FormEvent, useRef, useState } from 'react';
 
 interface Activity {
     id: number;
@@ -59,12 +59,30 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
         image: null as File | null,
     });
 
+    const [imageError, setImageError] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         setData('time_start', toHHmm(data.time_start));
         post(route('admin.activities.update', activity.id), { forceFormData: true, preserveScroll: true });
+    };
+
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        if (file && file.size > 2 * 1024 * 1024) {
+            setImageError('Ukuran gambar maksimal 2MB. Silakan pilih gambar lain.');
+            setData('image', null);
+        } else {
+            setImageError('');
+            setData('image', file);
+        }
+    };
+
+    const removeImage = () => {
+        setData('image', null);
+        setImageError('');
+        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     return (
@@ -167,15 +185,27 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
 
                             <div className="md:col-span-2">
                                 <Label htmlFor="image">Ganti Gambar (opsional)</Label>
-                                <Input
-                                    id="image"
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) =>
-                                        setData('image', e.target.files && e.target.files[0] ? (e.target.files[0] as unknown as File) : null)
-                                    }
-                                    className={errors.image ? 'border-red-500' : ''}
-                                />
+                                <div className="flex items-center gap-3">
+                                    <input
+                                        ref={fileInputRef}
+                                        id="image"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageSelect}
+                                        className={errors.image ? 'border-red-500' : ''}
+                                    />
+                                    {imageError && (
+                                        <div style={{ color: 'red', fontSize: '0.875rem', marginLeft: 8 }}>{imageError}</div>
+                                    )}
+                                    {data.image && (
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-sm text-muted-foreground">{data.image.name}</span>
+                                            <Button type="button" variant="ghost" size="sm" onClick={removeImage} className="h-6 w-6 p-0">
+                                                <X className="h-3 w-3" />
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
                                 {errors.image && <p className="mt-1 text-sm text-red-500">{errors.image}</p>}
                             </div>
 

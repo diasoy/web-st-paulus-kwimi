@@ -5,7 +5,7 @@ import { Label } from '@/components/ui/label';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { Save, Upload, X } from 'lucide-react';
-import { ChangeEvent, FormEventHandler, useRef } from 'react';
+import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
 
 export default function ActivitiesCreate() {
     const { data, setData, post, processing, errors } = useForm({
@@ -16,7 +16,8 @@ export default function ActivitiesCreate() {
         location: '',
         image: null as File | null,
     });
-
+    
+    const [imageError, setImageError] = useState('');
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const toHHmm = (val?: string | null) => {
@@ -41,11 +42,18 @@ export default function ActivitiesCreate() {
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setData('image', file);
+        if (file && file.size > 2 * 1024 * 1024) {
+            setImageError('Ukuran gambar maksimal 2MB. Silakan pilih gambar lain.');
+            setData('image', null);
+        } else {
+            setImageError('');
+            setData('image', file);
+        }
     };
 
     const removeImage = () => {
         setData('image', null);
+        setImageError('');
         if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
@@ -151,11 +159,15 @@ export default function ActivitiesCreate() {
                                                 variant="outline"
                                                 size="sm"
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className={`${errors.image ? 'border-red-500' : ''}`}
+                                                className={`${errors.image ? 'border-red-500' : ''}
+                                                hover:cursor-pointer hover:bg-white text-black hover:text-black`}
                                             >
                                                 <Upload className="mr-2 h-4 w-4" />
                                                 Pilih Gambar
                                             </Button>
+                                            {imageError && (
+                                                <div style={{ color: 'red', fontSize: '0.875rem', marginLeft: 8 }}>{imageError}</div>
+                                            )}
                                             {data.image && (
                                                 <div className="flex items-center gap-2">
                                                     <span className="text-sm text-muted-foreground">{data.image.name}</span>
@@ -173,11 +185,11 @@ export default function ActivitiesCreate() {
 
                             <div className="flex justify-end space-x-4">
                                 <Link href="/admin/activities">
-                                    <Button type="button" variant="outline">
+                                    <Button type="button" variant="outline" className='bg-white border hover:bg-white hover:cursor-pointer text-black hover:text-black'>
                                         Batal
                                     </Button>
                                 </Link>
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" className='bg-primary text-white hover:bg-primary/80' disabled={processing}>
                                     <Save className="mr-2 h-4 w-4" />
                                     {processing ? 'Menyimpan...' : 'Simpan Kegiatan'}
                                 </Button>

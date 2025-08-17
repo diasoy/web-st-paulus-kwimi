@@ -1,5 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from '@/components/ui/button';
+// Mapping label pagination agar tidak tampil 'pagination.next' di frontend
+const labelMap: Record<string, string> = {
+    'pagination.next': 'Berikutnya',
+    'pagination.previous': 'Sebelumnya',
+    'pagination.first': 'Pertama',
+    'pagination.last': 'Terakhir',
+};
+
+const getLabel = (label: string) => labelMap[label] || label;
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
@@ -319,6 +328,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                 'bg-white text-secondary border-secondary hover:opacity-80';
                             const disabledClass =
                                 'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                            const label = getLabel(link.label);
                             if (link.url) {
                                 return (
                                     <Link
@@ -329,7 +339,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                             ' ' +
                                             (link.active ? activeClass : inactiveClass)
                                         }
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        dangerouslySetInnerHTML={{ __html: label }}
                                     />
                                 );
                             } else {
@@ -337,7 +347,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                     <span
                                         key={index}
                                         className={baseClass + ' ' + disabledClass}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        dangerouslySetInnerHTML={{ __html: label }}
                                     />
                                 );
                             }

@@ -86,6 +86,22 @@ export default function Announcements({ announcements }: Props) {
           href: '/umat/announcements',
       },
   ];
+  // Map pagination labels to user-friendly text
+  const getLabel = (label: string) => {
+    switch (label) {
+      case 'pagination.previous':
+        return 'Sebelumnya';
+      case 'pagination.next':
+        return 'Berikutnya';
+      case '&laquo; Previous':
+        return 'Sebelumnya';
+      case 'Next &raquo;':
+        return 'Berikutnya';
+      default:
+        // Remove HTML tags for page numbers
+        return label.replace(/<[^>]+>/g, '').trim();
+    }
+  };
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -180,7 +196,7 @@ export default function Announcements({ announcements }: Props) {
                     <span
                       key={index}
                       className="px-3 py-2 text-church-text/50 bg-white/50 rounded-md border border-church-primary/10"
-                      dangerouslySetInnerHTML={{ __html: link.label }}
+                      dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
                     />
                   );
                 }
@@ -193,7 +209,7 @@ export default function Announcements({ announcements }: Props) {
                         ? 'bg-church-primary text-white border-church-primary'
                         : 'bg-white/70 text-church-dark border-church-primary/20 hover:bg-church-primary/10'
                       }`}
-                    dangerouslySetInnerHTML={{ __html: link.label }}
+                    dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
                   />
                 );
               })}

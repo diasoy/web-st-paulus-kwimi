@@ -1,4 +1,13 @@
 import { Badge } from '@/components/ui/badge';
+
+const labelMap: Record<string, string> = {
+  'pagination.next': 'Berikutnya',
+  'pagination.previous': 'Sebelumnya',
+  'pagination.first': 'Pertama',
+  'pagination.last': 'Terakhir',
+};
+
+const getLabel = (label: string) => labelMap[label] || label;
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
@@ -232,6 +241,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                     'bg-white text-secondary border-secondary hover:opacity-80';
                   const disabledClass =
                     'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                  const label = getLabel(link.label);
                   return link.url ? (
                     <button
                       key={index}
@@ -241,7 +251,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                         (link.active ? activeClass : inactiveClass)
                       }
                       onClick={() => router.visit(link.url!)}
-                      dangerouslySetInnerHTML={{ __html: link.label }}
+                      dangerouslySetInnerHTML={{ __html: label }}
                       type="button"
                     />
                   ) : (
@@ -249,7 +259,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                       key={index}
                       className={baseClass + ' ' + disabledClass}
                       disabled
-                      dangerouslySetInnerHTML={{ __html: link.label }}
+                      dangerouslySetInnerHTML={{ __html: label }}
                       type="button"
                     />
                   );

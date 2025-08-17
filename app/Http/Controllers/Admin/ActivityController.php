@@ -20,8 +20,8 @@ class ActivityController extends Controller
         $direction = $request->query('direction', 'desc');
 
         $sortable = ['name', 'date', 'location', 'created_at'];
-        if (!in_array($sort, $sortable)) {
-            $sort = 'date';
+            if (!in_array($sort, $sortable)) {
+                $sort = 'created_at';
         }
         $direction = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 

@@ -21,7 +21,7 @@ class WorshipScheduleController extends Controller
 
         $sortable = ['name', 'date', 'time_start', 'pic', 'created_at'];
         if (!in_array($sort, $sortable)) {
-            $sort = 'date';
+            $sort = 'created_at';
         }
         $direction = strtolower($direction) === 'asc' ? 'asc' : 'desc';
 

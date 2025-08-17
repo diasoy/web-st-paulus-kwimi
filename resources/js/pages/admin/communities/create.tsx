@@ -52,11 +52,11 @@ export default function CommunitiesCreate() {
 
                             <div className="flex justify-end gap-3 pt-6">
                                 <Link href="/admin/communities">
-                                    <Button variant="outline" type="button">
+                                    <Button variant="outline" type="button" className='bg-white border hover:bg-white hover:cursor-pointer text-black hover:text-black'>
                                         Batal
                                     </Button>
                                 </Link>
-                                <Button type="submit" disabled={processing}>
+                                <Button type="submit" className='bg-primary text-white hover:bg-primary/80'  disabled={processing}>
                                     {processing ? 'Menyimpan...' : 'Simpan Komunitas'}
                                 </Button>
                             </div>

@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
-import { ArrowLeft, Calendar, User, Image as ImageIcon } from 'lucide-react';
+import { ArrowLeft, Calendar, User } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
 import { id } from 'date-fns/locale';
 
@@ -80,29 +79,16 @@ export default function AnnouncementShow({ announcement }: Props) {
                     {/* Main Content */}
                     <Card className="max-w-4xl mx-auto bg-white/80 backdrop-blur-sm border-secondary/20 shadow-lg overflow-hidden">
                         {/* Image Header */}
-                        {announcement.image_url && !imageError ? (
-                            <div className="relative aspect-video bg-gray-100 overflow-hidden">
-                                <img
-                                    src={announcement.image_url}
-                                    alt={announcement.title}
-                                    className="absolute inset-0 w-full h-full object-cover"
-                                    onError={handleImageError}
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                            </div>
-                        ) : (
-                            <div className="aspect-video bg-gradient-to-br from-church-primary/10 to-church-secondary/10 flex items-center justify-center">
-                                <ImageIcon className="h-16 w-16 text-church-primary/50" />
-                                <div className="absolute bottom-0 left-0 right-0 p-8 text-church-dark">
-                                    <Badge className="mb-4 bg-church-primary/10 text-church-primary border-0">
-                                        {announcement.is_publish ? 'Dipublish' : 'Draft'}
-                                    </Badge>
-                                    <h1 className="text-4xl font-bold">
-                                        {announcement.title}
-                                    </h1>
-                                </div>
-                            </div>
-                        )}
+                        <div className="relative aspect-video bg-gray-100 overflow-hidden">
+                            <img
+                                src={announcement.image_url}
+                                alt={announcement.title}
+                                className="absolute inset-0 w-full h-full object-cover"
+                                onError={handleImageError}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
+                        </div>
+
 
                         {/* Meta Information */}
                         <div className="bg-church-cream/50 px-8 py-6 border-b border-secondary/10">
@@ -122,9 +108,9 @@ export default function AnnouncementShow({ announcement }: Props) {
                         <CardContent className="p-8">
                             {/* Description */}
                             <div className="mb-8">
-                               <h1 className="text-2xl font-bold mb-4 text-shadow">
-                                {announcement.title}
-                            </h1>
+                                <h1 className="text-2xl font-bold mb-4 text-shadow">
+                                    {announcement.title}
+                                </h1>
                                 <div className="prose prose-lg max-w-none">
                                     <p className="text-church-text leading-relaxed text-lg text-justify whitespace-pre-wrap">
                                         {announcement.description}

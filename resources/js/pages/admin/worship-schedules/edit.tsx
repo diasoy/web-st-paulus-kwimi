@@ -28,9 +28,18 @@ interface WorshipScheduleEditProps {
 }
 
 export default function WorshipScheduleEdit({ worshipSchedule, communities }: WorshipScheduleEditProps) {
+    // Format date ke yyyy-MM-dd agar cocok dengan input type date
+    const formatDate = (dateStr: string) => {
+        const d = new Date(dateStr);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const { data, setData, put, processing, errors } = useForm({
         name: worshipSchedule.name,
-        date: worshipSchedule.date,
+        date: formatDate(worshipSchedule.date),
         pic: worshipSchedule.pic,
         time_start: worshipSchedule.time_start.substring(0, 5), // Get HH:MM from HH:MM:SS
         communities: worshipSchedule.communities.map((c) => c.id),
@@ -120,7 +129,7 @@ export default function WorshipScheduleEdit({ worshipSchedule, communities }: Wo
                                 </div>
 
                                 <div className="md:col-span-2">
-                                    <Label htmlFor="pic">Penanggung Jawab *</Label>
+                                    <Label htmlFor="pic">Pemimpin *</Label>
                                     <Input
                                         id="pic"
                                         type="text"

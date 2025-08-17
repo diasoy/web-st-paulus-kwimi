@@ -6,8 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Save } from 'lucide-react';
-import { FormEventHandler } from 'react';
+import { Save, X } from 'lucide-react';
+import { FormEventHandler, useRef, useState } from 'react';
 
 interface Announcement {
     id: number;
@@ -18,6 +18,9 @@ interface Announcement {
 }
 
 export default function AnnouncementsEdit({ announcement }: { announcement: Announcement }) {
+    const [imageError, setImageError] = useState('');
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT' as const,
         title: announcement.title,
@@ -32,6 +35,25 @@ export default function AnnouncementsEdit({ announcement }: { announcement: Anno
             forceFormData: true,
             preserveScroll: true,
         });
+    };
+
+    // Handler untuk validasi gambar
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        if (file && file.size > 2 * 1024 * 1024) { // 2MB
+            setImageError('Ukuran gambar maksimal 2MB. Silakan pilih gambar lain.');
+            setData('image', null);
+        } else {
+            setImageError('');
+            setData('image', file);
+        }
+    };
+
+    const removeImage = () => {
+        setData('image', null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     };
 
     return (
@@ -102,15 +124,27 @@ export default function AnnouncementsEdit({ announcement }: { announcement: Anno
 
                                 <div className="md:col-span-2">
                                     <Label htmlFor="image">Ganti Gambar (opsional)</Label>
-                                    <Input
-                                        id="image"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(e) =>
-                                            setData('image', e.target.files && e.target.files[0] ? (e.target.files[0] as unknown as File) : null)
-                                        }
-                                        className={errors.image ? 'border-red-500' : ''}
-                                    />
+                                    <div className="flex items-center gap-3">
+                                        <input
+                                            ref={fileInputRef}
+                                            id="image"
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageSelect}
+                                            className={errors.image ? 'border-red-500' : ''}
+                                        />
+                                        {imageError && (
+                                            <div style={{ color: 'red', fontSize: '0.875rem', marginLeft: 8 }}>{imageError}</div>
+                                        )}
+                                        {data.image && (
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-sm text-muted-foreground">{data.image.name}</span>
+                                                <Button type="button" variant="ghost" size="sm" onClick={removeImage} className="h-6 w-6 p-0">
+                                                    <X className="h-3 w-3" />
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
                                     {errors.image && <p className="mt-1 text-sm text-red-500">{errors.image}</p>}
                                 </div>
 

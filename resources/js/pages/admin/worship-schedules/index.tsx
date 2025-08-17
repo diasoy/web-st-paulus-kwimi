@@ -4,6 +4,15 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
+// Mapping label pagination agar tidak tampil 'pagination.next' di frontend
+const labelMap: Record<string, string> = {
+    'pagination.next': 'Berikutnya',
+    'pagination.previous': 'Sebelumnya',
+    'pagination.first': 'Pertama',
+    'pagination.last': 'Terakhir',
+};
+
+const getLabel = (label: string) => labelMap[label] || label;
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowDown, ArrowUp, Calendar, ChevronsUpDown, Clock, Edit, Eye, Plus, Search, Trash2, User } from 'lucide-react';
 import { useState } from 'react';
@@ -250,7 +259,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                             }}
                                             className="flex items-center font-semibold hover:text-foreground/90"
                                         >
-                                            Penanggung Jawab
+                                            Pemimpin
                                             {sortBy !== 'pic' ? (
                                                 <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
                                             ) : sortDir === 'asc' ? (
@@ -340,6 +349,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                 'bg-white text-secondary border-secondary hover:opacity-80';
                             const disabledClass =
                                 'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                            const label = getLabel(link.label);
                             if (link.url) {
                                 return (
                                     <Link
@@ -350,7 +360,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                             ' ' +
                                             (link.active ? activeClass : inactiveClass)
                                         }
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        dangerouslySetInnerHTML={{ __html: label }}
                                     />
                                 );
                             } else {
@@ -358,7 +368,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                                     <span
                                         key={index}
                                         className={baseClass + ' ' + disabledClass}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
+                                        dangerouslySetInnerHTML={{ __html: label }}
                                     />
                                 );
                             }

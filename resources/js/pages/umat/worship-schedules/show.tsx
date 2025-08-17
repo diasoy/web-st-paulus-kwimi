@@ -102,7 +102,7 @@ export default function WorshipScheduleShow({ worshipSchedule }: Props) {
                                 <div className="flex items-center p-4 bg-muted/50 rounded-lg border border-border">
                                     <Users className="w-6 h-6 mr-3 text-primary" />
                                     <div>
-                                        <h3 className="font-medium text-foreground">Penanggung Jawab</h3>
+                                        <h3 className="font-medium text-foreground">Pemimpin</h3>
                                         <p className="text-muted-foreground">{worshipSchedule.pic}</p>
                                     </div>
                                 </div>

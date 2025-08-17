@@ -38,6 +38,21 @@ interface Props {
 }
 
 export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
+    const getLabel = (label: string) => {
+        switch (label) {
+            case 'pagination.previous':
+                return 'Sebelumnya';
+            case 'pagination.next':
+                return 'Berikutnya';
+            case '&laquo; Previous':
+                return 'Sebelumnya';
+            case 'Next &raquo;':
+                return 'Berikutnya';
+            default:
+                // Remove HTML tags for page numbers
+                return label.replace(/<[^>]+>/g, '').trim();
+        }
+    };
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('id-ID', {
             weekday: 'long',
@@ -119,7 +134,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                             <span className="text-sm">
-                                                <span className="font-medium">PIC:</span> {schedule.pic}
+                                                <span className="font-medium">Pemimpin: </span> {schedule.pic}
                                             </span>
                                         </div>
 
@@ -154,26 +169,26 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                     )}
 
                     {/* Pagination */}
-                    {worshipSchedules.last_page > 1 && (
-                        <div className="flex justify-center mt-12">
-                            <div className="flex space-x-2">
-                                {worshipSchedules.links.map((link, index) => (
-                                    <a
-                                        key={index}
-                                        href={link.url || '#'}
-                                        className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
-                                            link.active
-                                                ? 'bg-secondary text-white shadow-md'
-                                                : link.url
-                                                ? 'bg-white  border border-secondary-200 hover:bg-secondary-50 hover:border-secondary-300 shadow-sm'
-                                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                                        }`}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                    />
-                                ))}
+                        {worshipSchedules.last_page > 1 && (
+                            <div className="flex justify-center mt-12">
+                                <div className="flex space-x-2">
+                                    {worshipSchedules.links.map((link, index) => (
+                                        <a
+                                            key={index}
+                                            href={link.url || '#'}
+                                            className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${
+                                                link.active
+                                                    ? 'bg-secondary text-white shadow-md'
+                                                    : link.url
+                                                    ? 'bg-white  border border-secondary-200 hover:bg-secondary-50 hover:border-secondary-300 shadow-sm'
+                                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                            }`}
+                                            dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )}
                 </div>
             </div>
         </AppLayout>

@@ -95,18 +95,25 @@ class AdminDashboardController extends Controller
 
         // Transform the data to match frontend interface
         $users->through(function ($user) {
+            // Calculate age from birth_date, always integer (floor)
+            $age = null;
+            if ($user->birth_date) {
+                $birth = Carbon::parse($user->birth_date);
+                $now = Carbon::now();
+                $age = (int) floor($birth->diffInYears($now));
+            }
             return [
                 'id' => $user->id,
                 'name' => $user->name,
-                'email' => $user->email,
-                'role' => $user->role_id === 1 ? 'admin' : 'umat',
+                'birth_date' => $user->birth_date,
                 'gender' => $user->gender,
-                'status' => $user->status,
+                'address' => $user->address,
+                'age' => $age,
                 'community' => $user->community ? [
                     'id' => $user->community->id,
                     'name' => $user->community->name,
                 ] : null,
-                'created_at' => $user->created_at,
+                // aksi: id, bisa dipakai untuk edit/hapus di frontend
             ];
         });
 

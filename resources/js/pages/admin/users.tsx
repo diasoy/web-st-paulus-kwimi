@@ -74,14 +74,14 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
   };
 
   const handleDelete = (id: number, name: string) => {
-    if (confirm(`Apakah Anda yakin ingin menghapus pengguna "${name}" secara permanen?`)) {
+    if (confirm(`Apakah Anda yakin ingin menghapus Umat "${name}" secara permanen?`)) {
       router.delete(route('admin.users.destroy', id));
     }
   };
 
   return (
     <AuthenticatedLayout>
-      <Head title="Manajemen Pengguna" />
+      <Head title="Manajemen Umat" />
 
       <div className="space-y-6 p-6">
         {/* Flash messages */}
@@ -93,8 +93,8 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
         )}
 
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Manajemen Pengguna</h1>
-          <p className="text-muted-foreground">Kelola semua pengguna sistem ST. Paulus Kwimi</p>
+          <h1 className="text-3xl font-bold tracking-tight">Manajemen Umat</h1>
+          <p className="text-muted-foreground">Kelola semua Umat sistem ST. Paulus Kwimi</p>
         </div>
 
         {/* Toolbar (Search + Filters) */}
@@ -138,7 +138,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
           <Button asChild className="shrink-0 px-2 sm:px-4 text-white hover:bg-primary/90">
             <Link href={route('admin.users.create')}>
               <Plus className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Tambah Pengguna</span>
+              <span className="hidden sm:inline">Tambah Umat</span>
             </Link>
           </Button>
         </div>
@@ -150,10 +150,12 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
               <Table>
                 <TableHeader>
                   <TableRow className="bg-muted/60">
-                    <TableHead>Nama Pengguna</TableHead>
-                    <TableHead>Komunitas Basis</TableHead>
-                    <TableHead>Gender</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>Nama</TableHead>
+                    <TableHead>Tanggal Lahir</TableHead>
+                    <TableHead>Jenis Kelamin</TableHead>
+                    <TableHead>Alamat</TableHead>
+                    <TableHead>Umur</TableHead>
+                    <TableHead>Kombas</TableHead>
                     <TableHead className="text-right">Aksi</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -161,40 +163,22 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                   {users.data.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                            <span className="text-sm font-medium">{user.name.charAt(0).toUpperCase()}</span>
-                          </div>
-                          <span className="font-semibold">{user.name}</span>
-                        </div>
+                        <span className="font-semibold">{user.name}</span>
                       </TableCell>
                       <TableCell>
-                        {user.community ? (
-                          <span className="text-sm">{user.community.name}</span>
-                        ) : (
-                          <span className="text-sm text-muted-foreground">-</span>
-                        )}
+                        {user.birth_date ? new Date(user.birth_date).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'}
                       </TableCell>
                       <TableCell>
-                        <div className="flex h-8 w-8 items-center justify-center">
-                          {user.gender === 'male' ? (
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-blue-600">
-                              <UserIcon className="h-4 w-4" />
-                            </div>
-                          ) : (
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-pink-100 text-pink-600">
-                              <UserIcon className="h-4 w-4" />
-                            </div>
-                          )}
-                        </div>
+                        {user.gender === 'male' ? 'Laki-laki' : user.gender === 'female' ? 'Perempuan' : '-'}
                       </TableCell>
                       <TableCell>
-                        <Badge
-                          variant={user.status === 'active' ? 'default' : 'destructive'}
-                          className={user.status === 'active' ? 'bg-green-100 text-green-800 hover:bg-green-200' : ''}
-                        >
-                          {user.status === 'active' ? 'Aktif' : 'Nonaktif'}
-                        </Badge>
+                        {user.address || '-'}
+                      </TableCell>
+                      <TableCell>
+                        {user.age !== null && user.age !== undefined ? `${user.age} tahun` : '-'}
+                      </TableCell>
+                      <TableCell>
+                        {user.community ? user.community.name : '-'}
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
@@ -220,7 +204,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
             ) : (
               <div className="py-12 text-center">
                 <Users className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                <p className="mt-4 text-lg font-medium">Tidak ada pengguna ditemukan</p>
+                <p className="mt-4 text-lg font-medium">Tidak ada Umat ditemukan</p>
                 <p className="text-muted-foreground">Coba ubah filter pencarian Anda</p>
               </div>
             )}
@@ -229,7 +213,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
           {users.data.length > 0 && (
             <div className="mt-6 flex items-center justify-between border-t pt-6">
               <div className="text-sm text-muted-foreground">
-                Menampilkan {users.data.length} dari {users.total} pengguna
+                Menampilkan {users.data.length} dari {users.total} Umat
               </div>
               <div className="flex gap-2">
                 {users.links.map((link, index) => {

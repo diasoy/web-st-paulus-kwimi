@@ -1,5 +1,4 @@
-import { Badge } from '@/components/ui/badge';
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const labelMap: Record<string, string> = {
   'pagination.next': 'Berikutnya',
   'pagination.previous': 'Sebelumnya',
@@ -13,10 +12,13 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Edit, Eye, Filter, Plus, RotateCcw, Search, Trash2, User as UserIcon, Users } from 'lucide-react';
+import { Edit, Eye, Filter, Plus, RotateCcw, Search, Trash2, User, Users } from 'lucide-react';
 import { useState } from 'react';
 
 interface User {
+  age: null;
+  address: string;
+  birth_date: any;
   id: number;
   name: string;
   email: string;

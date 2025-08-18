@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Hash;
 
 class AdminDashboardController extends Controller
 {
@@ -158,13 +159,9 @@ class AdminDashboardController extends Controller
     public function editUser(User $user): Response
     {
         // Debug: log yang sedang diakses
-        \Log::info('EditUser called for user ID: ' . $user->id);
 
         $user->load(['community:id,name', 'role:id,name']);
-        $communities = \App\Models\Community::all(['id', 'name']);
-
-        \Log::info('User data: ', $user->toArray());
-        \Log::info('Communities count: ' . $communities->count());
+        $communities = Community::all(['id', 'name']);
 
         return Inertia::render('admin/users/edit', [
             'user' => [
@@ -229,7 +226,7 @@ class AdminDashboardController extends Controller
      */
     public function createUser(): Response
     {
-        $communities = \App\Models\Community::all(['id', 'name']);
+        $communities = Community::all(['id', 'name']);
 
         return Inertia::render('admin/users/create', [
             'communities' => $communities,
@@ -266,7 +263,7 @@ class AdminDashboardController extends Controller
             'status' => $validated['status'],
             'community_id' => $validated['community_id'] ?? null,
             'role_id' => $validated['role'] === 'admin' ? 1 : 2,
-            'password' => \Hash::make($validated['password']),
+            'password' => Hash::make($validated['password']),
         ];
 
         User::create($data);

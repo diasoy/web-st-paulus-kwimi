@@ -100,8 +100,8 @@ export default function Welcome({ announcements = [], activities = [], worshipSc
                   className="mx-auto mb-6 h-auto w-2/3 max-w-[180px] md:max-w-[220px] lg:max-w-[260px] xl:max-w-[300px]"
                 />
                 <h1 className="church-text-gradient mb-4 text-center text-5xl leading-tight font-bold">
-                  Selamat Datang di Gereja <br />
-                  St. Paulus Kwimi
+                  Selamat Datang di Aplikasi Lingkungan <br />
+                  St.Paulus Kwimi 
                 </h1>
                 <p className="mx-auto max-w-2xl text-center text-lg leading-relaxed text-muted-foreground">
                   Temukan kedamaian, komunitas, dan pertumbuhan rohani bersama kami.

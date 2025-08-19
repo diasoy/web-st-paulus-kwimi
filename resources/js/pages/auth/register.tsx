@@ -23,10 +23,9 @@ export default function Register({ communities }: Props) {
     const { data, setData, post, processing, errors, reset } = useForm<Required<RegisterForm>>({
         name: '',
         username: '',
-        email: '',
-        phone_number: '',
         address: '',
         birth_date: '',
+        birth_place: '',
         gender: 'male',
         password: '',
         password_confirmation: '',
@@ -179,38 +178,22 @@ export default function Register({ communities }: Props) {
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Email dan phone_number dihapus */}
                                     <div className="grid gap-3">
-                                        <Label htmlFor="email" className="text-foreground font-semibold">Email</Label>
+                                        <Label htmlFor="birth_place" className="text-foreground font-semibold">Tempat Lahir</Label>
                                         <Input
-                                            id="email"
-                                            type="email"
-                                            required
-                                            tabIndex={3}
-                                            autoComplete="email"
-                                            value={data.email}
-                                            onChange={(e) => setData('email', e.target.value)}
-                                            disabled={processing}
-                                            placeholder="email@example.com"
-                                            className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
-                                        />
-                                        <InputError message={errors.email} />
-                                    </div>
-
-                                    <div className="grid gap-3">
-                                        <Label htmlFor="phone_number" className="text-foreground font-semibold">No. Telepon</Label>
-                                        <Input
-                                            id="phone_number"
-                                            type="tel"
+                                            id="birth_place"
+                                            type="text"
                                             required
                                             tabIndex={4}
-                                            autoComplete="tel"
-                                            value={data.phone_number}
-                                            onChange={(e) => setData('phone_number', e.target.value)}
+                                            autoComplete="birth_place"
+                                            value={data.birth_place}
+                                            onChange={(e) => setData('birth_place', e.target.value)}
                                             disabled={processing}
-                                            placeholder="+62 812 3456 7890"
+                                            placeholder="Contoh: Jayapura"
                                             className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                                         />
-                                        <InputError message={errors.phone_number} />
+                                        <InputError message={errors.birth_place} />
                                     </div>
                                 </div>
 

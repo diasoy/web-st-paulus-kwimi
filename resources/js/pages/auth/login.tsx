@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 type LoginForm = {
-  email: string;
+  username: string;
   password: string;
   remember: boolean;
 };
@@ -24,7 +24,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const { data, setData, post, processing, errors, reset } = useForm<Required<LoginForm>>({
-    email: '',
+    username: '',
     password: '',
     remember: false,
   });
@@ -135,7 +135,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             <div className="bg-card/80 backdrop-blur-xl p-10 rounded-3xl church-shadow border border-border transition-all duration-500">
               <div className="text-center mb-10">
                 <h2 className="text-3xl font-bold text-foreground mb-3">Masuk ke Akun</h2>
-                <p className="text-muted-foreground">Masukkan email dan kata sandi Anda</p>
+                <p className="text-muted-foreground">Masukkan username dan kata sandi Anda</p>
               </div>
 
               {status && (
@@ -147,23 +147,23 @@ export default function Login({ status, canResetPassword }: LoginProps) {
               <form className="space-y-7" onSubmit={submit}>
                 <div className="grid gap-6">
                   <div className="grid gap-3">
-                    <Label htmlFor="email" className="text-foreground font-semibold text-left justify-start">Alamat Email</Label>
+                    <Label htmlFor="username" className="text-foreground font-semibold text-left justify-start">Username</Label>
                     <div className="relative">
                       <Input
-                        id="email"
-                        type="email"
+                        id="username"
+                        type="text"
                         required
                         autoFocus
                         tabIndex={1}
-                        autoComplete="email"
-                        value={data.email}
-                        onChange={(e) => setData('email', e.target.value)}
-                        placeholder="email@example.com"
+                        autoComplete="username"
+                        value={data.username}
+                        onChange={(e) => setData('username', e.target.value)}
+                        placeholder="Masukkan username"
                         disabled={processing}
                         className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                       />
                     </div>
-                    <InputError message={errors.email} />
+                    <InputError message={errors.username} />
                   </div>
 
                   <div className="grid gap-3">

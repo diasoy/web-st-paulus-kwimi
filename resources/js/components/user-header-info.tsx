@@ -27,9 +27,13 @@ const UserHeaderInfo = ({ onlyDate, onlyUser }: UserHeaderInfoProps = {}) => {
                 <Button variant="destructive" size="sm" onClick={handleLogout} className="ml-2">
                     <LogOut className="mr-1 h-4 w-4" /> Logout
                 </Button>
-                <div className="flex flex-col text-right">
+                <div className="flex text-right">
                     <span className="font-semibold text-base text-start">{auth.user.name}</span>
-                    <span className="text-xs text-muted-foreground">{auth.user.email}</span>
+                    <span
+                        className={`inline-block text-center mt-1 px-2 py-0.5 rounded text-xs font-semibold ${auth.user.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
+                    >
+                        {auth.user.role === 'admin' ? 'Admin' : 'Umat'}
+                    </span>
                 </div>
             </div>
         );
@@ -40,9 +44,13 @@ const UserHeaderInfo = ({ onlyDate, onlyUser }: UserHeaderInfoProps = {}) => {
             <Button variant="destructive" size="sm" onClick={handleLogout} className="ml-2">
                 <LogOut className="mr-1 h-4 w-4" /> Logout
             </Button>
-            <div className="flex flex-col text-right">
+            <div className="flex text-right">
                 <span className="font-semibold text-base text-start">{auth.user.name}</span>
-                <span className="text-xs text-muted-foreground">{auth.user.email}</span>
+                <span
+                    className={`inline-block text-center mt-1 px-2 py-0.5 rounded text-xs font-semibold ${auth.user.role === 'admin' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}
+                >
+                    {auth.user.role === 'admin' ? 'Admin' : 'Umat'}
+                </span>
             </div>
         </div>
     );

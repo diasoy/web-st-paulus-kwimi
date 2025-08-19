@@ -28,11 +28,10 @@ class UserFactory extends Factory
         return [
             'name' => fake()->name(),
             'username' => fake()->unique()->userName(),
-            'email' => fake()->unique()->safeEmail(),
-            'phone_number' => fake()->phoneNumber(),
             'password' => static::$password ??= Hash::make('password'),
             'address' => fake()->address(),
             'birth_date' => fake()->dateTimeBetween('-70 years', '-18 years')->format('Y-m-d'),
+            'birth_place' => fake()->city(),
             'gender' => fake()->randomElement(['male', 'female']),
             'role_id' => Role::factory(),
             'community_id' => Community::factory(),

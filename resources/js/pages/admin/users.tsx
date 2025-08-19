@@ -19,9 +19,9 @@ interface User {
   age: null;
   address: string;
   birth_date: any;
+  birth_place?: string;
   id: number;
   name: string;
-  email: string;
   role: string;
   gender: 'male' | 'female';
   status: 'active' | 'inactive';
@@ -153,6 +153,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                 <TableHeader>
                   <TableRow className="bg-muted/60">
                     <TableHead>Nama</TableHead>
+                    <TableHead>Tempat Lahir</TableHead>
                     <TableHead>Tanggal Lahir</TableHead>
                     <TableHead>Jenis Kelamin</TableHead>
                     <TableHead>Alamat</TableHead>
@@ -166,6 +167,9 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">
                         <span className="font-semibold">{user.name}</span>
+                      </TableCell>
+                      <TableCell>
+                        {user.birth_place || '-'}
                       </TableCell>
                       <TableCell>
                         {user.birth_date ? new Date(user.birth_date).toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'}

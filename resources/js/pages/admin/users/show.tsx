@@ -3,14 +3,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Edit, Mail, MapPin, Phone, User, Users } from 'lucide-react';
+import { ArrowLeft, Calendar, Edit, MapPin, User, Users } from 'lucide-react';
 
 interface UserShow {
     id: number;
     name: string;
     username: string;
-    email: string;
-    phone_number?: string;
+    birth_place?: string;
     address?: string;
     birth_date?: string;
     gender: 'male' | 'female';
@@ -89,41 +88,26 @@ export default function UserShow({ user }: UserShowProps) {
 
                                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
                                     <div className="flex items-center gap-3">
-                                        <Mail className="h-5 w-5 text-muted-foreground" />
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">Email</p>
-                                            <p className="font-medium">{user.email}</p>
-                                        </div>
-                                    </div>
-
-                                    {user.phone_number && (
-                                        <div className="flex items-center gap-3">
-                                            <Phone className="h-5 w-5 text-muted-foreground" />
-                                            <div>
-                                                <p className="text-sm text-muted-foreground">Telepon</p>
-                                                <p className="font-medium">{user.phone_number}</p>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    <div className="flex items-center gap-3">
                                         <User className="h-5 w-5 text-muted-foreground" />
                                         <div>
                                             <p className="text-sm text-muted-foreground">Gender</p>
                                             <p className="font-medium">{user.gender === 'male' ? 'Laki-laki' : 'Perempuan'}</p>
                                         </div>
                                     </div>
-
-                                    {user.birth_date && (
-                                        <div className="flex items-center gap-3">
-                                            <Calendar className="h-5 w-5 text-muted-foreground" />
-                                            <div>
-                                                <p className="text-sm text-muted-foreground">Tanggal Lahir</p>
-                                                <p className="font-medium">{formatDate(user.birth_date)}</p>
-                                            </div>
+                                    <div className="flex items-center gap-3">
+                                        <Calendar className="h-5 w-5 text-muted-foreground" />
+                                        <div>
+                                            <p className="text-sm text-muted-foreground">Tanggal Lahir</p>
+                                            <p className="font-medium">{user.birth_date ? formatDate(user.birth_date) : '-'}</p>
                                         </div>
-                                    )}
-
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <MapPin className="h-5 w-5 text-muted-foreground" />
+                                        <div>
+                                            <p className="text-sm text-muted-foreground">Tempat Lahir</p>
+                                            <p className="font-medium">{user.birth_place || '-'}</p>
+                                        </div>
+                                    </div>
                                     <div className="flex items-center gap-3">
                                         <Users className="h-5 w-5 text-muted-foreground" />
                                         <div>
@@ -131,7 +115,6 @@ export default function UserShow({ user }: UserShowProps) {
                                             <p className="font-medium">{user.community?.name || '-'}</p>
                                         </div>
                                     </div>
-
                                     <div className="flex items-center gap-3">
                                         <div className="flex h-5 w-5 items-center justify-center">
                                             <div className={`h-3 w-3 rounded-full ${user.status === 'active' ? 'bg-green-500' : 'bg-red-500'}`}></div>

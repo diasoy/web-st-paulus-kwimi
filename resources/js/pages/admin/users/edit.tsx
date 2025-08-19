@@ -12,8 +12,7 @@ interface UserEdit {
     id: number;
     name: string;
     username: string;
-    email: string;
-    phone_number?: string;
+    birth_place?: string;
     address?: string;
     birth_date?: string;
     gender: 'male' | 'female';
@@ -35,6 +34,7 @@ interface UserEditProps {
 
 export default function UserEdit({ user, communities }: UserEditProps) {
     console.log('UserEdit called with:', { user, communities });
+    console.log('DEBUG birth_place:', user.birth_place);
 
     // Protective check
     if (!user) {
@@ -59,15 +59,14 @@ export default function UserEdit({ user, communities }: UserEditProps) {
         return `${yyyy}-${mm}-${dd}`;
     };
     const { data, setData, put, processing, errors } = useForm({
-        name: user.name || '',
-        username: user.username || '',
-        email: user.email || '',
-        phone_number: user.phone_number || '',
-        address: user.address || '',
+        name: user.name ?? '',
+        username: user.username ?? '',
+        birth_place: (user.birth_place !== undefined && user.birth_place !== null) ? String(user.birth_place) : '',
+        address: user.address ?? '',
         birth_date: formatBirthDate(user.birth_date),
-        gender: user.gender || 'male',
-        status: user.status || 'active',
-        community_id: user.community_id || null,
+        gender: user.gender ?? 'male',
+        status: user.status ?? 'active',
+        community_id: user.community_id ?? null,
     });
 
     const handleSubmit = (e: FormEvent) => {
@@ -127,28 +126,16 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                                     {errors.username && <p className="text-sm text-red-600">{errors.username}</p>}
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="email">Email *</Label>
+                                    <Label htmlFor="birth_place">Tempat Lahir</Label>
                                     <Input
-                                        id="email"
-                                        type="email"
-                                        value={data.email}
-                                        onChange={(e) => setData('email', e.target.value)}
-                                        placeholder="Masukkan email"
-                                        required
-                                    />
-                                    {errors.email && <p className="text-sm text-red-600">{errors.email}</p>}
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="phone_number">Nomor Telepon</Label>
-                                    <Input
-                                        id="phone_number"
+                                        id="birth_place"
                                         type="text"
-                                        value={data.phone_number}
-                                        onChange={(e) => setData('phone_number', e.target.value)}
-                                        placeholder="Masukkan nomor telepon"
+                                        value={data.birth_place}
+                                        onChange={(e) => setData('birth_place', e.target.value)}
+                                        placeholder="Masukkan tempat lahir"
                                     />
-                                    {errors.phone_number && <p className="text-sm text-red-600">{errors.phone_number}</p>}
-                                </div>{' '}
+                                    {errors.birth_place && <p className="text-sm text-red-600">{errors.birth_place}</p>}
+                                </div>
                                 <div className="space-y-2">
                                     <Label htmlFor="birth_date">Tanggal Lahir</Label>
                                     <Input

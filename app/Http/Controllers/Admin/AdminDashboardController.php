@@ -33,7 +33,7 @@ class AdminDashboardController extends Controller
         ];
 
         // Recent items
-        $recent_users = User::latest()->take(5)->get(['id', 'name', 'email', 'role_id', 'created_at']);
+        $recent_users = User::latest()->take(5)->get(['id', 'name', 'username', 'role_id', 'created_at']);
         $recent_announcements = Announcement::latest()->take(5)->get(['id', 'title', 'is_publish', 'created_at', 'image_url']);
 
         // Upcoming worship schedules (next 5)
@@ -106,6 +106,8 @@ class AdminDashboardController extends Controller
             return [
                 'id' => $user->id,
                 'name' => $user->name,
+                'username' => $user->username,
+                'birth_place' => $user->birth_place,
                 'birth_date' => $user->birth_date,
                 'gender' => $user->gender,
                 'address' => $user->address,
@@ -136,8 +138,7 @@ class AdminDashboardController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'username' => $user->username,
-                'email' => $user->email,
-                'phone_number' => $user->phone_number,
+                'birth_place' => $user->birth_place,
                 'address' => $user->address,
                 'birth_date' => $user->birth_date,
                 'gender' => $user->gender,
@@ -168,8 +169,7 @@ class AdminDashboardController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'username' => $user->username,
-                'email' => $user->email,
-                'phone_number' => $user->phone_number,
+                'birth_place' => $user->birth_place,
                 'address' => $user->address,
                 'birth_date' => $user->birth_date,
                 'gender' => $user->gender,
@@ -190,10 +190,9 @@ class AdminDashboardController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
-            'email' => 'required|email|unique:users,email,' . $user->id,
-            'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'birth_date' => 'nullable|date',
+            'birth_place' => 'nullable|string',
             'gender' => 'required|in:male,female',
             'status' => 'required|in:active,inactive',
             'community_id' => 'nullable|exists:communities,id',
@@ -241,10 +240,9 @@ class AdminDashboardController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
-            'email' => 'required|email|unique:users,email',
-            'phone_number' => 'nullable|string|max:20',
             'address' => 'nullable|string',
             'birth_date' => 'nullable|date',
+            'birth_place' => 'nullable|string',
             'gender' => 'required|in:male,female',
             'status' => 'required|in:active,inactive',
             'community_id' => 'nullable|exists:communities,id',
@@ -255,10 +253,9 @@ class AdminDashboardController extends Controller
         $data = [
             'name' => $validated['name'],
             'username' => $validated['username'],
-            'email' => $validated['email'],
-            'phone_number' => $validated['phone_number'] ?? null,
             'address' => $validated['address'] ?? null,
             'birth_date' => $validated['birth_date'] ?? null,
+            'birth_place' => $validated['birth_place'] ?? null,
             'gender' => $validated['gender'],
             'status' => $validated['status'],
             'community_id' => $validated['community_id'] ?? null,

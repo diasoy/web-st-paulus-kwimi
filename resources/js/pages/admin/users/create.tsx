@@ -14,8 +14,7 @@ export default function CreateUser({ communities }: CreateUserProps) {
     const { data, setData, post, processing, errors, reset } = useForm({
         name: '',
         username: '',
-        email: '',
-        phone_number: '',
+        birth_place: '',
         address: '',
         birth_date: '',
         gender: 'male',
@@ -63,14 +62,9 @@ export default function CreateUser({ communities }: CreateUserProps) {
                                 {errors.username && <p className="mt-1 text-sm text-red-600">{errors.username}</p>}
                             </div>
                             <div>
-                                <Label htmlFor="email">Email</Label>
-                                <Input id="email" type="email" value={data.email} onChange={(e) => setData('email', e.target.value)} />
-                                {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
-                            </div>
-                            <div>
-                                <Label htmlFor="phone_number">No. HP</Label>
-                                <Input id="phone_number" value={data.phone_number} onChange={(e) => setData('phone_number', e.target.value)} />
-                                {errors.phone_number && <p className="mt-1 text-sm text-red-600">{errors.phone_number}</p>}
+                                <Label htmlFor="birth_place">Tempat Lahir</Label>
+                                <Input id="birth_place" value={data.birth_place} onChange={(e) => setData('birth_place', e.target.value)} />
+                                {errors.birth_place && <p className="mt-1 text-sm text-red-600">{errors.birth_place}</p>}
                             </div>
                             <div className="md:col-span-2">
                                 <Label htmlFor="address">Alamat</Label>
@@ -153,7 +147,7 @@ export default function CreateUser({ communities }: CreateUserProps) {
                                 />
                             </div>
                             <div className="flex justify-end gap-2 pt-2 md:col-span-2">
-                                <Button className='bg-white border hover:bg-white hover:cursor-pointer text-black hover:text-black' type="button" variant="outline" onClick={() => reset()}>
+                                <Button className='bg-white border hover:bg-white hover:cursor-pointer text-black hover:text-black' type="button" variant="outline" onClick={() => window.location.href = route('admin.users')}>
                                     Batal
                                 </Button>
                                 <Button type="submit" className='bg-primary text-white hover:bg-primary/80' disabled={processing}>

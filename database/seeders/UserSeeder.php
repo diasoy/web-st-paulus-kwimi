@@ -30,52 +30,52 @@ class UserSeeder extends Seeder
         }
 
         // Create admin users (only if they don't exist)
-        if (!User::where('email', 'admin@stpaulus.com')->exists()) {
+        if (!User::where('username', 'admin')->exists()) {
             User::factory()->create([
                 'name' => 'Administrator',
                 'username' => 'admin',
-                'email' => 'admin@stpaulus.com',
-                'phone_number' => '081234567890',
+                'password' => bcrypt('admin123'),
                 'role_id' => $adminRole->id,
                 'community_id' => $communities->random()->id,
                 'status' => 'active',
+                'birth_place' => 'Kwimi',
             ]);
         }
 
-        if (!User::where('email', 'superadmin@stpaulus.com')->exists()) {
+        if (!User::where('username', 'superadmin')->exists()) {
             User::factory()->create([
                 'name' => 'Super Admin',
                 'username' => 'superadmin',
-                'email' => 'superadmin@stpaulus.com',
-                'phone_number' => '081234567891',
+                'password' => bcrypt('superadmin123'),
                 'role_id' => $adminRole->id,
                 'community_id' => $communities->random()->id,
                 'status' => 'active',
+                'birth_place' => 'Kwimi',
             ]);
         }
 
         // Create test umat users with specific data (only if they don't exist)
-        if (!User::where('email', 'john@example.com')->exists()) {
+        if (!User::where('username', 'johndoe')->exists()) {
             User::factory()->create([
                 'name' => 'John Doe',
                 'username' => 'johndoe',
-                'email' => 'john@example.com',
-                'phone_number' => '081234567892',
+                'password' => bcrypt('johndoe123'),
                 'role_id' => $umatRole->id,
                 'community_id' => $communities->random()->id,
                 'status' => 'active',
+                'birth_place' => 'Jayapura',
             ]);
         }
 
-        if (!User::where('email', 'jane@example.com')->exists()) {
+        if (!User::where('username', 'janesmith')->exists()) {
             User::factory()->create([
                 'name' => 'Jane Smith',
                 'username' => 'janesmith',
-                'email' => 'jane@example.com',
-                'phone_number' => '081234567893',
+                'password' => bcrypt('janesmith123'),
                 'role_id' => $umatRole->id,
                 'community_id' => $communities->random()->id,
                 'status' => 'active',
+                'birth_place' => 'Merauke',
             ]);
         }
 
@@ -89,6 +89,7 @@ class UserSeeder extends Seeder
                         'role_id' => $umatRole->id,
                         'community_id' => $community->id,
                         'status' => 'active',
+                        'birth_place' => 'Kwimi',
                     ]);
             }
 
@@ -99,6 +100,7 @@ class UserSeeder extends Seeder
                     'role_id' => $umatRole->id,
                     'community_id' => $communities->random()->id,
                     'status' => 'inactive',
+                    'birth_place' => 'Kwimi',
                 ]);
 
             // Create additional random admin users
@@ -108,6 +110,7 @@ class UserSeeder extends Seeder
                     'role_id' => $adminRole->id,
                     'community_id' => $communities->random()->id,
                     'status' => 'active',
+                    'birth_place' => 'Kwimi',
                 ]);
         }
 

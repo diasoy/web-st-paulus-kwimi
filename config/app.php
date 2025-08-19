@@ -12,7 +12,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'St Paulus Kwimi'),
 
     /*
     |--------------------------------------------------------------------------

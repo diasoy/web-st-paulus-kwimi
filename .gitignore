@@ -1,7 +1,6 @@
 /.phpunit.cache
 /bootstrap/ssr
 /node_modules
-# /public/buildgit 
 /public/hot
 /public/storage
 /storage/*.key
@@ -23,3 +22,5 @@ yarn-error.log
 /.vscode
 /.zed
 /storage/certs/*.pem
+
+/public/build/

@@ -39,9 +39,9 @@ export default function UserEditSimple({ user, communities }: UserEditProps) {
     if (!user) {
         return (
             <AuthenticatedLayout>
-                <Head title="Edit Pengguna" />
+                <Head title="Edit Umat" />
                 <div className="p-6">
-                    <p>Data pengguna tidak ditemukan.</p>
+                    <p>Data Umat tidak ditemukan.</p>
                 </div>
             </AuthenticatedLayout>
         );
@@ -67,7 +67,7 @@ export default function UserEditSimple({ user, communities }: UserEditProps) {
 
     return (
         <AuthenticatedLayout>
-            <Head title={`Edit Pengguna - ${user.name}`} />
+            <Head title={`Edit Umat - ${user.name}`} />
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
@@ -81,7 +81,7 @@ export default function UserEditSimple({ user, communities }: UserEditProps) {
 
                 <Card>
                     <CardHeader>
-                        <CardTitle>Edit Pengguna (Simple Test)</CardTitle>
+                        <CardTitle>Edit Umat (Simple Test)</CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                         

@@ -159,7 +159,7 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                 <div className="grid gap-4 lg:grid-cols-2">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Pengguna Terbaru</CardTitle>
+                            <CardTitle>Umat Terbaru</CardTitle>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-4">

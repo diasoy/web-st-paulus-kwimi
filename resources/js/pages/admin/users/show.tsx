@@ -39,31 +39,31 @@ export default function UserShow({ user }: UserShowProps) {
 
     return (
         <AuthenticatedLayout>
-            <Head title={`Detail Pengguna - ${user.name}`} />
+            <Head title={`Detail Umat - ${user.name}`} />
 
             <div className="space-y-6 p-6">
                 <div className="flex items-center justify-between">
                     <div className="space-y-2">
                         <nav className="flex items-center text-sm text-muted-foreground">
                             <Link href={route('admin.users')} className="hover:text-foreground">
-                                Pengguna
+                                Umat
                             </Link>
                             <span className="mx-2">/</span>
                             <span className="text-foreground">Detail</span>
                         </nav>
-                        <h1 className="text-2xl font-bold tracking-tight">Detail Pengguna</h1>
+                        <h1 className="text-2xl font-bold tracking-tight">Detail Umat</h1>
                     </div>
                     <div className='flex gap-4 items-center'>
                         <Link href="/admin/users">
                             <Button variant="outline" size="sm" className="hidden lg:flex rounded-lg bg-secondary hover:bg-secondary/90">
                                 <ArrowLeft />
-                                Kembali ke Users
+                                Kembali ke Umat
                             </Button>
                         </Link>
                     <Link href={`/admin/users/${user.id}/edit`}>
                         <Button className='text-white'>
                             <Edit className="mr-2 h-4 w-4" />
-                            Edit Pengguna
+                            Edit Umat
                         </Button>
                     </Link>
                     </div>
@@ -72,7 +72,7 @@ export default function UserShow({ user }: UserShowProps) {
                 <div className="grid gap-6">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Informasi Pengguna</CardTitle>
+                            <CardTitle>Informasi Umat</CardTitle>
                         </CardHeader>
                         <CardContent className="p-6">
                             <div className="space-y-6">

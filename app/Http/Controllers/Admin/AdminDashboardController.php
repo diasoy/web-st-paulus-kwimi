@@ -201,7 +201,7 @@ class AdminDashboardController extends Controller
         $user->update($validated);
 
         return redirect()->route('admin.users')
-            ->with('success', 'Data pengguna berhasil diperbarui.');
+            ->with('success', 'Data Umat berhasil diperbarui.');
     }
 
     /**
@@ -217,7 +217,7 @@ class AdminDashboardController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users')
-            ->with('success', 'Pengguna berhasil dihapus secara permanen.');
+            ->with('success', 'Umat berhasil dihapus secara permanen.');
     }
 
     /**
@@ -266,6 +266,6 @@ class AdminDashboardController extends Controller
         User::create($data);
 
         return redirect()->route('admin.users')
-            ->with('success', 'Pengguna baru berhasil ditambahkan.');
+            ->with('success', 'Umat baru berhasil ditambahkan.');
     }
 }

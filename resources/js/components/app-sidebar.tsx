@@ -24,7 +24,7 @@ export function AppSidebar() {
                     icon: LayoutGrid,
                 },
                 {
-                    title: 'Pengguna',
+                    title: 'Umat',
                     href: '/admin/users',
                     icon: User,
                 },

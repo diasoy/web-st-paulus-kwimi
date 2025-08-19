@@ -40,9 +40,9 @@ export default function UserEdit({ user, communities }: UserEditProps) {
     if (!user) {
         return (
             <AuthenticatedLayout>
-                <Head title="Edit Pengguna" />
+                <Head title="Edit Umat" />
                 <div className="p-6">
-                    <p>Data pengguna tidak ditemukan.</p>
+                    <p>Data Umat tidak ditemukan.</p>
                 </div>
             </AuthenticatedLayout>
         );
@@ -77,13 +77,13 @@ export default function UserEdit({ user, communities }: UserEditProps) {
 
     return (
         <AuthenticatedLayout>
-            <Head title={`Edit Pengguna - ${user.name}`} />
+            <Head title={`Edit Umat - ${user.name}`} />
 
             <div className="space-y-6 p-6">
                 <div className="space-y-2">
                     <nav className="flex items-center text-sm text-muted-foreground">
                         <Link href={route('admin.users')} className="hover:text-foreground">
-                            Pengguna
+                            Umat
                         </Link>
                         <span className="mx-2">/</span>
                         <Link href={route('admin.users.show', user.id)} className="hover:text-foreground">
@@ -92,11 +92,11 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                         <span className="mx-2">/</span>
                         <span className="text-foreground">Edit</span>
                     </nav>
-                    <h1 className="text-2xl font-bold tracking-tight">Edit Pengguna</h1>
+                    <h1 className="text-2xl font-bold tracking-tight">Edit Umat</h1>
                 </div>
                 <Card>
                     <CardHeader>
-                        <CardTitle>Edit Pengguna</CardTitle>
+                        <CardTitle>Edit Umat</CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                         <form onSubmit={handleSubmit} className="space-y-6">

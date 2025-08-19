@@ -5,12 +5,14 @@ import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Activity, CalendarDays, LayoutGrid, MessageSquare, Settings, UsersIcon, User } from 'lucide-react';
 import AppLogo from './app-logo';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 
 
 export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
     const user = auth.user;
+    const isMobile = useIsMobile();
 
     // Menu items berdasarkan role
     const getMainNavItems = (): NavItem[] => {
@@ -99,7 +101,7 @@ export function AppSidebar() {
             </SidebarContent>
 
             <SidebarFooter>
-                <NavUser />
+                {isMobile && <NavUser />}
             </SidebarFooter>
         </Sidebar>
     );

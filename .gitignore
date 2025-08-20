@@ -23,4 +23,4 @@ yarn-error.log
 /.zed
 /storage/certs/*.pem
 
-/public/build/
+# /public/build/

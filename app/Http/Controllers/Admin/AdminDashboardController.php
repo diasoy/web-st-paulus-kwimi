@@ -12,11 +12,26 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Hash;
 
-class AdminDashboardController extends Controller
-{
+
+class AdminDashboardController extends Controller {
+    /**
+     * Download user detail as PDF
+     */
+    public function downloadUserDetailPdf(User $user)
+    {
+        // Gunakan dompdf atau snappy, contoh dengan dompdf
+        $data = [
+            'user' => $user->load(['community:id,name']),
+        ];
+        $pdf = PDF::loadView('pdfs.user_detail', $data);
+        $filename = 'Detail_Umat_' . $user->name . '.pdf';
+        return $pdf->download($filename);
+    }
+
     /**
      * Delete a specific PDF from user
      */

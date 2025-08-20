@@ -60,6 +60,10 @@ export default function UserShow({ user }: UserShowProps) {
         }
     };
 
+    const handleDownloadDetailPdf = () => {
+        window.open(route('admin.users.detailpdf', { user: user.id }), '_blank');
+    };
+
     return (
         <AuthenticatedLayout>
             <Head title={`Detail Umat - ${user.name}`} />
@@ -94,6 +98,10 @@ export default function UserShow({ user }: UserShowProps) {
                                 Edit Umat
                             </Button>
                         </Link>
+                        <Button variant="outline" size="sm" onClick={handleDownloadDetailPdf} className="flex items-center gap-2 bg-secondary hover:bg-secondary/90">
+                            <Users className="mr-2 h-4 w-4" />
+                            Unduh Informasi Umat
+                        </Button>
                     </div>
                 </div>
 
@@ -179,7 +187,7 @@ export default function UserShow({ user }: UserShowProps) {
                                                     <span className="font-bold mr-2">{idx + 1}.</span>
                                                     <span className="text-sm text-muted-foreground flex-1 truncate">{pdf.file_name}</span>
                                                     <a href={pdf.file_url} download className="flex-shrink-0">
-                                                        <Button variant="outline" size="sm" className="flex items-center border rounded text-black hover:bg-muted hover:text-black">Download</Button>
+                                                        <Button variant="outline" size="sm" className="flex items-center border rounded text-black hover:bg-muted hover:text-black">Unduh</Button>
                                                     </a>
                                                     <Button variant="destructive" size="sm" onClick={() => handleDelete(pdf.id)}>Hapus</Button>
                                                 </div>

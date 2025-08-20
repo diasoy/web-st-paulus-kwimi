@@ -137,12 +137,22 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
               </Button>
             </div>
           </div>
-          <Button asChild className="shrink-0 px-2 sm:px-4 text-white hover:bg-primary/90">
-            <Link href={route('admin.users.create')}>
-              <Plus className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Tambah Umat</span>
-            </Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button asChild className="shrink-0 px-2 sm:px-4 text-white hover:bg-primary/90">
+              <Link href={route('admin.users.create')}>
+                <Plus className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Tambah Umat</span>
+              </Link>
+            </Button>
+            <Button
+              variant="outline"
+              className="shrink-0 px-2 bg-secondary sm:px-4 border text-white hover:bg-secondary/90"
+              onClick={() => window.open(route('admin.users.exportpdf'), '_blank')}
+            >
+              <Users className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">Unduh Data Semua Umat</span>
+            </Button>
+          </div>
         </div>
 
         {/* Users List */}

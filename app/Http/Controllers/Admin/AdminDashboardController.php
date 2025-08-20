@@ -19,6 +19,15 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminDashboardController extends Controller {
     /**
+     * Export semua data umat ke PDF
+     */
+    public function exportAllUsersPdf()
+    {
+        $users = User::with(['community:id,name'])->orderBy('name')->get();
+        $pdf = Pdf::loadView('pdfs.all_users', [ 'users' => $users ]);
+        return $pdf->download('Data_Semua_Umat.pdf');
+    }
+    /**
      * Download user detail as PDF
      */
     public function downloadUserDetailPdf(User $user)

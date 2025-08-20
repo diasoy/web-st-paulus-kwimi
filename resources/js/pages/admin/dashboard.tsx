@@ -43,7 +43,7 @@ interface AdminDashboardProps {
     monthly_users: { labels: string[]; data: number[] };
 }
 
-function Sparkline({ data, stroke = '#0ea5e9' }: { data: number[]; stroke?: string }) {
+function Sparkline({ data }: { data: number[]; stroke?: string }) {
     const width = 140;
     const height = 40;
     const max = Math.max(1, ...data);
@@ -56,7 +56,13 @@ function Sparkline({ data, stroke = '#0ea5e9' }: { data: number[]; stroke?: stri
     });
     return (
         <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height} className="overflow-visible">
-            <polyline fill="none" stroke={stroke} strokeWidth="2" points={points.join(' ')} />
+            <defs>
+                <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#03A6A1" />
+                    <stop offset="100%" stopColor="#FFA673" />
+                </linearGradient>
+            </defs>
+            <polyline fill="none" stroke="url(#sparklineGradient)" strokeWidth="3" points={points.join(' ')} className="drop-shadow-sm" />
         </svg>
     );
 }
@@ -66,175 +72,232 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
         <AuthenticatedLayout>
             <Head title="Admin Dashboard" />
 
-            <div className="mx-6 space-y-6">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
-                    <p className="text-muted-foreground">Selamat datang di panel admin ST. Paulus Kwimi</p>
-                </div>
-
-                {/* KPI Cards */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total User</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_users}</div>
-                            <div className="mt-2">
-                                <Sparkline data={monthly_users?.data ?? []} />
-                            </div>
-                            <p className="mt-1 text-xs text-muted-foreground">Registrasi per bulan</p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Admin</CardTitle>
-                            <UserCheck className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_admin}</div>
-                            <p className="text-xs text-muted-foreground">Administrator sistem</p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Umat</CardTitle>
-                            <User className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_umat}</div>
-                            <p className="text-xs text-muted-foreground">Umat terdaftar</p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Komunitas</CardTitle>
-                            <Building2 className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_communities}</div>
-                            <p className="text-xs text-muted-foreground">Total komunitas basis</p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Pengumuman</CardTitle>
-                            <Megaphone className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_announcements}</div>
-                            <p className="text-xs text-muted-foreground">Total pengumuman</p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Agenda Kegiatan</CardTitle>
-                            <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_activities}</div>
-                            <p className="text-xs text-muted-foreground">Total kegiatan</p>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Jadwal Ibadah</CardTitle>
-                            <ListChecks className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stats.total_worship_schedules}</div>
-                            <p className="text-xs text-muted-foreground">Total jadwal</p>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                {/* Lists */}
-                <div className="grid gap-4 lg:grid-cols-2">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Umat Terbaru</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {recent_users.map((user) => (
-                                    <div key={user.id} className="flex items-center space-x-4">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                                            <User className="h-4 w-4" />
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-medium">{user.name}</p>
-                                            <p className="truncate text-sm text-muted-foreground">{user.email}</p>
-                                        </div>
-                                        <div className="text-sm">
-                                            <span
-                                                className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${user.role_id === 1 ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}`}
-                                            >
-                                                {user.role_id === 1 ? 'Admin' : 'Umat'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Pengumuman Terbaru</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {recent_announcements.map((a) => (
-                                    <div key={a.id} className="flex items-center space-x-4">
-                                        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
-                                            <Megaphone className="h-4 w-4 text-muted-foreground" />
-                                        </div>
-                                        <div className="min-w-0 flex-1">
-                                            <p className="truncate text-sm font-medium">{a.title}</p>
-                                            <p className="truncate text-xs text-muted-foreground">{new Date(a.created_at).toLocaleDateString()}</p>
-                                        </div>
-                                        <div className="text-sm">
-                                            <span
-                                                className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${a.is_publish ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}`}
-                                            >
-                                                {a.is_publish ? 'Terbit' : 'Draft'}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Jadwal Ibadah Mendatang</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="space-y-3">
-                            {upcoming_worship.map((w) => (
-                                <div key={w.id} className="flex items-center justify-between gap-4">
-                                    <div className="min-w-0">
-                                        <p className="truncate font-medium">{w.name}</p>
-                                        <p className="truncate text-sm text-muted-foreground">{w.pic || '—'}</p>
-                                    </div>
-                                    <div className="text-right text-sm text-muted-foreground">
-                                        <div>{new Date(w.date).toLocaleDateString()}</div>
-                                        <div>{w.time_start}</div>
-                                    </div>
-                                </div>
-                            ))}
+            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+                <div className="mx-6 space-y-8 py-8">
+                    {/* Header Section */}
+                    {/* <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-primary/90 to-secondary p-8 text-white shadow-xl">
+                        <div className="relative z-10">
+                            <h1 className="text-4xl font-bold tracking-tight mb-2">Admin Dashboard</h1>
+                            <p className="text-primary-foreground/90 text-lg">Selamat datang di panel admin ST. Paulus Kwimi</p>
                         </div>
-                    </CardContent>
-                </Card>
+                        <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
+                        <div className="absolute -left-8 -bottom-8 h-24 w-24 rounded-full bg-white/5 blur-xl"></div>
+                    </div> */}
+
+                    {/* KPI Cards */}
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                        <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-white to-blue-50/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                                <CardTitle className="text-sm font-semibold text-slate-600">Total User</CardTitle>
+                                <div className="rounded-full bg-primary/10 p-2">
+                                    <Users className="h-5 w-5 text-primary" />
+                                </div>
+                            </CardHeader>
+                            <CardContent className="relative">
+                                <div className="text-3xl font-bold text-slate-800 mb-3">{stats.total_users}</div>
+                                <div className="mb-2">
+                                    <Sparkline data={monthly_users?.data ?? []} />
+                                </div>
+                                <p className="text-xs text-slate-500 font-medium">Registrasi per bulan</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-white to-emerald-50/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                                <CardTitle className="text-sm font-semibold text-slate-600">Total Admin</CardTitle>
+                                <div className="rounded-full bg-emerald-100 p-2">
+                                    <UserCheck className="h-5 w-5 text-emerald-600" />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-3xl font-bold text-slate-800 mb-1">{stats.total_admin}</div>
+                                <p className="text-xs text-slate-500 font-medium">Administrator sistem</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-white to-amber-50/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                                <CardTitle className="text-sm font-semibold text-slate-600">Total Umat</CardTitle>
+                                <div className="rounded-full bg-amber-100 p-2">
+                                    <User className="h-5 w-5 text-amber-600" />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-3xl font-bold text-slate-800 mb-1">{stats.total_umat}</div>
+                                <p className="text-xs text-slate-500 font-medium">Umat terdaftar</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-white to-purple-50/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                                <CardTitle className="text-sm font-semibold text-slate-600">Komunitas</CardTitle>
+                                <div className="rounded-full bg-purple-100 p-2">
+                                    <Building2 className="h-5 w-5 text-purple-600" />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-3xl font-bold text-slate-800 mb-1">{stats.total_communities}</div>
+                                <p className="text-xs text-slate-500 font-medium">Total komunitas basis</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-white to-rose-50/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute inset-0 bg-gradient-to-br from-rose-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                                <CardTitle className="text-sm font-semibold text-slate-600">Pengumuman</CardTitle>
+                                <div className="rounded-full bg-rose-100 p-2">
+                                    <Megaphone className="h-5 w-5 text-rose-600" />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-3xl font-bold text-slate-800 mb-1">{stats.total_announcements}</div>
+                                <p className="text-xs text-slate-500 font-medium">Total pengumuman</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-white to-indigo-50/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                                <CardTitle className="text-sm font-semibold text-slate-600">Agenda Kegiatan</CardTitle>
+                                <div className="rounded-full bg-indigo-100 p-2">
+                                    <CalendarDays className="h-5 w-5 text-indigo-600" />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-3xl font-bold text-slate-800 mb-1">{stats.total_activities}</div>
+                                <p className="text-xs text-slate-500 font-medium">Total kegiatan</p>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-white to-teal-50/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                            <div className="absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
+                                <CardTitle className="text-sm font-semibold text-slate-600">Jadwal Ibadah</CardTitle>
+                                <div className="rounded-full bg-teal-100 p-2">
+                                    <ListChecks className="h-5 w-5 text-teal-600" />
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-3xl font-bold text-slate-800 mb-1">{stats.total_worship_schedules}</div>
+                                <p className="text-xs text-slate-500 font-medium">Total jadwal</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Lists Section */}
+                    <div className="grid gap-6 lg:grid-cols-2">
+                        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                            <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-t-lg">
+                                <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                    <div className="rounded-full bg-primary/10 p-2">
+                                        <Users className="h-5 w-5 text-primary" />
+                                    </div>
+                                    Umat Terbaru
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-6">
+                                <div className="space-y-4">
+                                    {recent_users.map((user) => (
+                                        <div key={user.id} className="flex items-center space-x-4 p-3 rounded-xl bg-gradient-to-r from-slate-50 to-white border border-slate-100 hover:shadow-md transition-all duration-200">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-secondary/20">
+                                                <User className="h-5 w-5 text-primary" />
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="truncate font-semibold text-slate-800">{user.name}</p>
+                                                <p className="truncate text-sm text-slate-500">{user.email}</p>
+                                            </div>
+                                            <div>
+                                                <span
+                                                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                                                        user.role_id === 1 
+                                                            ? 'bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 border border-blue-200' 
+                                                            : 'bg-gradient-to-r from-emerald-100 to-emerald-50 text-emerald-700 border border-emerald-200'
+                                                    }`}
+                                                >
+                                                    {user.role_id === 1 ? 'Admin' : 'Umat'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                            <CardHeader className="bg-gradient-to-r from-rose-50/50 to-orange-50/50 rounded-t-lg">
+                                <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                    <div className="rounded-full bg-rose-100 p-2">
+                                        <Megaphone className="h-5 w-5 text-rose-600" />
+                                    </div>
+                                    Pengumuman Terbaru
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-6">
+                                <div className="space-y-4">
+                                    {recent_announcements.map((a) => (
+                                        <div key={a.id} className="flex items-center space-x-4 p-3 rounded-xl bg-gradient-to-r from-slate-50 to-white border border-slate-100 hover:shadow-md transition-all duration-200">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-100 to-orange-100">
+                                                <Megaphone className="h-5 w-5 text-rose-600" />
+                                            </div>
+                                            <div className="min-w-0 flex-1">
+                                                <p className="truncate font-semibold text-slate-800">{a.title}</p>
+                                                <p className="truncate text-xs text-slate-500">{new Date(a.created_at).toLocaleDateString()}</p>
+                                            </div>
+                                            <div>
+                                                <span
+                                                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
+                                                        a.is_publish 
+                                                            ? 'bg-gradient-to-r from-emerald-100 to-emerald-50 text-emerald-700 border border-emerald-200' 
+                                                            : 'bg-gradient-to-r from-amber-100 to-amber-50 text-amber-700 border border-amber-200'
+                                                    }`}
+                                                >
+                                                    {a.is_publish ? 'Terbit' : 'Draft'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    {/* Worship Schedule */}
+                    <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
+                        <CardHeader className="bg-gradient-to-r from-indigo-50/50 to-purple-50/50 rounded-t-lg">
+                            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                                <div className="rounded-full bg-indigo-100 p-2">
+                                    <CalendarDays className="h-5 w-5 text-indigo-600" />
+                                </div>
+                                Jadwal Ibadah Mendatang
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-6">
+                            <div className="space-y-4">
+                                {upcoming_worship.map((w) => (
+                                    <div key={w.id} className="flex items-center justify-between gap-4 p-4 rounded-xl bg-gradient-to-r from-slate-50 to-white border border-slate-100 hover:shadow-md transition-all duration-200">
+                                        <div className="min-w-0 flex-1">
+                                            <p className="truncate font-semibold text-slate-800 text-lg">{w.name}</p>
+                                            <p className="truncate text-slate-500 mt-1">
+                                                <span className="inline-flex items-center gap-1">
+                                                    <User className="h-4 w-4" />
+                                                    {w.pic || 'Belum ditentukan'}
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div className="text-right">
+                                            <div className="font-semibold text-slate-800">{new Date(w.date).toLocaleDateString()}</div>
+                                            <div className="text-sm text-slate-500 bg-slate-100 px-2 py-1 rounded-full mt-1">{w.time_start}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </AuthenticatedLayout>
     );

@@ -1,3 +1,219 @@
+/*
+ * This file contains a comprehensive Tailwind CSS configuration.
+ * All code within this file has been commented out to disable its functionality.
+ *
+ * It includes:
+ * - Tailwind directives to import core functionality and plugins.
+ * - Custom variant definitions for dark mode.
+ * - A custom theme block that maps semantic names to CSS variables.
+ * - Light and dark color palettes inspired by St. Paul's Kwimi Church, using the OKLCH color space for perceptually uniform colors.
+ * - Base layer styles for global elements like the body and universal box-sizing.
+ * - Custom scrollbar styles tailored for both light and dark themes.
+ * - Utility classes for spiritual/church-themed effects like gradients and shadows.
+ */
+
+/* @import 'tailwindcss'; */
+
+/* @plugin 'tailwindcss-animate'; */
+
+/* @source '../views'; */
+/* @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php'; */
+
+/* @custom-variant dark (&:is(.dark *)); */
+
+/* @theme { */
+/* --font-sans: */
+/* 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'; */
+
+/* --radius-lg: var(--radius); */
+/* --radius-md: calc(var(--radius) - 2px); */
+/* --radius-sm: calc(var(--radius) - 4px); */
+
+/* --color-background: var(--background); */
+/* --color-foreground: var(--foreground); */
+
+/* --color-card: var(--card); */
+/* --color-card-foreground: var(--card-foreground); */
+
+/* --color-popover: var(--popover); */
+/* --color-popover-foreground: var(--popover-foreground); */
+
+/* --color-primary: var(--primary); */
+/* --color-primary-foreground: var(--primary-foreground); */
+
+/* --color-secondary: var(--secondary); */
+/* --color-secondary-foreground: var(--secondary-foreground); */
+
+/* --color-muted: var(--muted); */
+/* --color-muted-foreground: var(--muted-foreground); */
+
+/* --color-accent: var(--accent); */
+/* --color-accent-foreground: var(--accent-foreground); */
+
+/* --color-destructive: var(--destructive); */
+/* --color-destructive-foreground: var(--destructive-foreground); */
+
+/* --color-border: var(--border); */
+/* --color-input: var(--input); */
+/* --color-ring: var(--ring); */
+
+/* --color-chart-1: var(--chart-1); */
+/* --color-chart-2: var(--chart-2); */
+/* --color-chart-3: var(--chart-3); */
+/* --color-chart-4: var(--chart-4); */
+/* --color-chart-5: var(--chart-5); */
+
+/* --color-sidebar: var(--sidebar); */
+/* --color-sidebar-foreground: var(--sidebar-foreground); */
+/* --color-sidebar-primary: var(--sidebar-primary); */
+/* --color-sidebar-primary-foreground: var(--sidebar-primary-foreground); */
+/* --color-sidebar-accent: var(--sidebar-accent); */
+/* --color-sidebar-accent-foreground: var(--sidebar-accent-foreground); */
+/* --color-sidebar-border: var(--sidebar-border); */
+/* --color-sidebar-ring: var(--sidebar-ring); */
+/* } */
+
+/* :root { */
+/* /!* Light Theme - Nuansa Gereja St. Paulus Kwimi *!/ */
+/* --background: oklch(0.98 0.005 85); /!* Warm ivory/cream *!/ */
+/* --foreground: oklch(0.2 0.05 60); /!* Deep brown from logo text *!/ */
+/* --card: oklch(1 0 0); /!* Pure white *!/ */
+/* --card-foreground: oklch(0.2 0.05 60); */
+/* --popover: oklch(1 0 0); */
+/* --popover-foreground: oklch(0.2 0.05 60); */
+/* --primary: oklch(0.6 0.1 80); /!* Bright gold from logo *!/ */
+/* --primary-foreground: oklch(0.1 0.01 60); /!* Very dark brown/black *!/ */
+/* --secondary: oklch(0.35 0.08 60); /!* Rich brown from logo text *!/ */
+/* --secondary-foreground: oklch(0.98 0.005 85); */
+/* --muted: oklch(0.92 0.01 85); /!* Light cream *!/ */
+/* --muted-foreground: oklch(0.5 0.015 60); /!* Medium brown *!/ */
+/* --accent: oklch(0.4 0.08 140); /!* Subtler green/teal from St. Paul's robe *!/ */
+/* --accent-foreground: oklch(0.98 0.005 85); */
+/* --destructive: oklch(0.55 0.15 25); /!* Warm red *!/ */
+/* --destructive-foreground: oklch(0.98 0.005 85); */
+/* --border: oklch(0.88 0.015 85); /!* Subtle warm border *!/ */
+/* --input: oklch(0.96 0.008 85); /!* Input background *!/ */
+/* --ring: oklch(0.6 0.1 80); /!* Focus ring *!/ */
+/* --chart-1: oklch(0.6 0.1 80); /!* Gold *!/ */
+/* --chart-2: oklch(0.35 0.08 60); /!* Brown *!/ */
+/* --chart-3: oklch(0.4 0.08 140); /!* Green *!/ */
+/* --chart-4: oklch(0.4 0.1 20); /!* Rust *!/ */
+/* --chart-5: oklch(0.6 0.12 280); /!* Purple *!/ */
+/* --radius: 0.75rem; /!* Slightly more rounded *!/ */
+/* --sidebar: oklch(0.96 0.008 85); */
+/* --sidebar-foreground: oklch(0.2 0.05 60); */
+/* --sidebar-primary: oklch(0.6 0.1 80); */
+/* --sidebar-primary-foreground: oklch(0.1 0.01 60); */
+/* --sidebar-accent: oklch(0.92 0.01 85); */
+/* --sidebar-accent-foreground: oklch(0.2 0.05 60); */
+/* --sidebar-border: oklch(0.88 0.015 85); */
+/* --sidebar-ring: oklch(0.6 0.1 80); */
+/* } */
+
+/* .dark { */
+/* /!* Dark Theme - Nuansa Malam Gereja St. Paulus Kwimi *!/ */
+/* --background: oklch(0.12 0.02 60); /!* Deep dark brown *!/ */
+/* --foreground: oklch(0.92 0.01 85); /!* Warm light text *!/ */
+/* --card: oklch(0.15 0.025 60); /!* Dark card background *!/ */
+/* --card-foreground: oklch(0.92 0.01 85); */
+/* --popover: oklch(0.15 0.025 60); */
+/* --popover-foreground: oklch(0.92 0.01 85); */
+/* --primary: oklch(0.7 0.1 80); /!* Lighter, more vibrant gold *!/ */
+/* --primary-foreground: oklch(0.12 0.02 60); */
+/* --secondary: oklch(0.3 0.08 60); /!* Darker, muted brown *!/ */
+/* --secondary-foreground: oklch(0.92 0.01 85); */
+/* --muted: oklch(0.2 0.03 60); /!* Muted background *!/ */
+/* --muted-foreground: oklch(0.7 0.01 85); /!* Muted text *!/ */
+/* --accent: oklch(0.55 0.08 140); /!* Lighter green/teal *!/ */
+/* --accent-foreground: oklch(0.12 0.02 60); */
+/* --destructive: oklch(0.5 0.12 25); /!* Softer red *!/ */
+/* --destructive-foreground: oklch(0.92 0.01 85); */
+/* --border: oklch(0.25 0.02 60); /!* Subtle borders *!/ */
+/* --input: oklch(0.18 0.02 60); /!* Input background *!/ */
+/* --ring: oklch(0.7 0.1 80); /!* Focus ring *!/ */
+/* --chart-1: oklch(0.7 0.1 80); /!* Gold *!/ */
+/* --chart-2: oklch(0.3 0.08 60); /!* Brown *!/ */
+/* --chart-3: oklch(0.55 0.08 140); /!* Green *!/ */
+/* --chart-4: oklch(0.5 0.1 20); /!* Rust *!/ */
+/* --chart-5: oklch(0.65 0.1 280); /!* Purple *!/ */
+/* --sidebar: oklch(0.1 0.02 60); */
+/* --sidebar-foreground: oklch(0.92 0.01 85); */
+/* --sidebar-primary: oklch(0.7 0.1 80); */
+/* --sidebar-primary-foreground: oklch(0.12 0.02 60); */
+/* --sidebar-accent: oklch(0.2 0.03 60); */
+/* --sidebar-accent-foreground: oklch(0.92 0.01 85); */
+/* --sidebar-border: oklch(0.25 0.02 60); */
+/* --sidebar-ring: oklch(0.7 0.1 80); */
+/* } */
+
+/* @layer base { */
+/* * { */
+/* @apply border-border; */
+/* } */
+
+/* body { */
+/* @apply bg-background text-foreground; */
+/* font-feature-settings: "rlig" 1, "calt" 1; */
+/* } */
+
+/* /!* Custom scrollbar dengan nuansa gereja *!/ */
+/* ::-webkit-scrollbar { */
+/* width: 8px; */
+/* height: 8px; */
+/* } */
+
+/* ::-webkit-scrollbar-track { */
+/* background: oklch(0.92 0.01 85); */
+/* } */
+
+/* ::-webkit-scrollbar-thumb { */
+/* background: oklch(0.6 0.1 80); */
+/* border-radius: 4px; */
+/* } */
+
+/* ::-webkit-scrollbar-thumb:hover { */
+/* background: oklch(0.35 0.08 60); */
+/* } */
+
+/* .dark ::-webkit-scrollbar-track { */
+/* background: oklch(0.2 0.03 60); */
+/* } */
+
+/* .dark ::-webkit-scrollbar-thumb { */
+/* background: oklch(0.7 0.1 80); */
+/* } */
+
+/* .dark ::-webkit-scrollbar-thumb:hover { */
+/* background: oklch(0.6 0.1 80); */
+/* } */
+/* } */
+
+/* /!* Tambahan untuk efek spiritual/gereja *!/ */
+/* @layer utilities { */
+/* .church-gradient { */
+/* background: linear-gradient(135deg, */
+/* oklch(0.6 0.1 80), /!* Gold *!/ */
+/* oklch(0.35 0.08 60), /!* Brown *!/ */
+/* oklch(0.4 0.08 140) /!* Green/Teal *!/ */
+/* ); */
+/* } */
+
+/* .church-text-gradient { */
+/* background: linear-gradient(135deg, */
+/* oklch(0.35 0.08 60), /!* Brown *!/ */
+/* oklch(0.6 0.1 80) /!* Gold *!/ */
+/* ); */
+/* -webkit-background-clip: text; */
+/* background-clip: text; */
+/* -webkit-text-fill-color: transparent; */
+/* } */
+
+/* .church-shadow { */
+/* box-shadow: 0 4px 20px oklch(0.35 0.08 60 / 0.15); /!* Shadow using a darker tone from the logo *!/ */
+/* } */
+/* } */
+
+
 @import 'tailwindcss';
 
 @plugin 'tailwindcss-animate';
@@ -60,77 +276,53 @@
 }
 
 :root {
-    /* Light Theme - Nuansa Gereja St. Paulus Kwimi */
-    --background: oklch(0.98 0.005 85); /* Warm ivory/cream */
-    --foreground: oklch(0.2 0.05 60); /* Deep brown from logo text */
-    --card: oklch(1 0 0); /* Pure white */
-    --card-foreground: oklch(0.2 0.05 60);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.2 0.05 60);
-    --primary: oklch(0.6 0.1 80); /* Bright gold from logo */
-    --primary-foreground: oklch(0.1 0.01 60); /* Very dark brown/black */
-    --secondary: oklch(0.35 0.08 60); /* Rich brown from logo text */
-    --secondary-foreground: oklch(0.98 0.005 85);
-    --muted: oklch(0.92 0.01 85); /* Light cream */
-    --muted-foreground: oklch(0.5 0.015 60); /* Medium brown */
-    --accent: oklch(0.4 0.08 140); /* Subtler green/teal from St. Paul's robe */
-    --accent-foreground: oklch(0.98 0.005 85);
-    --destructive: oklch(0.55 0.15 25); /* Warm red */
-    --destructive-foreground: oklch(0.98 0.005 85);
-    --border: oklch(0.88 0.015 85); /* Subtle warm border */
-    --input: oklch(0.96 0.008 85); /* Input background */
-    --ring: oklch(0.6 0.1 80); /* Focus ring */
-    --chart-1: oklch(0.6 0.1 80); /* Gold */
-    --chart-2: oklch(0.35 0.08 60); /* Brown */
-    --chart-3: oklch(0.4 0.08 140); /* Green */
-    --chart-4: oklch(0.4 0.1 20); /* Rust */
-    --chart-5: oklch(0.6 0.12 280); /* Purple */
-    --radius: 0.75rem; /* Slightly more rounded */
-    --sidebar: oklch(0.96 0.008 85);
-    --sidebar-foreground: oklch(0.2 0.05 60);
-    --sidebar-primary: oklch(0.6 0.1 80);
-    --sidebar-primary-foreground: oklch(0.1 0.01 60);
-    --sidebar-accent: oklch(0.92 0.01 85);
-    --sidebar-accent-foreground: oklch(0.2 0.05 60);
-    --sidebar-border: oklch(0.88 0.015 85);
-    --sidebar-ring: oklch(0.6 0.1 80);
+    /* Light Theme - Palette Baru */
+    --background: #ffffff; /* Beige lembut dari palet */
+    --foreground: #2D2D2D; /* Teks netral gelap */
+    --card: #FFFFFF; 
+    --card-foreground: #2D2D2D;
+    --popover: #FFFFFF;
+    --popover-foreground: #2D2D2D;
+
+    --primary: #03A6A1; /* Teal */
+    --primary-foreground: #FFFFFF;
+
+    --secondary: #FFA673; /* Soft Orange */
+    --secondary-foreground: #FFFFFF;
+
+    --muted: #FFE3BB; /* Beige dipakai juga untuk muted */
+    --muted-foreground: #2D2D2D;
+
+    --accent: #FF4F0F; /* Bright Orange-Red */
+    --accent-foreground: #FFFFFF;
+
+    --destructive: #FF4F0F; /* Sama dengan accent untuk destructive */
+    --destructive-foreground: #FFFFFF;
+
+    --border: #E5E5E5;
+    --input: #F9F9F9;
+    --ring: #03A6A1; /* Fokus pakai teal */
+
+    /* Chart palette berdasarkan urutan gambar */
+    --chart-1: #03A6A1; /* Teal */
+    --chart-2: #FFE3BB; /* Beige */
+    --chart-3: #FFA673; /* Soft Orange */
+    --chart-4: #FF4F0F; /* Bright Orange-Red */
+    --chart-5: #2D2D2D; /* Netral opsional */
+
+    --radius: 0.75rem;
+
+    /* Sidebar mengikuti background baru */
+    --sidebar: #ffffff;
+    --sidebar-foreground: #2D2D2D;
+    --sidebar-primary: #03A6A1;
+    --sidebar-primary-foreground: #FFFFFF;
+    --sidebar-accent: #FFA673;
+    --sidebar-accent-foreground: #2D2D2D;
+    --sidebar-border: #E5E5E5;
+    --sidebar-ring: #03A6A1;
 }
 
-.dark {
-    /* Dark Theme - Nuansa Malam Gereja St. Paulus Kwimi */
-    --background: oklch(0.12 0.02 60); /* Deep dark brown */
-    --foreground: oklch(0.92 0.01 85); /* Warm light text */
-    --card: oklch(0.15 0.025 60); /* Dark card background */
-    --card-foreground: oklch(0.92 0.01 85);
-    --popover: oklch(0.15 0.025 60);
-    --popover-foreground: oklch(0.92 0.01 85);
-    --primary: oklch(0.7 0.1 80); /* Lighter, more vibrant gold */
-    --primary-foreground: oklch(0.12 0.02 60);
-    --secondary: oklch(0.3 0.08 60); /* Darker, muted brown */
-    --secondary-foreground: oklch(0.92 0.01 85);
-    --muted: oklch(0.2 0.03 60); /* Muted background */
-    --muted-foreground: oklch(0.7 0.01 85); /* Muted text */
-    --accent: oklch(0.55 0.08 140); /* Lighter green/teal */
-    --accent-foreground: oklch(0.12 0.02 60);
-    --destructive: oklch(0.5 0.12 25); /* Softer red */
-    --destructive-foreground: oklch(0.92 0.01 85);
-    --border: oklch(0.25 0.02 60); /* Subtle borders */
-    --input: oklch(0.18 0.02 60); /* Input background */
-    --ring: oklch(0.7 0.1 80); /* Focus ring */
-    --chart-1: oklch(0.7 0.1 80); /* Gold */
-    --chart-2: oklch(0.3 0.08 60); /* Brown */
-    --chart-3: oklch(0.55 0.08 140); /* Green */
-    --chart-4: oklch(0.5 0.1 20); /* Rust */
-    --chart-5: oklch(0.65 0.1 280); /* Purple */
-    --sidebar: oklch(0.1 0.02 60);
-    --sidebar-foreground: oklch(0.92 0.01 85);
-    --sidebar-primary: oklch(0.7 0.1 80);
-    --sidebar-primary-foreground: oklch(0.12 0.02 60);
-    --sidebar-accent: oklch(0.2 0.03 60);
-    --sidebar-accent-foreground: oklch(0.92 0.01 85);
-    --sidebar-border: oklch(0.25 0.02 60);
-    --sidebar-ring: oklch(0.7 0.1 80);
-}
 
 @layer base {
     * {
@@ -142,59 +334,45 @@
         font-feature-settings: "rlig" 1, "calt" 1;
     }
 
-    /* Custom scrollbar dengan nuansa gereja */
     ::-webkit-scrollbar {
         width: 8px;
         height: 8px;
     }
 
     ::-webkit-scrollbar-track {
-        background: oklch(0.92 0.01 85);
+        background: #FECEDD; /* Peach */
     }
 
     ::-webkit-scrollbar-thumb {
-        background: oklch(0.6 0.1 80);
+        background: #00809D; /* Blue */
         border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-        background: oklch(0.35 0.08 60);
-    }
-
-    .dark ::-webkit-scrollbar-track {
-        background: oklch(0.2 0.03 60);
-    }
-
-    .dark ::-webkit-scrollbar-thumb {
-        background: oklch(0.7 0.1 80);
-    }
-
-    .dark ::-webkit-scrollbar-thumb:hover {
-        background: oklch(0.6 0.1 80);
+        background: #FF7601; /* Orange */
     }
 }
 
-/* Tambahan untuk efek spiritual/gereja */
 @layer utilities {
-    .church-gradient {
+    .custom-gradient {
         background: linear-gradient(135deg, 
-            oklch(0.6 0.1 80), /* Gold */
-            oklch(0.35 0.08 60), /* Brown */
-            oklch(0.4 0.08 140) /* Green/Teal */
+            #00809D, /* Blue */
+            #FF7601, /* Orange */
+            #F3A26D /* Brownish */
         );
     }
 
-    .church-text-gradient {
+    .custom-text-gradient {
         background: linear-gradient(135deg, 
-            oklch(0.35 0.08 60), /* Brown */
-            oklch(0.6 0.1 80) /* Gold */
+            #FF7601, /* Orange */
+            #00809D /* Blue */
         );
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
     }
 
-    .church-shadow {
-        box-shadow: 0 4px 20px oklch(0.35 0.08 60 / 0.15); /* Shadow using a darker tone from the logo */
+    .custom-shadow {
+        box-shadow: 0 4px 20px rgba(0, 128, 157, 0.25); /* Blue shadow lembut */
     }
 }

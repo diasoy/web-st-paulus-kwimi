@@ -11,6 +11,21 @@ use Inertia\Inertia;
 class WorshipScheduleController extends Controller
 {
     /**
+     * Export jadwal ibadah ke PDF sesuai filter tanggal
+     */
+    public function exportPdf(Request $request)
+    {
+        $query = WorshipSchedule::with('communities');
+        $start = $request->query('start');
+        $end = $request->query('end');
+        if ($start && $end) {
+            $query->whereBetween('date', [$start, $end]);
+        }
+        $schedules = $query->orderBy('date')->orderBy('time_start')->get();
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.worship_schedules', [ 'schedules' => $schedules ]);
+        return $pdf->download('Jadwal_Ibadah.pdf');
+    }
+    /**
      * Display a listing of the resource.
      */
     public function index(Request $request)

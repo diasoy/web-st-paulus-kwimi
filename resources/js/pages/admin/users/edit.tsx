@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react-hooks/rules-of-hooks */
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -5,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Save } from 'lucide-react';
+import { Save, Upload } from 'lucide-react';
 import { FormEvent } from 'react';
 
 interface UserEdit {
@@ -58,7 +59,10 @@ export default function UserEdit({ user, communities }: UserEditProps) {
         const dd = String(d.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
     };
-    const { data, setData, put, processing, errors } = useForm({
+    // Ambil pdfs dari user jika ada
+    const initialPdfs = Array.isArray((user as any).pdfs) ? (user as any).pdfs : [];
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'PUT' as const,
         name: user.name ?? '',
         username: user.username ?? '',
         birth_place: (user.birth_place !== undefined && user.birth_place !== null) ? String(user.birth_place) : '',
@@ -67,12 +71,22 @@ export default function UserEdit({ user, communities }: UserEditProps) {
         gender: user.gender ?? 'male',
         status: user.status ?? 'active',
         community_id: user.community_id ?? null,
+        pdfs: [null, null, null, null] as (File | null)[],
+        existingPdfs: initialPdfs,
+        removePdf: [false, false, false, false],
     });
+
+    // Handler untuk setiap input PDF
+    const handleSinglePdfChange = (idx: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        const newPdfs = [...data.pdfs];
+        newPdfs[idx] = file;
+        setData('pdfs', newPdfs);
+    };
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted with data:', data);
-        put(route('admin.users.update', user.id));
+        post(route('admin.users.update', user.id), { forceFormData: true, preserveScroll: true });
     };
 
     return (
@@ -192,20 +206,53 @@ export default function UserEdit({ user, communities }: UserEditProps) {
                                     </select>
                                     {errors.status && <p className="text-sm text-red-600">{errors.status}</p>}
                                 </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="address">Alamat</Label>
+                                    <textarea
+                                        id="address"
+                                        value={data.address}
+                                        onChange={(e) => setData('address', e.target.value)}
+                                        placeholder="Masukkan alamat lengkap"
+                                        className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+                                        rows={3}
+                                    />
+                                    {errors.address && <p className="text-sm text-red-600">{errors.address}</p>}
+                                </div>
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="address">Alamat</Label>
-                                <textarea
-                                    id="address"
-                                    value={data.address}
-                                    onChange={(e) => setData('address', e.target.value)}
-                                    placeholder="Masukkan alamat lengkap"
-                                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-                                    rows={3}
-                                />
-                                {errors.address && <p className="text-sm text-red-600">{errors.address}</p>}
+                                <Label>Upload PDF (maksimal 4, opsional)</Label>
+                                <p className="text-xs text-muted-foreground mb-2">File lama akan tetap digunakan jika tidak memilih file baru atau tidak menghapus file lama.</p>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {[0, 1, 2, 3].map(idx => (
+                                        <div key={idx} className="space-y-1">
+                                            <Label className="text-xs font-bold">Dokumen {idx + 1}</Label>
+                                            {/* Info nama dokumen default jika ada */}
+                                            {data.existingPdfs && data.existingPdfs[idx] && !data.removePdf[idx] && (
+                                                <div className="text-xs text-muted-foreground mb-1">Dokumen yang sudah ada: <span className="font-semibold">{data.existingPdfs[idx].file_name}</span></div>
+                                            )}
+                                            <input
+                                                type="file"
+                                                accept="application/pdf"
+                                                id={`pdf-input-${idx}`}
+                                                onChange={handleSinglePdfChange(idx)}
+                                                className="hidden"
+                                            />
+                                            <label htmlFor={`pdf-input-${idx}`} className="flex items-center gap-2 cursor-pointer px-3 py-2 border border-input rounded-md text-sm bg-background hover:bg-muted transition">
+                                                <Upload className="w-4 h-4 mr-1" />
+                                                <span>Pilih File</span>
+                                            </label>
+                                            {/* Jika ada file baru diinput */}
+                                            {data.pdfs[idx] && (
+                                                <div className="mt-1 text-sm text-muted-foreground">File baru: {data.pdfs[idx]?.name}</div>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                                {errors.pdfs && <p className="text-sm text-red-600">{errors.pdfs}</p>}
                             </div>
+
 
                             <div className="flex gap-4 pt-4">
                                 <Button type="submit" disabled={processing} className='text-white hover:opacity-90'>

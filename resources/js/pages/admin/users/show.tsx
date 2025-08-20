@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Edit, MapPin, User, Users } from 'lucide-react';
+import { useState } from 'react';
 
 interface UserShow {
+    pdfs: any;
     id: number;
     name: string;
     username: string;
@@ -28,6 +31,8 @@ interface UserShowProps {
 }
 
 export default function UserShow({ user }: UserShowProps) {
+    const [pdfs, setPdfs] = useState(user.pdfs || []);
+    const [successDelete, setSuccessDelete] = useState<string | null>(null);
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('id-ID', {
             weekday: 'long',
@@ -37,11 +42,34 @@ export default function UserShow({ user }: UserShowProps) {
         });
     };
 
+    const handleDelete = (pdfId: number) => {
+        if (window.confirm('Apakah Anda yakin ingin menghapus dokumen ini?')) {
+            router.delete(
+                route('admin.users.pdfs.delete', { user: user.id, pdf: pdfId }),
+                {
+                    onSuccess: () => {
+                        setPdfs((prev: any[]) => prev.filter((pdf) => pdf.id !== pdfId));
+                        setSuccessDelete('File PDF berhasil dihapus.');
+                        setTimeout(() => setSuccessDelete(null), 3000);
+                    },
+                    onError: () => {
+                        alert('Terjadi kesalahan saat menghapus dokumen.');
+                    },
+                }
+            );
+        }
+    };
+
     return (
         <AuthenticatedLayout>
             <Head title={`Detail Umat - ${user.name}`} />
 
             <div className="space-y-6 p-6">
+                {successDelete && (
+                    <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                        {successDelete}
+                    </div>
+                )}
                 <div className="flex items-center justify-between">
                     <div className="space-y-2">
                         <nav className="flex items-center text-sm text-muted-foreground">
@@ -60,12 +88,12 @@ export default function UserShow({ user }: UserShowProps) {
                                 Kembali ke Umat
                             </Button>
                         </Link>
-                    <Link href={`/admin/users/${user.id}/edit`}>
-                        <Button className='text-white'>
-                            <Edit className="mr-2 h-4 w-4" />
-                            Edit Umat
-                        </Button>
-                    </Link>
+                        <Link href={`/admin/users/${user.id}/edit`}>
+                            <Button className='text-white'>
+                                <Edit className="mr-2 h-4 w-4" />
+                                Edit Umat
+                            </Button>
+                        </Link>
                     </div>
                 </div>
 
@@ -137,6 +165,25 @@ export default function UserShow({ user }: UserShowProps) {
                                         <div>
                                             <p className="text-sm text-muted-foreground">Alamat</p>
                                             <p className="font-medium">{user.address}</p>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* PDF List Section */}
+                                {pdfs && pdfs.length > 0 && (
+                                    <div className="border-t pt-4 w-full">
+                                        <h3 className="font-semibold mb-2">File PDF Umat</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                                            {pdfs.map((pdf: { id: number; file_name: string; file_url: string }, idx: number) => (
+                                                <div key={pdf.id} className="flex items-center gap-2 bg-muted/40 rounded p-3 w-full">
+                                                    <span className="font-bold mr-2">{idx + 1}.</span>
+                                                    <span className="text-sm text-muted-foreground flex-1 truncate">{pdf.file_name}</span>
+                                                    <a href={pdf.file_url} download className="flex-shrink-0">
+                                                        <Button variant="outline" size="sm" className="flex items-center border rounded text-black hover:bg-muted hover:text-black">Download</Button>
+                                                    </a>
+                                                    <Button variant="destructive" size="sm" onClick={() => handleDelete(pdf.id)}>Hapus</Button>
+                                                </div>
+                                            ))}
                                         </div>
                                     </div>
                                 )}

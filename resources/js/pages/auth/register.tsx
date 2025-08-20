@@ -56,14 +56,14 @@ export default function Register({ communities }: Props) {
                     {/* Left Side - Church Information */}
                     <div className="space-y-10">
                         <div className="text-center lg:text-left">
-                        <div className="mb-4">
-                            <Link href="/">
-                                <Button variant="outline" size="sm" className="hidden lg:flex rounded-lg bg-secondary hover:bg-secondary/90">
-                                    <ArrowLeft />
-                                    Kembali ke Home
-                                </Button>
-                            </Link>
-                        </div>
+                            <div className="mb-4">
+                                <Link href="/">
+                                    <Button variant="outline" size="sm" className="hidden lg:flex rounded-lg bg-secondary hover:bg-secondary/90">
+                                        <ArrowLeft />
+                                        Kembali ke Home
+                                    </Button>
+                                </Link>
+                            </div>
                             <div className="flex justify-center lg:justify-start items-center mb-8">
                                 <div className="p-3 bg-primary/10 rounded-2xl backdrop-blur-sm border border-border shadow-lg mr-4">
                                     <img src="/images/logo.png" alt="Logo" className='w-16 h-16 object-contain' />
@@ -195,6 +195,21 @@ export default function Register({ communities }: Props) {
                                         />
                                         <InputError message={errors.birth_place} />
                                     </div>
+                                    <div className="grid gap-3">
+                                        <Label htmlFor="birth_date" className="text-foreground font-semibold">Tanggal Lahir</Label>
+                                        <Input
+                                            id="birth_date"
+                                            type="date"
+                                            required
+                                            tabIndex={6}
+                                            autoComplete="bday"
+                                            value={data.birth_date}
+                                            onChange={(e) => setData('birth_date', e.target.value)}
+                                            disabled={processing}
+                                            className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                                        />
+                                        <InputError message={errors.birth_date} />
+                                    </div>
                                 </div>
 
                                 <div className="grid gap-3">
@@ -214,23 +229,7 @@ export default function Register({ communities }: Props) {
                                     <InputError message={errors.address} />
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="grid gap-3">
-                                        <Label htmlFor="birth_date" className="text-foreground font-semibold">Tanggal Lahir</Label>
-                                        <Input
-                                            id="birth_date"
-                                            type="date"
-                                            required
-                                            tabIndex={6}
-                                            autoComplete="bday"
-                                            value={data.birth_date}
-                                            onChange={(e) => setData('birth_date', e.target.value)}
-                                            disabled={processing}
-                                            className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
-                                        />
-                                        <InputError message={errors.birth_date} />
-                                    </div>
-
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="grid gap-3">
                                         <Label htmlFor="gender" className="text-foreground font-semibold">Jenis Kelamin</Label>
                                         <Select

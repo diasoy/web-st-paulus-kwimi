@@ -13,9 +13,21 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminDashboardController extends Controller
 {
+    /**
+     * Delete a specific PDF from user
+     */
+    public function deleteUserPdf(User $user, $pdfId)
+    {
+        $pdf = $user->pdfs()->findOrFail($pdfId);
+        Storage::disk('public')->delete($pdf->file_path);
+        $pdf->delete();
+        return redirect()->route('admin.users.show', $user->id)
+            ->with('success', 'File PDF berhasil dihapus.');
+    }
     /**
      * Display the admin dashboard
      */
@@ -131,7 +143,7 @@ class AdminDashboardController extends Controller
      */
     public function showUser(User $user): Response
     {
-        $user->load(['community:id,name', 'role:id,name']);
+        $user->load(['community:id,name', 'role:id,name', 'pdfs']);
 
         return Inertia::render('admin/users/show', [
             'user' => [
@@ -150,6 +162,13 @@ class AdminDashboardController extends Controller
                 ] : null,
                 'created_at' => $user->created_at,
                 'updated_at' => $user->updated_at,
+                'pdfs' => $user->pdfs->map(function ($pdf) {
+                    return [
+                        'id' => $pdf->id,
+                        'file_name' => $pdf->file_name,
+                        'file_url' => asset('storage/' . $pdf->file_path),
+                    ];
+                }),
             ]
         ]);
     }
@@ -161,7 +180,7 @@ class AdminDashboardController extends Controller
     {
         // Debug: log yang sedang diakses
 
-        $user->load(['community:id,name', 'role:id,name']);
+        $user->load(['community:id,name', 'role:id,name', 'pdfs']);
         $communities = Community::all(['id', 'name']);
 
         return Inertia::render('admin/users/edit', [
@@ -177,6 +196,12 @@ class AdminDashboardController extends Controller
                 'status' => $user->status,
                 'community_id' => $user->community_id,
                 'created_at' => $user->created_at,
+                'pdfs' => $user->pdfs->map(function ($pdf) {
+                    return [
+                        'id' => $pdf->id,
+                        'file_name' => $pdf->file_name,
+                    ];
+                }),
             ],
             'communities' => $communities
         ]);
@@ -196,11 +221,46 @@ class AdminDashboardController extends Controller
             'gender' => 'required|in:male,female',
             'status' => 'required|in:active,inactive',
             'community_id' => 'nullable|exists:communities,id',
+            'pdfs.*' => 'nullable|file|mimes:pdf|max:4096', // max 4MB per file
+            'removePdf' => 'array',
+            'removePdf.*' => 'boolean',
         ]);
 
         $user->update($validated);
 
-        return redirect()->route('admin.users')
+        // Ambil semua PDF lama (urut sesuai id ASC)
+        $existingPdfs = $user->pdfs()->orderBy('id')->get();
+        $removePdf = $request->input('removePdf', []);
+        $files = $request->file('pdfs', []);
+
+        // Proses tiap slot (0-3)
+        for ($i = 0; $i < 4; $i++) {
+            $pdfModel = $existingPdfs->get($i);
+            $shouldRemove = isset($removePdf[$i]) && $removePdf[$i];
+            $newFile = isset($files[$i]) ? $files[$i] : null;
+
+            // Jika user hapus file lama
+            if ($pdfModel && $shouldRemove) {
+                Storage::disk('public')->delete($pdfModel->file_path);
+                $pdfModel->delete();
+            }
+
+            // Jika user upload file baru (ganti slot lama atau tambah baru)
+            if ($newFile) {
+                // Jika ada file lama dan tidak dihapus, hapus dulu
+                if ($pdfModel && !$shouldRemove) {
+                    Storage::disk('public')->delete($pdfModel->file_path);
+                    $pdfModel->delete();
+                }
+                $path = $newFile->store('user_pdfs', 'public');
+                $user->pdfs()->create([
+                    'file_path' => $path,
+                    'file_name' => $newFile->getClientOriginalName(),
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.users.show', $user->id)
             ->with('success', 'Data Umat berhasil diperbarui.');
     }
 

@@ -9,6 +9,13 @@ use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
+    /**
+     * Get all PDFs uploaded by the user
+     */
+    public function pdfs()
+    {
+        return $this->hasMany(UserPdf::class);
+    }
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 

@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Admin Routes
     Route::middleware('role_id:1')->prefix('admin')->name('admin.')->group(function () {
+    Route::delete('users/{user}/pdfs/{pdf}', [AdminDashboardController::class, 'deleteUserPdf'])->name('users.pdfs.delete');
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('users', [AdminDashboardController::class, 'users'])->name('users');
         // Create User must be above the dynamic {user} route

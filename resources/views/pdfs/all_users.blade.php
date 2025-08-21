@@ -26,15 +26,15 @@
     <table>
         <thead>
             <tr>
-                <th>No</th>
-                <th>Nama</th>
-                <th>Username</th>
-                <th>Tempat Lahir</th>
-                <th>Tanggal Lahir</th>
-                <th>Gender</th>
-                <th>Alamat</th>
-                <th>Komunitas Basis</th>
-                <th>Status</th>
+                <th style="color:#222;">No</th>
+                <th style="color:#222;">Nama</th>
+                <th style="color:#222;">Username</th>
+                <th style="color:#222;">Tempat Lahir</th>
+                <th style="color:#222;">Tanggal Lahir</th>
+                <th style="color:#222;">Gender</th>
+                <th style="color:#222;">Alamat</th>
+                <th style="color:#222;">Komunitas Basis</th>
+                <th style="color:#222;">Status</th>
             </tr>
         </thead>
         <tbody>

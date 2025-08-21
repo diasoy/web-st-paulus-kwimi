@@ -214,7 +214,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
             {/* Tombol Download PDF */}
             <Button
               variant="outline"
-              className="ml-2 text-primary border-primary hover:bg-primary/10"
+              className="ml-2 text-primary border-primary hover:bg-primary/10 hover:text-primary"
               onClick={handleDownloadPdf}
             >
               Download PDF

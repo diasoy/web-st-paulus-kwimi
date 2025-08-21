@@ -25,13 +25,13 @@
     </div>
     <table>
         <thead>
-            <tr>
-                <th>No</th>
-                <th>Nama Ibadah</th>
-                <th>Tanggal</th>
-                <th>Waktu</th>
-                <th>Pemimpin</th>
-                <th>Komunitas</th>
+            <tr >
+                <th style="color:#222;">No</th>
+                <th style="color:#222;">Nama Ibadah</th>
+                <th style="color:#222;">Tanggal</th>
+                <th style="color:#222;">Waktu</th>
+                <th style="color:#222;">Pemimpin</th>
+                <th style="color:#222;">Komunitas</th>
             </tr>
         </thead>
         <tbody>

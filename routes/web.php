@@ -7,11 +7,9 @@ use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\CommunityController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Umat\UmatDashboardController;
 use App\Http\Controllers\Umat\UmatWorshipScheduleController;
 use App\Http\Controllers\Umat\UmatActivityController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SitemapController;
@@ -32,10 +30,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Admin Routes
     Route::middleware('role_id:1')->prefix('admin')->name('admin.')->group(function () {
-    Route::get('worship-schedules/exportpdf', [App\Http\Controllers\Admin\WorshipScheduleController::class, 'exportPdf'])->name('worship-schedules.exportpdf');
-    Route::delete('users/{user}/pdfs/{pdf}', [AdminDashboardController::class, 'deleteUserPdf'])->name('users.pdfs.delete');
-    Route::get('users/exportpdf', [AdminDashboardController::class, 'exportAllUsersPdf'])->name('users.exportpdf');
-    Route::get('users/{user}/detailpdf', [AdminDashboardController::class, 'downloadUserDetailPdf'])->name('users.detailpdf');
+        Route::get('worship-schedules/exportpdf', [App\Http\Controllers\Admin\WorshipScheduleController::class, 'exportPdf'])->name('worship-schedules.exportpdf');
+        Route::delete('users/{user}/pdfs/{pdf}', [AdminDashboardController::class, 'deleteUserPdf'])->name('users.pdfs.delete');
+        Route::get('users/exportpdf', [AdminDashboardController::class, 'exportAllUsersPdf'])->name('users.exportpdf');
+        Route::get('users/{user}/detailpdf', [AdminDashboardController::class, 'downloadUserDetailPdf'])->name('users.detailpdf');
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
         Route::get('users', [AdminDashboardController::class, 'users'])->name('users');
         // Create User must be above the dynamic {user} route
@@ -45,16 +43,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('users/{user}/edit', [AdminDashboardController::class, 'editUser'])->name('users.edit');
         Route::put('users/{user}', [AdminDashboardController::class, 'updateUser'])->name('users.update');
         Route::delete('users/{user}', [AdminDashboardController::class, 'destroyUser'])->name('users.destroy');
-
         // Kelola Pengumuman
         Route::resource('announcements', AdminAnnouncementController::class);
-
         // Kelola Jadwal Ibadah
         Route::resource('worship-schedules', WorshipScheduleController::class);
-
         // Kelola Agenda Kegiatan
         Route::resource('activities', ActivityController::class);
-
         // Kelola Komunitas Basis
         Route::resource('communities', CommunityController::class);
     });
@@ -65,7 +59,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
         Route::get('worship-schedules', [UmatWorshipScheduleController::class, 'index'])->name('worship-schedules.index');
         Route::get('worship-schedules/{worshipSchedule}', [UmatWorshipScheduleController::class, 'show'])->name('worship-schedules.show');
-
         // Activities for Umat
         Route::get('activities', [UmatActivityController::class, 'index'])->name('activities.index');
         Route::get('activities/{activity}', [UmatActivityController::class, 'show'])->name('activities.show');

@@ -17,6 +17,11 @@ const sidebarNavItems: NavItem[] = [
         href: '/settings/password',
         icon: null,
     },
+    {
+        title: 'Unggah Dokumen',
+        href: '/settings/document',
+        icon: null,
+    },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {

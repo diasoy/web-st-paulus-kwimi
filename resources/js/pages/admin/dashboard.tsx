@@ -102,7 +102,7 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                                 <p className="text-xs text-slate-500 font-medium">Registrasi per bulan</p>
                             </CardContent>
                         </Card>
-
+                        
                         <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-white to-emerald-50/50 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">

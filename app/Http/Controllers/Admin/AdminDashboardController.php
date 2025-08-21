@@ -245,7 +245,7 @@ class AdminDashboardController extends Controller {
             'gender' => 'required|in:male,female',
             'status' => 'required|in:active,inactive',
             'community_id' => 'nullable|exists:communities,id',
-            'pdfs.*' => 'nullable|file|mimes:pdf|max:4096', // max 4MB per file
+            'pdfs.*' => 'nullable|file|mimes:pdf|max:2048', // max 2MB per file
             'removePdf' => 'array',
             'removePdf.*' => 'boolean',
         ]);
@@ -259,6 +259,7 @@ class AdminDashboardController extends Controller {
 
         // Proses tiap slot (0-3)
         for ($i = 0; $i < 4; $i++) {
+            // Hapus PDF jika diminta
             $pdfModel = $existingPdfs->get($i);
             $shouldRemove = isset($removePdf[$i]) && $removePdf[$i];
             $newFile = isset($files[$i]) ? $files[$i] : null;

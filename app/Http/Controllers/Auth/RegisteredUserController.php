@@ -38,9 +38,8 @@ class RegisteredUserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users,username',
-            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
-            'phone_number' => 'required|string|max:255',
             'address' => 'required|string|max:255',
+            'birth_place' => 'required|string|max:255',
             'birth_date' => 'required|date',
             'gender' => 'required|in:male,female',
             'community_id' => 'required|exists:communities,id',
@@ -51,9 +50,8 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
             'address' => $request->address,
+            'birth_place' => $request->birth_place,
             'birth_date' => $request->birth_date,
             'gender' => $request->gender,
             'password' => Hash::make($request->password),

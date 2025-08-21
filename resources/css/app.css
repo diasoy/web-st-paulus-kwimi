@@ -287,16 +287,16 @@
     --primary: #03A6A1; /* Teal */
     --primary-foreground: #FFFFFF;
 
-    --secondary: #FFA673; /* Soft Orange */
+    --secondary: #386641; /* Soft Orange */
     --secondary-foreground: #FFFFFF;
 
     --muted: #FFE3BB; /* Beige dipakai juga untuk muted */
     --muted-foreground: #2D2D2D;
 
-    --accent: #FF4F0F; /* Bright Orange-Red */
+    --accent: #E43636; /* Bright Orange-Red */
     --accent-foreground: #FFFFFF;
 
-    --destructive: #FF4F0F; /* Sama dengan accent untuk destructive */
+    --destructive: #E43636; /* Sama dengan accent untuk destructive */
     --destructive-foreground: #FFFFFF;
 
     --border: #E5E5E5;
@@ -306,8 +306,8 @@
     /* Chart palette berdasarkan urutan gambar */
     --chart-1: #03A6A1; /* Teal */
     --chart-2: #FFE3BB; /* Beige */
-    --chart-3: #FFA673; /* Soft Orange */
-    --chart-4: #FF4F0F; /* Bright Orange-Red */
+    --chart-3: #386641; /* Soft Orange */
+    --chart-4: #E43636; /* Bright Orange-Red */
     --chart-5: #2D2D2D; /* Netral opsional */
 
     --radius: 0.75rem;
@@ -317,8 +317,8 @@
     --sidebar-foreground: #2D2D2D;
     --sidebar-primary: #03A6A1;
     --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #FFA673;
-    --sidebar-accent-foreground: #2D2D2D;
+    --sidebar-accent: #386641;
+    --sidebar-accent-foreground: #fff;
     --sidebar-border: #E5E5E5;
     --sidebar-ring: #03A6A1;
 }

@@ -93,7 +93,7 @@ export default function ActivitiesIndex({ activities }: Props) {
         try {
             if (!timeString) return 'Waktu belum ditentukan';
             const time = new Date(`2000-01-01 ${timeString}`);
-            return format(time, 'HH:mm', { locale: id }) + ' WITA';
+            return format(time, 'HH:mm', { locale: id }) + ' WIT';
         } catch {
             return 'Waktu tidak valid';
         }

@@ -37,7 +37,7 @@ export default function WorshipScheduleShow({ worshipSchedule }: Props) {
 
     const formatTime = (timeString: string) => {
         if (!timeString) return 'Waktu belum ditentukan';
-        return timeString.substring(0, 5) + ' WIB';
+        return timeString.substring(0, 5) + ' WIT';
     };
 
     const isUpcoming = (dateString: string) => {

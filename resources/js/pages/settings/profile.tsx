@@ -27,8 +27,6 @@ interface Community {
 
 type ProfileForm = {
     name: string;
-    email: string;
-    phone_number: string;
     address: string;
     birth_date: string;
     gender: 'male' | 'female';
@@ -75,8 +73,6 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
     
     const { data, setData, patch, errors, processing, recentlySuccessful } = useForm<Required<ProfileForm>>({
         name: user?.name || '',
-        email: user?.email || '',
-        phone_number: user?.phone_number || '',
         address: user?.address || '',
         birth_date: formatDateForDateInput(user?.birth_date),
         gender: (user?.gender as 'male' | 'female') || 'male',
@@ -100,66 +96,33 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
                     <HeadingSmall title="Profile information" description="Update your profile information" />
 
                     <form onSubmit={submit} className="space-y-6">
-                        {/* Name and Email in 2 columns */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Nama Lengkap</Label>
-                                <Input
-                                    id="name"
-                                    className="mt-1 block w-full"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    required
-                                    autoComplete="name"
-                                    placeholder="Nama lengkap"
-                                />
-                                <InputError className="mt-2" message={errors.name} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    className="mt-1 block w-full"
-                                    value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
-                                    required
-                                    autoComplete="username"
-                                    placeholder="alamat@email.com"
-                                />
-                                <InputError className="mt-2" message={errors.email} />
-                            </div>
+                        {/* Name only */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="name">Nama Lengkap</Label>
+                            <Input
+                                id="name"
+                                className="mt-1 block w-full"
+                                value={data.name}
+                                onChange={(e) => setData('name', e.target.value)}
+                                required
+                                autoComplete="name"
+                                placeholder="Nama lengkap"
+                            />
+                            <InputError className="mt-2" message={errors.name} />
                         </div>
 
-                        {/* Phone and Birth Date in 2 columns */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="grid gap-2">
-                                <Label htmlFor="phone_number">No. Telepon</Label>
-                                <Input
-                                    id="phone_number"
-                                    type="tel"
-                                    className="mt-1 block w-full"
-                                    value={data.phone_number}
-                                    onChange={(e) => setData('phone_number', e.target.value)}
-                                    autoComplete="tel"
-                                    placeholder="+62 812 3456 7890"
-                                />
-                                <InputError className="mt-2" message={errors.phone_number} />
-                            </div>
-
-                            <div className="grid gap-2">
-                                <Label htmlFor="birth_date">Tanggal Lahir</Label>
-                                <Input
-                                    id="birth_date"
-                                    type="date"
-                                    className="mt-1 block w-full"
-                                    value={data.birth_date}
-                                    onChange={(e) => setData('birth_date', e.target.value)}
-                                    autoComplete="bday"
-                                />
-                                <InputError className="mt-2" message={errors.birth_date} />
-                            </div>
+                        {/* Birth Date only */}
+                        <div className="grid gap-2">
+                            <Label htmlFor="birth_date">Tanggal Lahir</Label>
+                            <Input
+                                id="birth_date"
+                                type="date"
+                                className="mt-1 block w-full"
+                                value={data.birth_date}
+                                onChange={(e) => setData('birth_date', e.target.value)}
+                                autoComplete="bday"
+                            />
+                            <InputError className="mt-2" message={errors.birth_date} />
                         </div>
 
                         {/* Gender and Community in 2 columns */}

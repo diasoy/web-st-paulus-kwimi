@@ -25,18 +25,9 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => [
-                'required', 
-                'string', 
-                'lowercase', 
-                'email', 
-                'max:255', 
-                Rule::unique(User::class)->ignore($this->user()->id)
-            ],
-            'phone_number' => ['nullable', 'string', 'max:255'],
-            'address' => ['nullable', 'string', 'max:1000'],
-            'birth_date' => ['nullable', 'date'],
-            'gender' => ['nullable', 'in:male,female'],
+            'address' => ['required', 'string', 'max:1000'],
+            'birth_date' => ['required', 'date'],
+            'gender' => ['required', 'in:male,female'],
             'community_id' => ['required', 'integer', 'exists:communities,id'],
         ];
     }
@@ -83,8 +74,6 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => 'nama lengkap',
-            'email' => 'alamat email',
-            'phone_number' => 'nomor telepon',
             'address' => 'alamat',
             'birth_date' => 'tanggal lahir',
             'gender' => 'jenis kelamin',

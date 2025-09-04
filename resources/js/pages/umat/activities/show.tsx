@@ -110,14 +110,14 @@ export default function ActivityShow({ activity }: Props) {
         <AppLayout>
             <Head title={`${activity.name} - Kegiatan`} />
 
-            <div className="min-h-screen bg-gradient-to-br from-church-cream via-white to-church-light">
+            <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
                 <div className="container mx-auto px-4 py-8">
                     {/* Header Navigation */}
                     <div className="mb-8">
                         <Link href="/umat/activities">
                             <Button 
                                 variant="outline" 
-                                className="mb-6 bg-secondary text-white hover:bg-secondary/90 hover:cursor-pointer"
+                                className="mb-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 transition-all duration-300"
                             >
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Kembali ke Agenda Kegiatan

@@ -276,50 +276,50 @@
 }
 
 :root {
-    /* Light Theme - Palette Baru */
-    --background: #ffffff; /* Beige lembut dari palet */
-    --foreground: #2D2D2D; /* Teks netral gelap */
-    --card: #FFFFFF; 
-    --card-foreground: #2D2D2D;
-    --popover: #FFFFFF;
-    --popover-foreground: #2D2D2D;
+    /* Dark Green Theme - Background hijau tua, Card tetap terang */
+    --background: #1a4d20; /* Background hijau tua seperti sidebar */
+    --foreground: #FFFFFF; /* Text putih */
+    --card: #FFFFFF; /* Card tetap putih */
+    --card-foreground: #2D2D2D; /* Text card tetap gelap */
+    --popover: #FFFFFF; /* Popover putih */
+    --popover-foreground: #2D2D2D; /* Text popover gelap */
 
-    --primary: #03A6A1; /* Teal */
+    --primary: #03A6A1; /* Teal tetap sama */
     --primary-foreground: #FFFFFF;
 
-    --secondary: #386641; /* Soft Orange */
+    --secondary: #3e7147; /* Hijau tua dari gradasi sidebar */
     --secondary-foreground: #FFFFFF;
 
-    --muted: #FFE3BB; /* Beige dipakai juga untuk muted */
-    --muted-foreground: #2D2D2D;
+    --muted: #F5F5F5; /* Muted tetap terang */
+    --muted-foreground: #6B7280; /* Text muted abu-abu */
 
-    --accent: #E43636; /* Bright Orange-Red */
+    --accent: #E43636; /* Accent merah tetap sama */
     --accent-foreground: #FFFFFF;
 
-    --destructive: #E43636; /* Sama dengan accent untuk destructive */
+    --destructive: #E43636; /* Destructive merah tetap sama */
     --destructive-foreground: #FFFFFF;
 
-    --border: #E5E5E5;
-    --input: #F9F9F9;
-    --ring: #03A6A1; /* Fokus pakai teal */
+    --border: #E5E5E5; /* Border tetap terang */
+    --input: #FFFFFF; /* Input tetap putih */
+    --ring: #03A6A1; /* Focus ring teal tetap sama */
 
-    /* Chart palette berdasarkan urutan gambar */
+    /* Chart palette dengan tema hijau */
     --chart-1: #03A6A1; /* Teal */
-    --chart-2: #FFE3BB; /* Beige */
-    --chart-3: #386641; /* Soft Orange */
-    --chart-4: #E43636; /* Bright Orange-Red */
-    --chart-5: #2D2D2D; /* Netral opsional */
+    --chart-2: #4a8c57; /* Hijau medium */
+    --chart-3: #6baa78; /* Hijau terang */
+    --chart-4: #E43636; /* Merah accent */
+    --chart-5: #2D2D2D; /* Netral gelap */
 
     --radius: 0.75rem;
 
-    /* Sidebar mengikuti background baru */
-    --sidebar: #ffffff;
-    --sidebar-foreground: #2D2D2D;
+    /* Sidebar dengan background gradasi hijau tua */
+    --sidebar: #1a4d20;
+    --sidebar-foreground: #FFFFFF;
     --sidebar-primary: #03A6A1;
     --sidebar-primary-foreground: #FFFFFF;
-    --sidebar-accent: #386641;
-    --sidebar-accent-foreground: #fff;
-    --sidebar-border: #E5E5E5;
+    --sidebar-accent: #2d5f35;
+    --sidebar-accent-foreground: #FFFFFF;
+    --sidebar-border: #3e7147;
     --sidebar-ring: #03A6A1;
 }
 
@@ -329,9 +329,35 @@
         @apply border-border;
     }
 
-    body {
+    html, body {
         @apply bg-background text-foreground;
         font-feature-settings: "rlig" 1, "calt" 1;
+        background-color: #1a4d20 !important; /* Force green background */
+        scroll-behavior: smooth;
+    }
+
+    #app {
+        background-color: #1a4d20 !important; /* Ensure app container is green */
+        min-height: 100vh;
+    }
+
+    /* Better mobile viewport handling */
+    @media (max-width: 768px) {
+        html {
+            font-size: 14px;
+        }
+        
+        .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+    }
+
+    /* Smooth scrolling for anchor links */
+    @media (prefers-reduced-motion: no-preference) {
+        html {
+            scroll-behavior: smooth;
+        }
     }
 
     ::-webkit-scrollbar {
@@ -374,5 +400,123 @@
 
     .custom-shadow {
         box-shadow: 0 4px 20px rgba(0, 128, 157, 0.25); /* Blue shadow lembut */
+    }
+
+    /* Church theme animations */
+    .fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    .fade-in-left {
+        animation: fadeInLeft 0.8s ease-out forwards;
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+
+    .fade-in-right {
+        animation: fadeInRight 0.8s ease-out forwards;
+        opacity: 0;
+        transform: translateX(30px);
+    }
+
+    .bounce-gentle {
+        animation: bounceGentle 2s ease-in-out infinite;
+    }
+
+    .float {
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .glow {
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    /* Church-themed hover effects */
+    .card-hover {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card-hover:hover {
+        transform: translateY(-8px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Spiritual gradient backgrounds */
+    .heaven-gradient {
+        background: linear-gradient(135deg, 
+            #667eea 0%, 
+            #764ba2 100%
+        );
+    }
+
+    .peace-gradient {
+        background: linear-gradient(135deg, 
+            #a8edea 0%, 
+            #fed6e3 100%
+        );
+    }
+
+    .hope-gradient {
+        background: linear-gradient(135deg, 
+            #ffecd2 0%, 
+            #fcb69f 100%
+        );
+    }
+
+    .faith-gradient {
+        background: linear-gradient(135deg, 
+            #84fab0 0%, 
+            #8fd3f4 100%
+        );
+    }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes bounceGentle {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    }
+    to {
+        box-shadow: 0 0 30px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.2);
     }
 }

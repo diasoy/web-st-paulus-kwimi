@@ -22,7 +22,12 @@ class WorshipScheduleController extends Controller
             $query->whereBetween('date', [$start, $end]);
         }
         $schedules = $query->orderBy('date')->orderBy('time_start')->get();
+        
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdfs.worship_schedules', [ 'schedules' => $schedules ]);
+        
+        // Set paper options for better PDF generation
+        $pdf->setPaper('A4', 'portrait');
+        
         return $pdf->download('Jadwal_Ibadah.pdf');
     }
     /**

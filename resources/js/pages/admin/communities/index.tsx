@@ -41,7 +41,7 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
     };
 
     const SortIcon = ({ field }: { field: string }) => {
-        if (field !== sortBy) return <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />;
+        if (field !== sortBy) return <ChevronsUpDown className="ml-1 h-4 w-4 " />;
         return sortDir === 'asc' ? <ArrowUp className="ml-1 h-4 w-4" /> : <ArrowDown className="ml-1 h-4 w-4" />;
     };
 
@@ -82,14 +82,14 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Kelola Komunitas Basis</h1>
-                        <p className="text-muted-foreground">Kelola semua komunitas basis jemaat ST. Paulus Kwimi</p>
+                        <p className="">Kelola semua komunitas basis jemaat ST. Paulus Kwimi</p>
                     </div>
                 </div>
                 {/* Search / Filters */}
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex min-w-0 flex-1 items-center gap-2">
                         <div className="relative w-full max-w-sm">
-                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 " />
                             <Input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -117,7 +117,7 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                 <div>
                     {communities.data.length === 0 ? (
                         <div className="py-12 text-center">
-                            <p className="text-muted-foreground">Belum ada komunitas basis</p>
+                            <p className="">Belum ada komunitas basis</p>
                             <Link href="/admin/communities/create">
                                 <Button className="mt-4">
                                     <Plus className="mr-2 h-4 w-4" />
@@ -126,10 +126,10 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                             </Link>
                         </div>
                     ) : (
-                        <div className="rounded-md border">
+                        <div className="border bg-secondary">
                             <Table>
                                 <TableHeader>
-                                    <TableRow className="bg-muted/60">
+                                    <TableRow className="bg-white">
                                         <TableHead className="pl-6">
                                             <button
                                                 type="button"
@@ -171,10 +171,10 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                                                 <div className="flex items-center gap-2">
                                                     <Users className="h-4 w-4" />
                                                     <span className="font-medium">{community.users_count || 0}</span>
-                                                    <span className="text-sm text-muted-foreground">anggota</span>
+                                                    <span className="text-sm ">anggota</span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-sm text-muted-foreground">{formatDate(community.created_at)}</TableCell>
+                                            <TableCell className="text-sm ">{formatDate(community.created_at)}</TableCell>
                                             <TableCell className="pr-6 text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <Button variant="outline" size="sm" asChild className='bg-secondary hover:bg-secondary/90'>
@@ -210,7 +210,7 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                             const inactiveClass =
                                 'bg-white text-secondary border-secondary hover:opacity-80';
                             const disabledClass =
-                                'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                                'bg-secondary  border-secondary opacity-60 cursor-not-allowed';
                             if (link.url) {
                                 return (
                                     <Link

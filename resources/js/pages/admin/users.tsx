@@ -85,7 +85,8 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
     <AuthenticatedLayout>
       <Head title="Manajemen Umat" />
 
-      <div className="space-y-6 p-6">
+      <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
+        <div className="space-y-6 p-6">
         {/* Flash messages */}
         {props.flash?.success && (
           <div className="rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">{props.flash.success}</div>
@@ -95,26 +96,26 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
         )}
 
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Manajemen Umat</h1>
-          <p className="text-muted-foreground">Kelola semua Umat sistem ST. Paulus Kwimi</p>
+          <h1 className="text-3xl font-bold tracking-tight text-white drop-shadow-lg">Manajemen Umat</h1>
+          <p className="text-white/90 drop-shadow-md">Kelola semua Umat sistem ST. Paulus Kwimi</p>
         </div>
 
         {/* Toolbar (Search + Filters) */}
         <div className="flex items-center justify-between gap-2">
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <div className="relative w-full max-w-sm">
-              <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute top-2.5 left-2.5 h-4 w-4 " />
               <Input
                 type="text"
                 placeholder="Cari nama atau email..."
-                className="h-9 pl-8 text-sm"
+                className="h-9 pl-8 text-sm text-white"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
               />
             </div>
             <select
-              className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+              className="h-9 rounded-md border border-input bg-white text-black px-2 text-sm"
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
             >
@@ -129,7 +130,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
               <Button
                 onClick={handleReset}
                 size="sm"
-                className="px-2 sm:px-4 border text-black cursor-pointer bg-white hover:bg-muted"
+                className="px-2 sm:px-4 border cursor-pointer bg-amber-600 "
                 title="Reset"
               >
                 <RotateCcw className="h-4 w-4 sm:mr-2" />
@@ -157,11 +158,11 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
 
         {/* Users List */}
         <div>
-          <div className="rounded-md border">
+          <div className="border bg-secondary">
             {users.data.length > 0 ? (
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-muted/60">
+                  <TableRow className="bg-white">
                     <TableHead>Nama</TableHead>
                     <TableHead>Tempat Lahir</TableHead>
                     <TableHead>Tanggal Lahir</TableHead>
@@ -219,16 +220,16 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
               </Table>
             ) : (
               <div className="py-12 text-center">
-                <Users className="mx-auto h-12 w-12 text-muted-foreground/50" />
+                <Users className="mx-auto h-12 w-12" />
                 <p className="mt-4 text-lg font-medium">Tidak ada Umat ditemukan</p>
-                <p className="text-muted-foreground">Coba ubah filter pencarian Anda</p>
+                <p className="">Coba ubah filter pencarian Anda</p>
               </div>
             )}
           </div>
           {/* Pagination */}
           {users.data.length > 0 && (
             <div className="mt-6 flex items-center justify-between border-t pt-6">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm ">
                 Menampilkan {users.data.length} dari {users.total} Umat
               </div>
               <div className="flex gap-2">
@@ -240,7 +241,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
                   const inactiveClass =
                     'bg-white text-secondary border-secondary hover:opacity-80';
                   const disabledClass =
-                    'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                    'bg-secondary  border-secondary opacity-60 cursor-not-allowed';
                   const label = getLabel(link.label);
                   return link.url ? (
                     <button
@@ -267,6 +268,7 @@ export default function UsersManagement({ users, filters }: UsersManagementProps
               </div>
             </div>
           )}
+        </div>
         </div>
       </div>
     </AuthenticatedLayout>

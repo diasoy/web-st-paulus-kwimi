@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::middleware('role_id:1')->prefix('admin')->name('admin.')->group(function () {
         Route::get('worship-schedules/exportpdf', [App\Http\Controllers\Admin\WorshipScheduleController::class, 'exportPdf'])->name('worship-schedules.exportpdf');
         Route::delete('users/{user}/pdfs/{pdf}', [AdminDashboardController::class, 'deleteUserPdf'])->name('users.pdfs.delete');
+        Route::get('users/{user}/pdfs/{pdf}/download', [AdminDashboardController::class, 'downloadUserPdf'])->name('users.pdfs.download');
         Route::get('users/exportpdf', [AdminDashboardController::class, 'exportAllUsersPdf'])->name('users.exportpdf');
         Route::get('users/{user}/detailpdf', [AdminDashboardController::class, 'downloadUserDetailPdf'])->name('users.detailpdf');
         Route::get('dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');

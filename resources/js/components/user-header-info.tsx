@@ -19,7 +19,7 @@ const UserHeaderInfo = ({ onlyDate, onlyUser }: UserHeaderInfoProps = {}) => {
     };
 
     if (onlyDate) {
-        return <span className="text-sm text-muted-foreground text-center">{today}</span>;
+        return <span className="text-sm text-center">{today}</span>;
     }
     if (onlyUser) {
         return (

@@ -43,27 +43,30 @@ interface AdminDashboardProps {
     monthly_users: { labels: string[]; data: number[] };
 }
 
-function Sparkline({ data }: { data: number[]; stroke?: string }) {
-    const width = 140;
-    const height = 40;
-    const max = Math.max(1, ...data);
-    const min = Math.min(0, ...data);
-    const range = Math.max(1, max - min);
-    const points = data.map((d, i) => {
-        const x = (i / Math.max(1, data.length - 1)) * (width - 4) + 2;
-        const y = height - ((d - min) / range) * (height - 4) - 2;
-        return `${x},${y}`;
-    });
+function Sparkline({ data, stroke }: { data: number[]; stroke?: string }) {
+    const max = Math.max(...data);
+    const min = Math.min(...data);
+    const range = max - min || 1;
+
+    const pathData = data.map((value, index) => {
+        const x = (index / (data.length - 1)) * 100;
+        const y = 100 - ((value - min) / range) * 100;
+        return `${index === 0 ? 'M' : 'L'} ${x} ${y}`;
+    }).join(' ');
+
     return (
-        <svg viewBox={`0 0 ${width} ${height}`} width={width} height={height} className="overflow-visible">
-            <defs>
-                <linearGradient id="sparklineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#03A6A1" />
-                    <stop offset="100%" stopColor="#FFA673" />
-                </linearGradient>
-            </defs>
-            <polyline fill="none" stroke="url(#sparklineGradient)" strokeWidth="3" points={points.join(' ')} className="drop-shadow-sm" />
-        </svg>
+        <div className="h-8 w-full">
+            <svg className="h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path
+                    d={pathData}
+                    fill="none"
+                    stroke={stroke || 'currentColor'}
+                    strokeWidth="2"
+                    vectorEffect="non-scaling-stroke"
+                    className="opacity-60"
+                />
+            </svg>
+        </div>
     );
 }
 
@@ -72,19 +75,16 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
         <AuthenticatedLayout>
             <Head title="Admin Dashboard" />
 
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50">
+        <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
                 <div className="mx-6 space-y-8 py-8">
                     {/* Header Section */}
-                    {/* <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary via-primary/90 to-secondary p-8 text-white shadow-xl">
                         <div className="relative z-10">
-                            <h1 className="text-4xl font-bold tracking-tight mb-2">Admin Dashboard</h1>
-                            <p className="text-primary-foreground/90 text-lg">Selamat datang di panel admin ST. Paulus Kwimi</p>
+                            <h1 className="text-4xl font-bold tracking-tight mb-2 text-white">Admin Dashboard</h1>
+                            <p className="text-white/90 text-lg">Selamat datang di panel admin ST. Paulus Kwimi</p>
                         </div>
                         <div className="absolute -right-16 -top-16 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
                         <div className="absolute -left-8 -bottom-8 h-24 w-24 rounded-full bg-white/5 blur-xl"></div>
-                    </div> */}
 
-                    {/* KPI Cards */}
                     {/* KPI Cards */}
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
                         <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-indigo-400 to-blue-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
@@ -143,7 +143,10 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                                 <p className="text-xs text-white/90 font-medium mt-auto">Total komunitas basis</p>
                             </CardContent>
                         </Card>
+                    </div>
 
+                    {/* Second Row Cards */}
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         <Card className="group relative overflow-hidden border-0 bg-gradient-to-br from-rose-400 to-orange-600 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
                                 <CardTitle className="text-sm font-semibold text-white">Pengumuman</CardTitle>
@@ -186,11 +189,11 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
 
                     {/* Lists Section */}
                     <div className="grid gap-6 lg:grid-cols-2">
-                        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-                            <CardHeader className="bg-gradient-to-r from-primary/5 to-secondary/5 rounded-t-lg">
-                                <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                    <div className="rounded-full bg-primary/10 p-2">
-                                        <Users className="h-5 w-5 text-primary" />
+                        <Card className="shadow-lg bg-gradient-to-br from-green-700/30 to-green-800/30 backdrop-blur-sm border border-green-600/30">
+                            <CardHeader className="bg-gradient-to-r from-green-800/20 via-green-700/20 to-green-600/20 rounded-t-lg border-b border-green-600/30">
+                                <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
+                                    <div className="rounded-full bg-green-600/20 p-2">
+                                        <Users className="h-5 w-5 text-white" />
                                     </div>
                                     Umat Terbaru
                                 </CardTitle>
@@ -198,9 +201,9 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                             <CardContent className="p-6">
                                 <div className="space-y-4">
                                     {recent_users.map((user) => (
-                                        <div key={user.id} className="flex items-center space-x-4 p-3 rounded-xl bg-gradient-to-r from-slate-50 to-white border border-slate-100 hover:shadow-md transition-all duration-200">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary/20 to-secondary/20">
-                                                <User className="h-5 w-5 text-primary" />
+                                        <div key={user.id} className="flex items-center space-x-4 p-3 rounded-xl bg-white/90 border border-green-600/20 hover:shadow-md hover:bg-white transition-all duration-200">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-green-100 to-green-200">
+                                                <User className="h-5 w-5 text-green-700" />
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <p className="truncate font-semibold text-slate-800">{user.name}</p>
@@ -222,11 +225,11 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                             </CardContent>
                         </Card>
 
-                        <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-                            <CardHeader className="bg-gradient-to-r from-rose-50/50 to-orange-50/50 rounded-t-lg">
-                                <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                    <div className="rounded-full bg-rose-100 p-2">
-                                        <Megaphone className="h-5 w-5 text-rose-600" />
+                        <Card className="shadow-lg bg-gradient-to-br from-green-700/30 to-green-800/30 backdrop-blur-sm border border-green-600/30">
+                            <CardHeader className="bg-gradient-to-r from-green-800/20 via-green-700/20 to-green-600/20 rounded-t-lg border-b border-green-600/30">
+                                <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
+                                    <div className="rounded-full bg-green-600/20 p-2">
+                                        <Megaphone className="h-5 w-5 text-white" />
                                     </div>
                                     Pengumuman Terbaru
                                 </CardTitle>
@@ -234,9 +237,9 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                             <CardContent className="p-6">
                                 <div className="space-y-4">
                                     {recent_announcements.map((a) => (
-                                        <div key={a.id} className="flex items-center space-x-4 p-3 rounded-xl bg-gradient-to-r from-slate-50 to-white border border-slate-100 hover:shadow-md transition-all duration-200">
-                                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-100 to-orange-100">
-                                                <Megaphone className="h-5 w-5 text-rose-600" />
+                                        <div key={a.id} className="flex items-center space-x-4 p-3 rounded-xl bg-white/90 border border-green-600/20 hover:shadow-md hover:bg-white transition-all duration-200">
+                                            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-green-100 to-green-200">
+                                                <Megaphone className="h-5 w-5 text-green-700" />
                                             </div>
                                             <div className="min-w-0 flex-1">
                                                 <p className="truncate font-semibold text-slate-800">{a.title}</p>
@@ -260,11 +263,11 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                     </div>
 
                     {/* Worship Schedule */}
-                    <Card className="border-0 shadow-lg bg-white/80 backdrop-blur-sm">
-                        <CardHeader className="bg-gradient-to-r from-indigo-50/50 to-purple-50/50 rounded-t-lg">
-                            <CardTitle className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                <div className="rounded-full bg-indigo-100 p-2">
-                                    <CalendarDays className="h-5 w-5 text-indigo-600" />
+                    <Card className="shadow-lg bg-gradient-to-br from-green-700/30 to-green-800/30 backdrop-blur-sm border border-green-600/30">
+                        <CardHeader className="bg-gradient-to-r from-green-800/20 via-green-700/20 to-green-600/20 rounded-t-lg border-b border-green-600/30">
+                            <CardTitle className="text-xl font-bold text-white flex items-center gap-2">
+                                <div className="rounded-full bg-green-600/20 p-2">
+                                    <CalendarDays className="h-5 w-5 text-white" />
                                 </div>
                                 Jadwal Ibadah Mendatang
                             </CardTitle>
@@ -272,19 +275,19 @@ export default function AdminDashboard({ stats, recent_users, recent_announcemen
                         <CardContent className="p-6">
                             <div className="space-y-4">
                                 {upcoming_worship.map((w) => (
-                                    <div key={w.id} className="flex items-center justify-between gap-4 p-4 rounded-xl bg-gradient-to-r from-slate-50 to-white border border-slate-100 hover:shadow-md transition-all duration-200">
+                                    <div key={w.id} className="flex items-center justify-between gap-4 p-4 rounded-xl bg-white/90 border border-green-600/20 hover:shadow-md hover:bg-white transition-all duration-200">
                                         <div className="min-w-0 flex-1">
-                                            <p className="truncate font-semibold text-slate-800 text-lg">{w.name}</p>
-                                            <p className="truncate text-slate-500 mt-1">
+                                            <p className="truncate font-semibold text-green-800 text-lg">{w.name}</p>
+                                            <p className="truncate text-green-600 mt-1">
                                                 <span className="inline-flex items-center gap-1">
-                                                    <User className="h-4 w-4" />
+                                                    <User className="h-4 w-4 text-green-600" />
                                                     {w.pic || 'Belum ditentukan'}
                                                 </span>
                                             </p>
                                         </div>
                                         <div className="text-right">
-                                            <div className="font-semibold text-slate-800">{new Date(w.date).toLocaleDateString()}</div>
-                                            <div className="text-sm text-slate-500 bg-slate-100 px-2 py-1 rounded-full mt-1">{w.time_start}</div>
+                                            <div className="font-semibold text-green-800">{new Date(w.date).toLocaleDateString()}</div>
+                                            <div className="text-sm text-white bg-green-600 px-2 py-1 rounded-full mt-1">{w.time_start}</div>
                                         </div>
                                     </div>
                                 ))}

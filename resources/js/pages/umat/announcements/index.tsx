@@ -107,9 +107,10 @@ export default function Announcements({ announcements }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Pengumuman Gereja" />
 
-      <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
+        <div className="container mx-auto px-4 py-8 space-y-8">
         <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-900">Pengumuman Gereja</h1>
+          <h1 className="text-3xl font-bold text-white drop-shadow-lg">Pengumuman Gereja</h1>
         </div>
 
         {/* Pengumuman */}
@@ -117,7 +118,7 @@ export default function Announcements({ announcements }: Props) {
           {announcements.data.length === 0 ? (
             <Card>
               <CardContent className="py-8">
-                <p className="text-center text-gray-500">Belum ada pengumuman yang terdaftar.</p>
+                <p className="text-center text-white">Belum ada pengumuman yang terdaftar.</p>
               </CardContent>
             </Card>
           ) : (
@@ -195,7 +196,7 @@ export default function Announcements({ announcements }: Props) {
                   return (
                     <span
                       key={index}
-                      className="px-3 py-2 text-church-text/50 bg-white/50 rounded-md border border-church-primary/10"
+                      className="px-3 py-2 text-white/60 bg-white/20 backdrop-blur-sm rounded-md border border-white/20"
                       dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
                     />
                   );
@@ -207,7 +208,7 @@ export default function Announcements({ announcements }: Props) {
                     href={link.url}
                     className={`px-3 py-2 rounded-md border transition-colors duration-300 ${link.active
                         ? 'bg-church-primary text-white border-church-primary'
-                        : 'bg-white/70 text-church-dark border-church-primary/20 hover:bg-church-primary/10'
+                        : 'bg-white/20 backdrop-blur-sm text-white border-white/20 hover:bg-white/30'
                       }`}
                     dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
                   />
@@ -215,6 +216,7 @@ export default function Announcements({ announcements }: Props) {
               })}
             </div>
           )}
+        </div>
         </div>
       </div>
     </AppLayout>

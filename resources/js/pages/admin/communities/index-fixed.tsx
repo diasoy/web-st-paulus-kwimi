@@ -69,9 +69,10 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                                 </Link>
                             </div>
                         ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
+                            <div className="border bg-secondary">
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow className="bg-white">
                                         <TableHead>Nama Komunitas</TableHead>
                                         <TableHead>Tanggal Dibuat</TableHead>
                                         <TableHead className="text-right">Aksi</TableHead>
@@ -108,6 +109,7 @@ export default function CommunitiesIndex({ communities }: CommunitiesIndexProps)
                                     ))}
                                 </TableBody>
                             </Table>
+                            </div>
                         )}
                     </CardContent>
                 </Card>

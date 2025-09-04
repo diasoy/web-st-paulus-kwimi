@@ -75,7 +75,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                   </div>
                 </div>
 
-                <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
+                <p className="text-xl  mb-10 leading-relaxed">
                   Masuk ke akun Anda untuk mengakses komunitas <span className="font-semibold text-primary">Gereja St. Paulus Kwimi</span>
                 </p>
               </div>
@@ -88,7 +88,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-foreground mb-3 text-lg">Akun yang Aman</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className=" leading-relaxed">
                     Data dan privasi Anda dilindungi dengan sistem keamanan terbaik untuk kenyamanan beribadah digital.
                   </p>
                 </div>
@@ -100,7 +100,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-foreground mb-3 text-lg">Terhubung dengan Jemaat</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className=" leading-relaxed">
                     Bergabung dengan komunitas, ikuti kegiatan, dan tetap terhubung dengan keluarga rohani.
                   </p>
                 </div>
@@ -112,7 +112,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </div>
                 <div className="flex-1">
                   <h3 className="font-bold text-foreground mb-3 text-lg">Materi Rohani</h3>
-                  <p className="text-muted-foreground leading-relaxed">
+                  <p className=" leading-relaxed">
                     Akses jadwal ibadah, renungan harian, dan berbagai materi pembinaan iman.
                   </p>
                 </div>
@@ -132,10 +132,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
               </Button>
             </Link>
 
-            <div className="bg-card/80 backdrop-blur-xl p-10 rounded-3xl church-shadow border border-border transition-all duration-500">
+            <div className="bg-secondary backdrop-blur-xl p-10 rounded-3xl church-shadow border border-border transition-all duration-500">
               <div className="text-center mb-10">
                 <h2 className="text-3xl font-bold text-foreground mb-3">Masuk ke Akun</h2>
-                <p className="text-muted-foreground">Masukkan username dan kata sandi Anda</p>
+                <p className="">Masukkan username dan kata sandi Anda</p>
               </div>
 
               {status && (
@@ -160,7 +160,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         onChange={(e) => setData('username', e.target.value)}
                         placeholder="Masukkan username"
                         disabled={processing}
-                        className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                        className="h-12 text-black px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                       />
                     </div>
                     <InputError message={errors.username} />
@@ -181,11 +181,11 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                         onChange={(e) => setData('password', e.target.value)}
                         placeholder="Kata sandi"
                         disabled={processing}
-                        className="h-12 px-4 pr-12 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                        className="h-12 text-black px-4 pr-12 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                       />
                       <button
                         type="button"
-                        className="absolute inset-y-0 right-0 flex items-center pr-4 text-muted-foreground hover:text-foreground transition-colors duration-200"
+                        className="absolute text-black inset-y-0 right-0 flex items-center pr-4 transition-colors duration-200"
                         onClick={() => setShowPassword(!showPassword)}
                         tabIndex={-1}
                         disabled={processing}
@@ -217,7 +217,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                   <Button
                     type="submit"
-                    className="mt-8 w-full h-12 hover:opacity-90 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:cursor-pointer text-white"
+                    className="mt-8 w-full h-12 hover:opacity-90 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:cursor-pointer"
                     tabIndex={5}
                     disabled={processing}
                   >
@@ -226,12 +226,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                   </Button>
                 </div>
 
-                <div className="text-center text-slate-600 mt-8 pt-6 border-t border-slate-200">
+                <div className="text-center mt-8 pt-6 border-t border-slate-200">
                   Belum memiliki akun?{' '}
                   <TextLink
                     href={route('register')}
                     tabIndex={6}
-                    className="font-semibold transition-colors duration-200"
+                    className="font-semibold text-primary transition-colors duration-200"
                   >
                     Daftar di sini
                   </TextLink>

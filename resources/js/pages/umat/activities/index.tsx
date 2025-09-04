@@ -124,20 +124,20 @@ export default function ActivitiesIndex({ activities }: Props) {
         <AppLayout>
             <Head title="Agenda Kegiatan" />
 
-            <div className="min-h-screen bg-gradient-to-br from-church-cream via-white to-church-light">
+            <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
                 <div className="container mx-auto px-4 py-8">
                     {/* Header */}
                     <div className="mb-8">
                         <div className="flex items-center justify-between mb-6">
                             <div className="flex items-center">
-                                <div className="bg-secondary/10 p-3 rounded-full mr-4">
-                                    <Calendar className="h-8 w-8 text-secondary" />
+                                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full mr-4">
+                                    <Calendar className="h-8 w-8 text-white" />
                                 </div>
                                 <div>
-                                    <h1 className="text-4xl font-bold text-church-dark">
+                                    <h1 className="text-4xl font-bold text-white drop-shadow-lg">
                                         Agenda Kegiatan
                                     </h1>
-                                    <p className="text-lg text-church-text/80">
+                                    <p className="text-lg text-white/90 drop-shadow-md">
                                         Kegiatan dan acara Gereja St. Paulus Kwimi
                                     </p>
                                 </div>
@@ -258,13 +258,13 @@ export default function ActivitiesIndex({ activities }: Props) {
                         </div>
                     ) : (
                         <div className="text-center py-16">
-                            <div className="bg-secondary/10 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Calendar className="h-12 w-12 text-secondary/50" />
+                            <div className="bg-white/20 backdrop-blur-sm w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                                <Calendar className="h-12 w-12 text-white" />
                             </div>
-                            <h3 className="text-xl font-semibold text-church-dark mb-2">
+                            <h3 className="text-xl font-semibold text-white mb-2">
                                 Belum Ada Kegiatan
                             </h3>
-                            <p className="text-church-text/70 max-w-md mx-auto">
+                            <p className="text-white/80 max-w-md mx-auto">
                                 Kegiatan atau acara gereja akan ditampilkan di sini ketika sudah dijadwalkan.
                             </p>
                         </div>
@@ -279,7 +279,7 @@ export default function ActivitiesIndex({ activities }: Props) {
                                     return (
                                         <span
                                             key={index}
-                                            className="px-3 py-2 text-church-text/50 bg-white/50 rounded-md border border-secondary/10"
+                                            className="px-3 py-2 text-white/60 bg-white/20 backdrop-blur-sm rounded-md border border-white/20"
                                             dangerouslySetInnerHTML={{ __html: label }}
                                         />
                                     );
@@ -290,7 +290,7 @@ export default function ActivitiesIndex({ activities }: Props) {
                                         href={link.url}
                                         className={`px-3 py-2 rounded-md border transition-colors duration-300 ${link.active
                                             ? 'bg-secondary text-white border-secondary'
-                                            : 'bg-white/70 text-church-dark border-secondary/20 hover:bg-secondary/10'
+                                            : 'bg-white/20 backdrop-blur-sm text-white border-white/20 hover:bg-white/30'
                                             }`}
                                         dangerouslySetInnerHTML={{ __html: label }}
                                     />

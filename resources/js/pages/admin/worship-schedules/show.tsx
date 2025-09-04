@@ -1,6 +1,5 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Clock, Edit, Trash2, User, Users } from 'lucide-react';
@@ -50,17 +49,17 @@ export default function WorshipScheduleShow({ worshipSchedule }: WorshipSchedule
         <AuthenticatedLayout>
             <Head title={`Detail Jadwal - ${worshipSchedule.name}`} />
 
-            <div className="space-y-6 p-6">
+            <div className="space-y-6 p-6 min-h-screen">
                 <div className="flex items-center justify-between">
                     <div className="space-y-2">
-                        <nav className="flex items-center text-sm text-muted-foreground">
-                            <Link href={route('admin.worship-schedules.index')} className="hover:text-foreground">
+                        <nav className="flex items-center text-sm text-white">
+                            <Link href={route('admin.worship-schedules.index')} className="hover:text-gray-300">
                                 Jadwal Ibadah
                             </Link>
-                            <span className="mx-2">/</span>
-                            <span className="text-foreground">Detail</span>
+                            <span className="mx-2 text-gray-300">/</span>
+                            <span className="text-white">Detail</span>
                         </nav>
-                        <h1 className="text-2xl font-bold tracking-tight">Detail Jadwal Ibadah</h1>
+                        <h1 className="text-2xl font-bold tracking-tight text-white">Detail Jadwal Ibadah</h1>
                     </div>
                     <div className="flex gap-2">
                         <Link href={route('admin.worship-schedules.index')}>
@@ -84,51 +83,47 @@ export default function WorshipScheduleShow({ worshipSchedule }: WorshipSchedule
 
                 <div className="grid gap-6 md:grid-cols-2">
                     {/* Detail Jadwal */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Detail Jadwal Ibadah</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
+                    <div className="space-y-4">
+                        <h2 className="text-lg font-semibold text-white">Detail Jadwal Ibadah</h2>
+                        <div className="space-y-4">
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-muted-foreground">Nama Ibadah</label>
-                                <p className="text-lg font-semibold">{worshipSchedule.name}</p>
+                                <label className="text-sm font-medium text-gray-300">Nama Ibadah</label>
+                                <p className="text-lg font-semibold text-white">{worshipSchedule.name}</p>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-muted-foreground">Tanggal</label>
+                                <label className="text-sm font-medium text-gray-300">Tanggal</label>
                                 <div className="flex items-center gap-2">
-                                    <Calendar className="h-4 w-4 text-muted-foreground" />
-                                    <p>{formatDate(worshipSchedule.date)}</p>
+                                    <Calendar className="h-4 w-4 text-white" />
+                                    <p className="text-white">{formatDate(worshipSchedule.date)}</p>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-muted-foreground">Waktu Mulai</label>
+                                <label className="text-sm font-medium text-gray-300">Waktu Mulai</label>
                                 <div className="flex items-center gap-2">
-                                    <Clock className="h-4 w-4 text-muted-foreground" />
-                                    <p>{formatTime(worshipSchedule.time_start)}</p>
+                                    <Clock className="h-4 w-4 text-white" />
+                                    <p className="text-white">{formatTime(worshipSchedule.time_start)}</p>
                                 </div>
                             </div>
 
                             <div className="space-y-2">
-                                <label className="text-sm font-medium text-muted-foreground">Pemimpin</label>
+                                <label className="text-sm font-medium text-gray-300">Pemimpin</label>
                                 <div className="flex items-center gap-2">
-                                    <User className="h-4 w-4 text-muted-foreground" />
-                                    <p>{worshipSchedule.pic}</p>
+                                    <User className="h-4 w-4 text-white" />
+                                    <p className="text-white">{worshipSchedule.pic}</p>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
 
                     {/* Komunitas Terkait */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Users className="h-5 w-5" />
-                                Komunitas Terkait
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
+                    <div className="space-y-4">
+                        <h2 className="text-lg font-semibold text-white flex items-center gap-2">
+                            <Users className="h-5 w-5" />
+                            Komunitas Terkait
+                        </h2>
+                        <div>
                             {worshipSchedule.communities && worshipSchedule.communities.length > 0 ? (
                                 <div className="flex flex-wrap gap-2">
                                     {worshipSchedule.communities.map((community) => (
@@ -138,33 +133,31 @@ export default function WorshipScheduleShow({ worshipSchedule }: WorshipSchedule
                                     ))}
                                 </div>
                             ) : (
-                                <div className="py-8 text-center text-muted-foreground">
+                                <div className="py-8 text-center text-gray-300">
                                     <Users className="mx-auto mb-2 h-12 w-12 opacity-50" />
                                     <p>Jadwal ini berlaku untuk semua komunitas</p>
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Informasi Tambahan */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Informasi Sistem</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
+                <div className="space-y-4">
+                    <h2 className="text-lg font-semibold text-white">Informasi Sistem</h2>
+                    <div className="space-y-2">
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Dibuat pada</label>
-                                <p className="text-sm">{new Date(worshipSchedule.created_at).toLocaleString('id-ID')}</p>
+                                <label className="text-sm font-medium text-gray-300">Dibuat pada</label>
+                                <p className="text-sm text-white">{new Date(worshipSchedule.created_at).toLocaleString('id-ID')}</p>
                             </div>
                             <div>
-                                <label className="text-sm font-medium text-muted-foreground">Terakhir diperbarui</label>
-                                <p className="text-sm">{new Date(worshipSchedule.updated_at).toLocaleString('id-ID')}</p>
+                                <label className="text-sm font-medium text-gray-300">Terakhir diperbarui</label>
+                                <p className="text-sm text-white">{new Date(worshipSchedule.updated_at).toLocaleString('id-ID')}</p>
                             </div>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         </AuthenticatedLayout>
     );

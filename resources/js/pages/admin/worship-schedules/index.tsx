@@ -120,7 +120,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Jadwal Ibadah</h1>
-            <p className="text-muted-foreground">
+            <p className="">
               Kelola jadwal ibadah untuk jemaat ST. Paulus Kwimi
             </p>
           </div>
@@ -131,7 +131,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
           <div className="flex min-w-0 flex-1 items-center gap-2">
             {/* Input Search */}
             <div className="relative w-full max-w-sm">
-              <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute top-2.5 left-2.5 h-4 w-4 " />
               <Input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
@@ -233,7 +233,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
         {/* Tabel Data */}
         {worshipSchedules.data.length === 0 ? (
           <div className="py-8 text-center">
-            <p className="text-muted-foreground">Belum ada jadwal ibadah</p>
+            <p className="">Belum ada jadwal ibadah</p>
             <Link href={route('admin.worship-schedules.create')}>
               <Button className="mt-4">
                 <Plus className="mr-2 h-4 w-4" />
@@ -242,10 +242,10 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
             </Link>
           </div>
         ) : (
-          <div className="rounded-md border">
+          <div className="border bg-secondary">
             <Table>
               <TableHeader>
-                <TableRow className="bg-muted/60">
+                <TableRow className="bg-white">
                   {/* Kolom Nama Ibadah */}
                   <TableHead>
                     <SortButton
@@ -340,7 +340,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
                           )}
                         </div>
                       ) : (
-                        <span className="text-muted-foreground">Semua komunitas</span>
+                        <span className="">Semua komunitas</span>
                       )}
                     </TableCell>
                     <TableCell className="text-right">
@@ -390,7 +390,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
               const activeClass = 'bg-secondary text-white border-secondary hover:opacity-80';
               const inactiveClass = 'bg-white text-secondary border-secondary hover:opacity-80';
               const disabledClass =
-                'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                'bg-secondary  border-secondary opacity-60 cursor-not-allowed';
               const label = getLabel(link.label);
 
               if (link.url) {
@@ -461,7 +461,7 @@ function SortButton({
     >
       {title}
       {sortBy !== field ? (
-        <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+        <ChevronsUpDown className="ml-1 h-4 w-4 " />
       ) : sortDir === 'asc' ? (
         <ArrowUp className="ml-1 h-4 w-4" />
       ) : (

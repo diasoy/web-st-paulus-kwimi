@@ -1,9 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { Arrow } from '@radix-ui/react-tooltip';
 import { ArrowLeft, Edit, Trash2 } from 'lucide-react';
 
 interface Announcement {
@@ -30,29 +28,29 @@ export default function AnnouncementShow({ announcement }: { announcement: Annou
         <AuthenticatedLayout>
             <Head title={`Pengumuman - ${announcement.title}`} />
 
-            <div className="space-y-6 p-6">
+            <div className="space-y-6 p-6 min-h-screen">
                 <div className="flex items-center justify-between">
                     <div className="space-y-2">
-                        <nav className="flex items-center text-sm text-muted-foreground">
-                            <Link href={route('admin.announcements.index')} className="hover:text-foreground">
+                        <nav className="flex items-center text-sm text-white">
+                            <Link href={route('admin.announcements.index')} className="hover:text-gray-300 transition-colors">
                                 Pengumuman
                             </Link>
-                            <span className="mx-2">/</span>
-                            <span className="text-foreground">Detail</span>
+                            <span className="mx-2 text-gray-300">/</span>
+                            <span className="text-white font-medium">Detail</span>
                         </nav>
-                        <h1 className="text-2xl font-bold tracking-tight">Detail Pengumuman</h1>
+                        <h1 className="text-2xl font-bold tracking-tight text-white">Detail Pengumuman</h1>
                     </div>
                     <div className="flex gap-2">
                         <Link href={route('admin.announcements.index')}>
-                            <Button variant="outline" className="bg-secondary hover:bg-secondary/90 text-white">
-                                <ArrowLeft  />
+                            <Button variant="outline" className="bg-white text-gray-700 border-gray-300 hover:bg-gray-50">
+                                <ArrowLeft className="mr-2 h-4 w-4" />
                                 Kembali ke Pengumuman
                             </Button>
                         </Link>
 
                         <Link href={route('admin.announcements.edit', announcement.id)}>
-                            <Button variant="outline" className="bg-primary hover:bg-primary/90 text-white">
-                                <Edit  />
+                            <Button variant="outline" className="bg-green-600 text-white hover:bg-green-700">
+                                <Edit className="mr-2 h-4 w-4" />
                                 Edit
                             </Button>
                         </Link>
@@ -71,24 +69,22 @@ export default function AnnouncementShow({ announcement }: { announcement: Annou
                     <div className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{props.flash.error}</div>
                 )}
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center justify-between">
-                            <span>{announcement.title}</span>
-                            <Badge variant={announcement.is_publish ? 'default' : 'secondary'} className='text-white'>
-                                {announcement.is_publish ? 'Dipublish' : 'Draft'}
-                            </Badge>
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
+                <div className="space-y-6">
+                    <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-lg font-semibold text-white">{announcement.title}</h2>
+                        <Badge variant={announcement.is_publish ? 'default' : 'secondary'} className='text-white'>
+                            {announcement.is_publish ? 'Dipublish' : 'Draft'}
+                        </Badge>
+                    </div>
+                    <div className="space-y-4">
                         {announcement.image_url && (
                             <img src={`/storage/${announcement.image_url}`} alt={announcement.title} className="w-full max-w-xl rounded-md border" />
                         )}
                         <div>
-                            <p className="text-sm leading-6 whitespace-pre-line text-muted-foreground">{announcement.description}</p>
+                            <p className="text-sm leading-6 whitespace-pre-line text-gray-300">{announcement.description}</p>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         </AuthenticatedLayout>
     );

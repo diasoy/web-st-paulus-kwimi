@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Clock, Edit, MapPin } from 'lucide-react';
@@ -41,82 +40,80 @@ export default function ActivityShow({ activity }: ActivityShowProps) {
         <AuthenticatedLayout>
             <Head title={`Detail Kegiatan - ${activity.name}`} />
 
-            <div className="space-y-6 p-6">
+            <div className="space-y-6 p-6 min-h-screen">
                 <div className="flex items-center justify-between">
                     <div className="space-y-2">
-                        <nav className="flex items-center text-sm text-muted-foreground">
-                            <Link href={route('admin.activities.index')} className="hover:text-foreground">
+                        <nav className="flex items-center text-sm text-white">
+                            <Link href={route('admin.activities.index')} className="hover:text-gray-300 transition-colors">
                                 Agenda Kegiatan
                             </Link>
-                            <span className="mx-2">/</span>
-                            <span className="text-foreground">Detail</span>
+                            <span className="mx-2 text-gray-300">/</span>
+                            <span className="text-white font-medium">Detail</span>
                         </nav>
-                        <h1 className="text-2xl font-bold tracking-tight">Detail Kegiatan</h1>
+                        <h1 className="text-2xl font-bold tracking-tight text-white">Detail Kegiatan</h1>
                     </div>
-                    <div className='flex gap-4'><Link href={route('admin.activities.index')}>
-                        <Button className='bg-secondary text-white hover:bg-secondary/90'>
-                            <ArrowLeft />
-                            Kembali ke Agenda
-                        </Button>
-                    </Link>
+                    <div className='flex gap-4'>
+                        <Link href={route('admin.activities.index')}>
+                            <Button className='bg-white text-gray-700 border-gray-300 hover:bg-gray-50'>
+                                <ArrowLeft className="mr-2 h-4 w-4" />
+                                Kembali ke Agenda
+                            </Button>
+                        </Link>
                         <Link href={route('admin.activities.edit', activity.id)}>
-                            <Button className='bg-primary text-white hover:bg-primary/90'>
+                            <Button className='bg-green-600 text-white hover:bg-green-700'>
                                 <Edit className="mr-2 h-4 w-4" />
                                 Edit Kegiatan
                             </Button>
-                        </Link></div>
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="grid gap-6">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Informasi Kegiatan</CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-6">
-                            <div className="space-y-6">
-                                <div>
-                                    <h2 className="text-2xl font-bold">{activity.name}</h2>
-                                </div>
+                    <div className="space-y-6">
+                        <h2 className="text-lg font-semibold text-white mb-6">Informasi Kegiatan</h2>
+                        <div className="space-y-6">
+                            <div>
+                                <h2 className="text-2xl font-bold text-white">{activity.name}</h2>
+                            </div>
 
-                                {activity.image_url && (
-                                    <img src={`/storage/${activity.image_url}`} alt={activity.name} className="w-full max-w-xl rounded-md border" />
-                                )}
+                            {activity.image_url && (
+                                <img src={`/storage/${activity.image_url}`} alt={activity.name} className="w-full max-w-xl rounded-md border" />
+                            )}
 
-                                <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                                    <div className="flex items-center gap-3">
-                                        <Calendar className="h-5 w-5 text-muted-foreground" />
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">Tanggal</p>
-                                            <p className="font-medium">{formatDate(activity.date)}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3">
-                                        <Clock className="h-5 w-5 text-muted-foreground" />
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">Waktu</p>
-                                            <p className="font-medium">{activity.time_start ? formatTime(activity.time_start) : '-'}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center gap-3">
-                                        <MapPin className="h-5 w-5 text-muted-foreground" />
-                                        <div>
-                                            <p className="text-sm text-muted-foreground">Tempat</p>
-                                            <p className="font-medium">{activity.location || '-'}</p>
-                                        </div>
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+                                <div className="flex items-center gap-3">
+                                    <Calendar className="h-5 w-5 text-white" />
+                                    <div>
+                                        <p className="text-sm text-gray-300">Tanggal</p>
+                                        <p className="font-medium text-white">{formatDate(activity.date)}</p>
                                     </div>
                                 </div>
 
-                                <div>
-                                    <h3 className="mb-3 text-lg font-semibold">Deskripsi</h3>
-                                    <div className="prose max-w-none">
-                                        <p className="whitespace-pre-wrap text-muted-foreground">{activity.description || 'Tidak ada deskripsi'}</p>
+                                <div className="flex items-center gap-3">
+                                    <Clock className="h-5 w-5 text-white" />
+                                    <div>
+                                        <p className="text-sm text-gray-300">Waktu</p>
+                                        <p className="font-medium text-white">{activity.time_start ? formatTime(activity.time_start) : '-'}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-3">
+                                    <MapPin className="h-5 w-5 text-white" />
+                                    <div>
+                                        <p className="text-sm text-gray-300">Tempat</p>
+                                        <p className="font-medium text-white">{activity.location || '-'}</p>
                                     </div>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
+
+                            <div>
+                                <h3 className="mb-3 text-lg font-semibold text-white">Deskripsi</h3>
+                                <div className="prose max-w-none">
+                                    <p className="whitespace-pre-wrap text-gray-300">{activity.description || 'Tidak ada deskripsi'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </AuthenticatedLayout>

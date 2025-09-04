@@ -99,8 +99,12 @@ class DocumentController extends Controller
             return redirect()->route('document.index')->with('error', 'File tidak ditemukan.');
         }
 
-        // Return file download response
-        return Storage::disk('public')->download($pdf->file_path, $pdf->file_name);
+        // Return file download response with proper headers
+        $filePath = Storage::disk('public')->path($pdf->file_path);
+        
+        return response()->download($filePath, $pdf->file_name, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 
     /**
@@ -140,7 +144,9 @@ class DocumentController extends Controller
         }
 
         // Return file response for inline viewing
-        return Storage::disk('public')->response($pdf->file_path, $pdf->file_name, [
+        $filePath = Storage::disk('public')->path($pdf->file_path);
+        
+        return response()->file($filePath, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'inline; filename="' . $pdf->file_name . '"'
         ]);

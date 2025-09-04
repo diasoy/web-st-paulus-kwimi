@@ -65,17 +65,17 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
         <AuthenticatedLayout>
             <Head title="Agenda Kegiatan" />
 
-            <div className="space-y-6 p-6">
+            <div className="space-y-6 p-6 min-h-screen">
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Agenda Kegiatan</h1>
-                        <p className="text-muted-foreground">Kelola agenda kegiatan untuk jemaat ST. Paulus Kwimi</p>
+                        <p className="">Kelola agenda kegiatan untuk jemaat ST. Paulus Kwimi</p>
                     </div>
                 </div>
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex min-w-0 flex-1 items-center gap-2">
                         <div className="relative w-full max-w-sm">
-                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 " />
                             <Input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -134,7 +134,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
 
                 {activities.data.length === 0 ? (
                     <div className="py-8 text-center">
-                        <p className="text-muted-foreground">Belum ada agenda kegiatan</p>
+                        <p className="">Belum ada agenda kegiatan</p>
                         <Link href="/admin/activities/create">
                             <Button className="mt-4">
                                 <Plus className="mr-2 h-4 w-4" />
@@ -143,10 +143,10 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                         </Link>
                     </div>
                 ) : (
-                    <div className="rounded-md border">
+                    <div className="border bg-secondary">
                         <Table>
                             <TableHeader>
-                                <TableRow className="bg-muted/60">
+                                <TableRow className="bg-white">
                                     <TableHead>Gambar</TableHead>
                                     <TableHead>
                                         <button
@@ -169,7 +169,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                         >
                                             Judul Kegiatan
                                             {sortBy !== 'name' ? (
-                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 " />
                                             ) : sortDir === 'asc' ? (
                                                 <ArrowUp className="ml-1 h-4 w-4" />
                                             ) : (
@@ -198,7 +198,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                         >
                                             Tanggal
                                             {sortBy !== 'date' ? (
-                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 " />
                                             ) : sortDir === 'asc' ? (
                                                 <ArrowUp className="ml-1 h-4 w-4" />
                                             ) : (
@@ -228,7 +228,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                         >
                                             Tempat
                                             {sortBy !== 'location' ? (
-                                                <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />
+                                                <ChevronsUpDown className="ml-1 h-4 w-4 " />
                                             ) : sortDir === 'asc' ? (
                                                 <ArrowUp className="ml-1 h-4 w-4" />
                                             ) : (
@@ -256,7 +256,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                                 />
                                             ) : null}
                                             <div
-                                                className="flex h-10 w-14 items-center justify-center rounded bg-muted text-muted-foreground"
+                                                className="flex h-10 w-14 items-center justify-center rounded bg-muted "
                                                 style={{ display: activity.image_url ? 'none' : 'flex' }}
                                             >
                                                 <ImageIcon className="h-4 w-4" />
@@ -264,7 +264,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                         </TableCell>
                                         <TableCell className="font-medium">
                                             <div className="font-semibold">{activity.name}</div>
-                                            <div className="max-w-xs truncate text-sm text-muted-foreground">{activity.description}</div>
+                                            <div className="max-w-xs truncate text-sm ">{activity.description}</div>
                                         </TableCell>
                                         <TableCell>
                                             <div className="flex items-center gap-2">
@@ -279,7 +279,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                                     {formatTime(activity.time_start)}
                                                 </div>
                                             ) : (
-                                                <span className="text-muted-foreground">-</span>
+                                                <span className="">-</span>
                                             )}
                                         </TableCell>
                                         <TableCell>
@@ -289,7 +289,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                                     <span className="max-w-xs truncate">{activity.location}</span>
                                                 </div>
                                             ) : (
-                                                <span className="text-muted-foreground">-</span>
+                                                <span className="">-</span>
                                             )}{' '}
                                         </TableCell>
                                         <TableCell className="text-right">
@@ -327,7 +327,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                             const inactiveClass =
                                 'bg-white text-secondary border-secondary hover:opacity-80';
                             const disabledClass =
-                                'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                                'bg-secondary  border-secondary opacity-60 cursor-not-allowed';
                             const label = getLabel(link.label);
                             if (link.url) {
                                 return (

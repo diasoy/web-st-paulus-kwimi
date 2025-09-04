@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -89,102 +88,106 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
         <AuthenticatedLayout>
             <Head title={`Edit Kegiatan - ${activity.name}`} />
 
-            <div className="space-y-6 p-6">
+            <div className="space-y-6 p-6 min-h-screen">
                 <div className="space-y-2">
-                    <nav className="flex items-center text-sm text-muted-foreground">
-                        <Link href={route('admin.activities.index')} className="hover:text-foreground">
+                    <nav className="flex items-center text-sm text-white">
+                        <Link href={route('admin.activities.index')} className="hover:text-gray-300 transition-colors">
                             Agenda Kegiatan
                         </Link>
-                        <span className="mx-2">/</span>
-                        <Link href={route('admin.activities.show', activity.id)} className="hover:text-foreground">
+                        <span className="mx-2 text-gray-300">/</span>
+                        <Link href={route('admin.activities.show', activity.id)} className="hover:text-gray-300 transition-colors">
                             Detail
                         </Link>
-                        <span className="mx-2">/</span>
-                        <span className="text-foreground">Edit</span>
+                        <span className="mx-2 text-gray-300">/</span>
+                        <span className="text-white font-medium">Edit</span>
                     </nav>
-                    <h1 className="text-2xl font-bold tracking-tight">Edit Kegiatan</h1>
+                    <h1 className="text-2xl font-bold tracking-tight text-white">Edit Kegiatan</h1>
                 </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Edit Kegiatan</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Nama Kegiatan *</Label>
-                                    <Input
-                                        id="name"
-                                        type="text"
-                                        value={data.name}
-                                        onChange={(e) => setData('name', e.target.value)}
-                                        placeholder="Masukkan nama kegiatan"
-                                        required
-                                    />
-                                    {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="location">Tempat</Label>
-                                    <Input
-                                        id="location"
-                                        type="text"
-                                        value={data.location}
-                                        onChange={(e) => setData('location', e.target.value)}
-                                        placeholder="Masukkan tempat kegiatan"
-                                    />
-                                    {errors.location && <p className="text-sm text-red-600">{errors.location}</p>}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="date">Tanggal *</Label>
-                                    <Input id="date" type="date" value={data.date} onChange={(e) => setData('date', e.target.value)} required />
-                                    {errors.date && <p className="text-sm text-red-600">{errors.date}</p>}
-                                </div>
-
-                                <div className="space-y-2">
-                                    <Label htmlFor="time_start">Waktu Mulai</Label>
-                                    <Input
-                                        id="time_start"
-                                        type="time"
-                                        value={data.time_start}
-                                        onChange={(e) => setData('time_start', e.target.value)}
-                                        placeholder="Contoh: 08:00"
-                                    />
-                                    {errors.time_start && <p className="text-sm text-red-600">{errors.time_start}</p>}
-                                </div>
+                    <h2 className="text-lg font-semibold text-white mb-6">Edit Kegiatan</h2>
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div className="space-y-2">
+                                <Label htmlFor="name" className="text-white font-medium">Nama Kegiatan *</Label>
+                                <Input
+                                    id="name"
+                                    type="text"
+                                    value={data.name}
+                                    onChange={(e) => setData('name', e.target.value)}
+                                    placeholder="Masukkan nama kegiatan"
+                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
+                                    required
+                                />
+                                {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="description">Deskripsi</Label>
+                                <Label htmlFor="date" className="text-white font-medium">Tanggal *</Label>
+                                <Input
+                                    id="date"
+                                    type="date"
+                                    value={data.date}
+                                    onChange={(e) => setData('date', e.target.value)}
+                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
+                                    required
+                                />
+                                {errors.date && <p className="text-sm text-red-600">{errors.date}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="time_start" className="text-white font-medium">Waktu Mulai</Label>
+                                <Input
+                                    id="time_start"
+                                    type="time"
+                                    value={data.time_start}
+                                    onChange={(e) => setData('time_start', e.target.value)}
+                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
+                                />
+                                {errors.time_start && <p className="text-sm text-red-600">{errors.time_start}</p>}
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="location" className="text-white font-medium">Lokasi</Label>
+                                <Input
+                                    id="location"
+                                    type="text"
+                                    value={data.location}
+                                    onChange={(e) => setData('location', e.target.value)}
+                                    placeholder="Masukkan lokasi kegiatan"
+                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
+                                />
+                                {errors.location && <p className="text-sm text-red-600">{errors.location}</p>}
+                            </div>
+
+                            <div className="md:col-span-2 space-y-2">
+                                <Label htmlFor="description" className="text-white font-medium">Deskripsi *</Label>
                                 <Textarea
                                     id="description"
                                     value={data.description}
                                     onChange={(e) => setData('description', e.target.value)}
                                     placeholder="Masukkan deskripsi kegiatan"
-                                    rows={5}
+                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
+                                    rows={4}
+                                    required
                                 />
                                 {errors.description && <p className="text-sm text-red-600">{errors.description}</p>}
                             </div>
 
-                            <div className="md:col-span-2">
-                                {activity.image_url && (
-                                    <>
-                                        <Label>Gambar Saat Ini</Label>
-                                        <div className="mt-2">
-                                            <img
-                                                src={`/storage/${activity.image_url}`}
-                                                alt={activity.name}
-                                                className="h-40 rounded-md border object-cover"
-                                            />
-                                        </div>
-                                    </>
-                                )}
-                            </div>
+                            {activity.image_url && (
+                                <div className="md:col-span-2">
+                                    <Label className="text-white font-medium">Gambar Saat Ini</Label>
+                                    <div className="mt-2">
+                                        <img
+                                            src={`/storage/${activity.image_url}`}
+                                            alt={activity.name}
+                                            className="h-40 rounded-md border"
+                                        />
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="md:col-span-2">
-                                <Label htmlFor="image">Ganti Gambar (opsional)</Label>
+                                <Label htmlFor="image" className="text-white font-medium">Ganti Gambar (opsional)</Label>
                                 <div className="flex items-center gap-3">
                                     <input
                                         ref={fileInputRef}
@@ -199,7 +202,7 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
                                     )}
                                     {data.image && (
                                         <div className="flex items-center gap-2">
-                                            <span className="text-sm text-muted-foreground">{data.image.name}</span>
+                                            <span className="text-sm text-white">{data.image.name}</span>
                                             <Button type="button" variant="ghost" size="sm" onClick={removeImage} className="h-6 w-6 p-0">
                                                 <X className="h-3 w-3" />
                                             </Button>
@@ -208,21 +211,20 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
                                 </div>
                                 {errors.image && <p className="mt-1 text-sm text-red-500">{errors.image}</p>}
                             </div>
+                        </div>
 
-                            <div className="flex gap-4 pt-4">
-                                <Button className='bg-white text-black border hover:bg-muted'>
-                               <Link href={route('admin.activities.index')}>
-                                        Batal
-                                    </Link>
+                        <div className="flex justify-end gap-4">
+                            <Link href={route('admin.activities.index')}>
+                                <Button className='bg-white text-black border-gray-300 hover:bg-gray-50'>
+                                    Batal
                                 </Button>
-                                <Button className="text-white" type="submit" disabled={processing}>
-                                    <Save className="mr-2 h-4 w-4" />
-                                    {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
+                            </Link>
+                            <Button className="bg-green-600 text-white hover:bg-green-700 disabled:bg-green-400" type="submit" disabled={processing}>
+                                <Save className="mr-2 h-4 w-4" />
+                                {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
+                            </Button>
+                        </div>
+                    </form>
             </div>
         </AuthenticatedLayout>
     );

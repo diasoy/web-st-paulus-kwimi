@@ -25,6 +25,7 @@ class AdminDashboardController extends Controller {
     {
         $users = User::with(['community:id,name'])->orderBy('name')->get();
         $pdf = Pdf::loadView('pdfs.all_users', [ 'users' => $users ]);
+        $pdf->setPaper('A4', 'portrait');
         return $pdf->download('Data_Semua_Umat.pdf');
     }
     /**
@@ -37,6 +38,7 @@ class AdminDashboardController extends Controller {
             'user' => $user->load(['community:id,name']),
         ];
         $pdf = PDF::loadView('pdfs.user_detail', $data);
+        $pdf->setPaper('A4', 'portrait');
         $filename = 'Detail_Umat_' . $user->name . '.pdf';
         return $pdf->download($filename);
     }
@@ -51,6 +53,26 @@ class AdminDashboardController extends Controller {
         $pdf->delete();
         return redirect()->route('admin.users.show', $user->id)
             ->with('success', 'File PDF berhasil dihapus.');
+    }
+
+    /**
+     * Download a specific PDF from user
+     */
+    public function downloadUserPdf(User $user, $pdfId)
+    {
+        $pdf = $user->pdfs()->findOrFail($pdfId);
+        
+        // Check if file exists
+        if (!Storage::disk('public')->exists($pdf->file_path)) {
+            return redirect()->route('admin.users.show', $user->id)->with('error', 'File tidak ditemukan.');
+        }
+
+        // Get file path and return download response
+        $filePath = Storage::disk('public')->path($pdf->file_path);
+        
+        return response()->download($filePath, $pdf->file_name, [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
     /**
      * Display the admin dashboard

@@ -61,14 +61,14 @@ export default function AnnouncementShow({ announcement }: Props) {
         <AppLayout>
             <Head title={`${announcement.title} - Pengumuman`} />
 
-            <div className="min-h-screen">
+            <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
                 <div className="container mx-auto px-4 py-8">
                     {/* Header Navigation */}
                     <div className="mb-8">
                         <Link href="/umat/announcements">
                             <Button
                                 variant="outline"
-                                className="bg-secondary text-white px-4 py-2 rounded-md hover:cursor-pointer hover:bg-secondary/90 transition-colors"
+                                className="bg-white/10 backdrop-blur-sm border-white/20 text-white px-4 py-2 rounded-md hover:bg-white/20 transition-all duration-300"
                             >
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Kembali ke Pengumuman

@@ -73,9 +73,10 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
     return (
         <AppLayout>
             <Head title="Jadwal Ibadah" />
-            <div className="container mx-auto px-4 py-8 space-y-8">
+            <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
+                <div className="container mx-auto px-4 py-8 space-y-8">
                 <div className="flex justify-between items-center">
-                    <h1 className="text-3xl font-bold text-gray-900">Jadwal Ibadah</h1>
+                    <h1 className="text-3xl font-bold text-white drop-shadow-lg">Jadwal Ibadah</h1>
                 </div>
 
                 {/* Jadwal Ibadah */}
@@ -83,7 +84,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                     {worshipSchedules.data.length === 0 ? (
                         <Card>
                             <CardContent className="py-8">
-                                <p className="text-center text-gray-500">Belum ada jadwal ibadah yang terdaftar.</p>
+                                <p className="text-center text-white">Belum ada jadwal ibadah yang terdaftar.</p>
                             </CardContent>
                         </Card>
                     ) : (
@@ -97,7 +98,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                 >
                                     <CardHeader className="pb-3">
                                         <div className="flex justify-between items-start">
-                                            <CardTitle className="text-lg leading-tight">
+                                            <CardTitle className="text-lg text-white leading-tight">
                                                 {schedule.name}
                                             </CardTitle>
                                             {isUpcoming(schedule.date) && (
@@ -111,18 +112,18 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                         {/* Tanggal dan Waktu */}
                                         <div className="space-y-2">
                                             <div className="flex items-center text-gray-700">
-                                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                                 </svg>
-                                                <span className="text-sm font-medium">
+                                                <span className="text-sm font-medium text-white">
                                                     {formatDate(schedule.date)}
                                                 </span>
                                             </div>
                                             <div className="flex items-center text-gray-700">
-                                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <svg className="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                 </svg>
-                                                <span className="text-sm font-medium">
+                                                <span className="text-sm font-medium text-white">
                                                     {formatTime(schedule.time_start)} 
                                                 </span>
                                             </div>
@@ -130,10 +131,10 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
 
                                         {/* PIC */}
                                         <div className="flex items-center text-gray-700">
-                                            <svg className="w-4 h-4 mr-2 " fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg className="w-4 h-4 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
-                                            <span className="text-sm">
+                                            <span className="text-sm text-white">
                                                 <span className="font-medium">Pemimpin: </span> {schedule.pic}
                                             </span>
                                         </div>
@@ -141,7 +142,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                         {/* Communities */}
                                         {schedule.communities && schedule.communities.length > 0 && (
                                             <div className="space-y-2">
-                                                <span className="text-sm font-medium text-gray-700">Kombas:</span>
+                                                <span className="text-sm font-medium text-white">Kombas:</span>
                                                 <div className="flex flex-wrap gap-1">
                                                     {schedule.communities.map((community) => (
                                                         <Badge key={community.id} variant="outline" className="text-xs">
@@ -157,7 +158,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                         <div className="pt-3 border-t">
                                             <Link
                                                 href={route('umat.worship-schedules.show', schedule.id)}
-                                                className="text-sm font-medium transition-colors bg-secondary text-white px-3 py-1 rounded hover:bg-secondary/90"
+                                                className="text-sm font-medium transition-colors bg-white px-3 py-1 rounded hover:bg-white/90"
                                             >
                                                 Lihat Detail
                                             </Link>
@@ -180,8 +181,8 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                                 link.active
                                                     ? 'bg-secondary text-white shadow-md'
                                                     : link.url
-                                                    ? 'bg-white  border border-secondary-200 hover:bg-secondary-50 hover:border-secondary-300 shadow-sm'
-                                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                    ? 'bg-white/20 backdrop-blur-sm border border-white/20 text-white hover:bg-white/30 shadow-sm'
+                                                    : 'bg-white/10 text-white/50 cursor-not-allowed'
                                             }`}
                                             dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
                                         />
@@ -189,6 +190,7 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: Props) {
                                 </div>
                             </div>
                         )}
+                </div>
                 </div>
             </div>
         </AppLayout>

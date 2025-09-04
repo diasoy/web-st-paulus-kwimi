@@ -78,7 +78,7 @@ export default function Register({ communities }: Props) {
                                 </div>
                             </div>
 
-                            <p className="text-xl text-muted-foreground mb-10 leading-relaxed">
+                            <p className="text-xl  mb-10 leading-relaxed">
                                 Buat akun Anda untuk menjadi bagian dari komunitas <span className="font-semibold text-primary">Gereja St. Paulus Kwimi</span>
                             </p>
                         </div>
@@ -90,7 +90,7 @@ export default function Register({ communities }: Props) {
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="font-bold text-foreground mb-3 text-lg">Data Terlindungi</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
+                                    <p className=" leading-relaxed">
                                         Setiap informasi pribadi Anda dijaga kerahasiaannya dengan sistem keamanan terbaik.
                                     </p>
                                 </div>
@@ -102,7 +102,7 @@ export default function Register({ communities }: Props) {
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="font-bold text-foreground mb-3 text-lg">Koneksi Komunitas</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
+                                    <p className=" leading-relaxed">
                                         Terhubung dengan sesama jemaat dan berpartisipasi dalam kegiatan rohani bersama.
                                     </p>
                                 </div>
@@ -114,7 +114,7 @@ export default function Register({ communities }: Props) {
                                 </div>
                                 <div className="flex-1">
                                     <h3 className="font-bold text-foreground mb-3 text-lg">Pembinaan Iman</h3>
-                                    <p className="text-muted-foreground leading-relaxed">
+                                    <p className=" leading-relaxed">
                                         Dapatkan akses ke materi renungan, jadwal ibadah, dan sumber daya untuk bertumbuh dalam iman.
                                     </p>
                                 </div>
@@ -132,10 +132,10 @@ export default function Register({ communities }: Props) {
                                 </Button>
                             </Link>
                         </div>
-                        <div className="bg-card/80 backdrop-blur-xl p-10 rounded-3xl church-shadow border border-border hover:shadow-2xl transition-all duration-500">
+                        <div className=" backdrop-blur-xl p-10 rounded-3xl church-shadow border border-border hover:shadow-2xl transition-all duration-500 shadow-3xl bg-secondary">
                             <div className="text-center mb-10">
                                 <h2 className="text-3xl font-bold text-foreground mb-3">Daftar Akun Baru</h2>
-                                <p className="text-muted-foreground">Isi formulir untuk bergabung dengan komunitas</p>
+                                <p className="">Isi formulir untuk bergabung dengan komunitas</p>
                             </div>
 
                             <form className="space-y-6" onSubmit={submit}>
@@ -154,7 +154,7 @@ export default function Register({ communities }: Props) {
                                             onChange={(e) => setData('name', e.target.value)}
                                             disabled={processing}
                                             placeholder="Nama lengkap"
-                                            className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                                            className="h-12 text-black px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                                         />
                                         <InputError message={errors.name} />
                                     </div>
@@ -171,7 +171,7 @@ export default function Register({ communities }: Props) {
                                             onChange={(e) => setData('username', e.target.value)}
                                             disabled={processing}
                                             placeholder="Username"
-                                            className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                                            className="h-12 text-black px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                                         />
                                         <InputError message={errors.username} />
                                     </div>
@@ -191,7 +191,7 @@ export default function Register({ communities }: Props) {
                                             onChange={(e) => setData('birth_place', e.target.value)}
                                             disabled={processing}
                                             placeholder="Contoh: Jayapura"
-                                            className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                                            className="h-12 text-black px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                                         />
                                         <InputError message={errors.birth_place} />
                                     </div>
@@ -206,7 +206,7 @@ export default function Register({ communities }: Props) {
                                             value={data.birth_date}
                                             onChange={(e) => setData('birth_date', e.target.value)}
                                             disabled={processing}
-                                            className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                                            className="h-12 text-black px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                                         />
                                         <InputError message={errors.birth_date} />
                                     </div>
@@ -224,7 +224,7 @@ export default function Register({ communities }: Props) {
                                         onChange={(e) => setData('address', e.target.value)}
                                         disabled={processing}
                                         placeholder="Alamat lengkap"
-                                        className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                                        className="h-12 text-black px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                                     />
                                     <InputError message={errors.address} />
                                 </div>
@@ -237,7 +237,7 @@ export default function Register({ communities }: Props) {
                                             onValueChange={(value: 'male' | 'female') => setData('gender', value)}
                                             disabled={processing}
                                         >
-                                            <SelectTrigger tabIndex={7} className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
+                                            <SelectTrigger tabIndex={7} className="h-12 text-black px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
                                                 <SelectValue placeholder="Pilih jenis kelamin" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -255,7 +255,7 @@ export default function Register({ communities }: Props) {
                                             onValueChange={(value) => setData('community_id', parseInt(value))}
                                             disabled={processing}
                                         >
-                                            <SelectTrigger tabIndex={8} className="h-12 px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
+                                            <SelectTrigger tabIndex={8} className="h-12 text-black px-4 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm">
                                                 <SelectValue placeholder="Pilih komunitas" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -284,11 +284,11 @@ export default function Register({ communities }: Props) {
                                                 onChange={(e) => setData('password', e.target.value)}
                                                 disabled={processing}
                                                 placeholder="Kata sandi"
-                                                className="h-12 px-4 pr-12 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                                                className="h-12 text-black px-4 pr-12 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                                             />
                                             <button
                                                 type="button"
-                                                className="absolute inset-y-0 right-0 flex items-center pr-4 text-muted-foreground hover:text-foreground transition-colors"
+                                                className="absolute inset-y-0 right-0 flex items-center pr-4  hover:text-foreground transition-colors"
                                                 onClick={() => setShowPassword(!showPassword)}
                                                 tabIndex={-1}
                                                 disabled={processing}
@@ -316,11 +316,11 @@ export default function Register({ communities }: Props) {
                                                 onChange={(e) => setData('password_confirmation', e.target.value)}
                                                 disabled={processing}
                                                 placeholder="Konfirmasi kata sandi"
-                                                className="h-12 px-4 pr-12 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
+                                                className="h-12 text-black px-4 pr-12 bg-input border-border focus:border-primary focus:ring-ring rounded-xl shadow-sm hover:shadow-md transition-all duration-200 backdrop-blur-sm"
                                             />
                                             <button
                                                 type="button"
-                                                className="absolute inset-y-0 right-0 flex items-center pr-4 text-muted-foreground hover:text-foreground transition-colors"
+                                                className="absolute inset-y-0 right-0 flex items-center pr-4  hover:text-foreground transition-colors"
                                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                                                 tabIndex={-1}
                                                 disabled={processing}
@@ -338,7 +338,7 @@ export default function Register({ communities }: Props) {
 
                                 <Button
                                     type="submit"
-                                    className="mt-8 w-full h-12 hover:opacity-90 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:cursor-pointer text-white"
+                                    className="mt-8 w-full h-12 text-black hover:opacity-90 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:cursor-pointer text-white"
                                     tabIndex={11}
                                     disabled={processing}
                                 >
@@ -346,12 +346,12 @@ export default function Register({ communities }: Props) {
                                     {processing ? 'Sedang Mendaftar...' : 'Daftar Sekarang'}
                                 </Button>
 
-                                <div className="text-center text-slate-600 mt-8 pt-6 border-t border-slate-200">
+                                <div className="text-center mt-8 pt-6 border-t border-slate-200">
                                     Sudah memiliki akun?{' '}
                                     <TextLink
                                         href={route('login')}
                                         tabIndex={12}
-                                        className="font-semibold transition-colors duration-200"
+                                        className="font-semibold text-primary transition-colors duration-200"
                                     >
                                         Masuk di sini
                                     </TextLink>

@@ -55,7 +55,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
     };
 
     const SortIcon = ({ field }: { field: string }) => {
-        if (field !== sortBy) return <ChevronsUpDown className="ml-1 h-4 w-4 text-muted-foreground" />;
+        if (field !== sortBy) return <ChevronsUpDown className="ml-1 h-4 w-4 " />;
         return sortDir === 'asc' ? <ArrowUp className="ml-1 h-4 w-4" /> : <ArrowDown className="ml-1 h-4 w-4" />;
     };
 
@@ -86,14 +86,14 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                 <div className="flex items-center justify-between">
                     <div>
                         <h1 className="text-3xl font-bold tracking-tight">Kelola Pengumuman</h1>
-                        <p className="text-muted-foreground">Kelola semua pengumuman untuk jemaat ST. Paulus Kwimi</p>
+                        <p className="">Kelola semua pengumuman untuk jemaat ST. Paulus Kwimi</p>
                     </div>
                 </div>
 
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex min-w-0 flex-1 items-center gap-2">
                         <div className="relative w-full max-w-sm">
-                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 text-muted-foreground" />
+                            <Search className="absolute top-2.5 left-2.5 h-4 w-4 " />
                             <Input
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
@@ -155,7 +155,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
 
                 {announcements.data.length === 0 ? (
                     <div className="py-8 text-center">
-                        <p className="text-muted-foreground">Belum ada pengumuman</p>
+                        <p className="">Belum ada pengumuman</p>
                         <Link href={route('admin.announcements.create')}>
                             <Button className="mt-4">
                                 <Plus className="mr-2 h-4 w-4" />
@@ -164,10 +164,10 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                         </Link>
                     </div>
                 ) : (
-                    <div className="rounded-md border">
+                    <div className="border bg-secondary">
                         <Table>
                             <TableHeader>
-                                <TableRow className="bg-muted/60">
+                                <TableRow className="bg-white">
                                     <TableHead>Gambar</TableHead>
                                     <TableHead>
                                         <button
@@ -220,7 +220,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                                 />
                                             ) : null}
                                             <div
-                                                className="flex h-10 w-14 items-center justify-center rounded bg-muted text-muted-foreground"
+                                                className="flex h-10 w-14 items-center justify-center rounded bg-muted "
                                                 style={{ display: announcement.image_url ? 'none' : 'flex' }}
                                             >
                                                 <ImageIcon className="h-4 w-4" />
@@ -235,7 +235,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                                 {announcement.is_publish ? 'Dipublish' : 'Draft'}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell className="text-sm text-muted-foreground">{formatDate(announcement.created_at)}</TableCell>
+                                        <TableCell className="text-sm ">{formatDate(announcement.created_at)}</TableCell>
                                         <TableCell className="text-right">
                                             <div className="flex justify-end gap-2">
                                                 <Button variant="outline" size="sm" asChild className='bg-secondary hover:bg-secondary/90'>
@@ -275,7 +275,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                             const inactiveClass =
                                 'bg-white text-secondary border-secondary hover:opacity-80';
                             const disabledClass =
-                                'bg-secondary text-muted-foreground border-secondary opacity-60 cursor-not-allowed';
+                                'bg-secondary  border-secondary opacity-60 cursor-not-allowed';
                             const label = getLabel(link.label);
                             if (link.url) {
                                 return (

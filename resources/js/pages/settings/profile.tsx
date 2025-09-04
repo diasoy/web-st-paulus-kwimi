@@ -93,7 +93,7 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Profile information" description="Update your profile information" />
+                    <HeadingSmall title="Profile information" description="Update your profile information"/>
 
                     <form onSubmit={submit} className="space-y-6">
                         {/* Name only */}
@@ -182,13 +182,13 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
 
                         {mustVerifyEmail && auth.user.email_verified_at === null && (
                             <div>
-                                <p className="-mt-4 text-sm text-muted-foreground">
+                                <p className="-mt-4 text-sm">
                                     Alamat email Anda belum diverifikasi.{' '}
                                     <Link
                                         href={route('verification.send')}
                                         method="post"
                                         as="button"
-                                        className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
+                                        className="underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                                     >
                                         Klik di sini untuk mengirim ulang email verifikasi.
                                     </Link>

@@ -10,9 +10,28 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Umat\UmatWorshipScheduleController;
 use App\Http\Controllers\Umat\UmatActivityController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SitemapController;
+
+// Route to serve files from storage/app
+Route::get('/files/{path}', function (Request $request, $path) {
+    // Decode the path to handle nested directories
+    $filePath = urldecode($path);
+    
+    // Check if file exists in storage/app
+    if (!Storage::disk('local')->exists($filePath)) {
+        abort(404);
+    }
+    
+    // Get the full path to the file
+    $fullPath = Storage::disk('local')->path($filePath);
+    
+    return response()->file($fullPath);
+})->where('path', '.*')->name('files.serve');
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
 
@@ -20,7 +39,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Main dashboard yang akan redirect berdasarkan role
     // Ubah agar umat diarahkan ke /umat/announcements, bukan /umat/dashboard
     Route::get('dashboard', function () {
-        $user = auth()->user();
+        $user = Auth::user();
         if ($user && $user->role_id == 2) {
             return redirect()->route('umat.announcements.index');
         }

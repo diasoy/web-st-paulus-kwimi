@@ -178,7 +178,7 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
                                     <Label className="text-white font-medium">Gambar Saat Ini</Label>
                                     <div className="mt-2">
                                         <img
-                                            src={`/storage/${activity.image_url}`}
+                                            src={`/files/${encodeURIComponent(activity.image_url)}`}
                                             alt={activity.name}
                                             className="h-40 rounded-md border"
                                         />

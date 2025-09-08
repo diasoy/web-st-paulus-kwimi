@@ -77,7 +77,7 @@ export default function ActivityShow({ activity }: ActivityShowProps) {
                             </div>
 
                             {activity.image_url && (
-                                <img src={`/storage/${activity.image_url}`} alt={activity.name} className="w-full max-w-xl rounded-md border" />
+                                <img src={`/files/${encodeURIComponent(activity.image_url)}`} alt={activity.name} className="w-full max-w-xl rounded-md border" />
                             )}
 
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">

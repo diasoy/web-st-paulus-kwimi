@@ -110,7 +110,7 @@ export default function AnnouncementsEdit({ announcement }: { announcement: Anno
                                         <Label className="text-white">Gambar Saat Ini</Label>
                                         <div className="mt-2">
                                             <img
-                                                src={`/storage/${announcement.image_url}`}
+                                                src={`/files/${encodeURIComponent(announcement.image_url)}`}
                                                 alt={announcement.title}
                                                 className="h-40 rounded-md border"
                                             />

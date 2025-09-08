@@ -65,9 +65,9 @@ class AnnouncementController extends Controller
             'is_publish' => $validated['is_publish'] ?? false,
         ];
 
-        // Handle image upload to local storage (public disk)
+        // Handle image upload to local storage (local disk)
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('announcements', 'public');
+            $path = $request->file('image')->store('announcements', 'local');
             $data['image_url'] = $path; // store relative path like announcements/xxx.jpg
         }
 
@@ -118,9 +118,9 @@ class AnnouncementController extends Controller
         // If new image uploaded, replace old one
         if ($request->hasFile('image')) {
             if ($announcement->image_url) {
-                Storage::disk('public')->delete($announcement->image_url);
+                Storage::disk('local')->delete($announcement->image_url);
             }
-            $path = $request->file('image')->store('announcements', 'public');
+            $path = $request->file('image')->store('announcements', 'local');
             $data['image_url'] = $path;
         }
 
@@ -137,7 +137,7 @@ class AnnouncementController extends Controller
     {
         // Delete stored image if exists
         if ($announcement->image_url) {
-            Storage::disk('public')->delete($announcement->image_url);
+            Storage::disk('local')->delete($announcement->image_url);
         }
 
         $announcement->delete();

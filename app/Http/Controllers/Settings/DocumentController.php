@@ -50,8 +50,8 @@ class DocumentController extends Controller
             // Handle removal of existing file
             if ($shouldRemove && $existingPdf) {
                 // Delete file from storage
-                if (Storage::disk('public')->exists($existingPdf->file_path)) {
-                    Storage::disk('public')->delete($existingPdf->file_path);
+                if (Storage::disk('local')->exists($existingPdf->file_path)) {
+                    Storage::disk('local')->delete($existingPdf->file_path);
                 }
                 // Delete database record
                 $existingPdf->delete();
@@ -62,15 +62,15 @@ class DocumentController extends Controller
             if ($newFile) {
                 // Remove existing file if there is one at this position
                 if ($existingPdf) {
-                    if (Storage::disk('public')->exists($existingPdf->file_path)) {
-                        Storage::disk('public')->delete($existingPdf->file_path);
+                    if (Storage::disk('local')->exists($existingPdf->file_path)) {
+                        Storage::disk('local')->delete($existingPdf->file_path);
                     }
                     $existingPdf->delete();
                 }
 
                 // Store new file
                 $fileName = uniqid('pdf_') . '_' . $newFile->getClientOriginalName();
-                $filePath = $newFile->storeAs('user_pdfs', $fileName, 'public');
+                $filePath = $newFile->storeAs('user_pdfs', $fileName, 'local');
 
                 // Create new database record
                 UserPdf::create([
@@ -95,12 +95,12 @@ class DocumentController extends Controller
         }
 
         // Check if file exists
-        if (!Storage::disk('public')->exists($pdf->file_path)) {
+        if (!Storage::disk('local')->exists($pdf->file_path)) {
             return redirect()->route('document.index')->with('error', 'File tidak ditemukan.');
         }
 
         // Return file download response with proper headers
-        $filePath = Storage::disk('public')->path($pdf->file_path);
+        $filePath = Storage::disk('local')->path($pdf->file_path);
         
         return response()->download($filePath, $pdf->file_name, [
             'Content-Type' => 'application/pdf',
@@ -118,8 +118,8 @@ class DocumentController extends Controller
         }
 
         // Delete file from storage
-        if (Storage::disk('public')->exists($pdf->file_path)) {
-            Storage::disk('public')->delete($pdf->file_path);
+        if (Storage::disk('local')->exists($pdf->file_path)) {
+            Storage::disk('local')->delete($pdf->file_path);
         }
 
         // Delete database record
@@ -139,12 +139,12 @@ class DocumentController extends Controller
         }
 
         // Check if file exists
-        if (!Storage::disk('public')->exists($pdf->file_path)) {
+        if (!Storage::disk('local')->exists($pdf->file_path)) {
             abort(404, 'File not found.');
         }
 
         // Return file response for inline viewing
-        $filePath = Storage::disk('public')->path($pdf->file_path);
+        $filePath = Storage::disk('local')->path($pdf->file_path);
         
         return response()->file($filePath, [
             'Content-Type' => 'application/pdf',

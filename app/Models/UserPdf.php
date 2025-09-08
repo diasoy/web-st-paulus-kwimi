@@ -35,7 +35,7 @@ class UserPdf extends Model
      */
     public function getFileUrlAttribute()
     {
-        return asset('storage/' . $this->file_path);
+        return route('files.serve', ['path' => urlencode($this->file_path)]);
     }
 
     /**
@@ -43,8 +43,8 @@ class UserPdf extends Model
      */
     public function getFileSizeAttribute()
     {
-        if (Storage::disk('public')->exists($this->file_path)) {
-            $bytes = Storage::disk('public')->size($this->file_path);
+        if (Storage::disk('local')->exists($this->file_path)) {
+            $bytes = Storage::disk('local')->size($this->file_path);
             
             if ($bytes >= 1048576) {
                 return number_format($bytes / 1048576, 2) . ' MB';

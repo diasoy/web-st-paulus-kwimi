@@ -78,7 +78,7 @@ export default function AnnouncementShow({ announcement }: { announcement: Annou
                     </div>
                     <div className="space-y-4">
                         {announcement.image_url && (
-                            <img src={`/storage/${announcement.image_url}`} alt={announcement.title} className="w-full max-w-xl rounded-md border" />
+                            <img src={`/files/${encodeURIComponent(announcement.image_url)}`} alt={announcement.title} className="w-full max-w-xl rounded-md border" />
                         )}
                         <div>
                             <p className="text-sm leading-6 whitespace-pre-line text-gray-300">{announcement.description}</p>

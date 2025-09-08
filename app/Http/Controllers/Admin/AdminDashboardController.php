@@ -49,7 +49,7 @@ class AdminDashboardController extends Controller {
     public function deleteUserPdf(User $user, $pdfId)
     {
         $pdf = $user->pdfs()->findOrFail($pdfId);
-        Storage::disk('public')->delete($pdf->file_path);
+        Storage::disk('local')->delete($pdf->file_path);
         $pdf->delete();
         return redirect()->route('admin.users.show', $user->id)
             ->with('success', 'File PDF berhasil dihapus.');
@@ -63,12 +63,12 @@ class AdminDashboardController extends Controller {
         $pdf = $user->pdfs()->findOrFail($pdfId);
         
         // Check if file exists
-        if (!Storage::disk('public')->exists($pdf->file_path)) {
+        if (!Storage::disk('local')->exists($pdf->file_path)) {
             return redirect()->route('admin.users.show', $user->id)->with('error', 'File tidak ditemukan.');
         }
 
         // Get file path and return download response
-        $filePath = Storage::disk('public')->path($pdf->file_path);
+        $filePath = Storage::disk('local')->path($pdf->file_path);
         
         return response()->download($filePath, $pdf->file_name, [
             'Content-Type' => 'application/pdf',
@@ -288,7 +288,7 @@ class AdminDashboardController extends Controller {
 
             // Jika user hapus file lama
             if ($pdfModel && $shouldRemove) {
-                Storage::disk('public')->delete($pdfModel->file_path);
+                Storage::disk('local')->delete($pdfModel->file_path);
                 $pdfModel->delete();
             }
 
@@ -296,10 +296,10 @@ class AdminDashboardController extends Controller {
             if ($newFile) {
                 // Jika ada file lama dan tidak dihapus, hapus dulu
                 if ($pdfModel && !$shouldRemove) {
-                    Storage::disk('public')->delete($pdfModel->file_path);
+                    Storage::disk('local')->delete($pdfModel->file_path);
                     $pdfModel->delete();
                 }
-                $path = $newFile->store('user_pdfs', 'public');
+                $path = $newFile->store('user_pdfs', 'local');
                 $user->pdfs()->create([
                     'file_path' => $path,
                     'file_name' => $newFile->getClientOriginalName(),

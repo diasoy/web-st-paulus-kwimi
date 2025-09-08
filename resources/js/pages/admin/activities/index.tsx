@@ -245,7 +245,7 @@ export default function ActivitiesIndex({ activities }: ActivitiesIndexProps) {
                                         <TableCell>
                                             {activity.image_url ? (
                                                 <img
-                                                    src={`/storage/${activity.image_url}`}
+                                                    src={`/files/${encodeURIComponent(activity.image_url)}`}
                                                     alt={activity.name}
                                                     className="h-10 w-14 rounded object-cover"
                                                     onError={(e) => {

@@ -76,7 +76,7 @@ class ActivityController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('activities', 'public');
+            $path = $request->file('image')->store('activities', 'local');
             $data['image_url'] = $path; // relative path like activities/xxx.jpg
         }
 
@@ -130,9 +130,9 @@ class ActivityController extends Controller
 
         if ($request->hasFile('image')) {
             if ($activity->image_url) {
-                Storage::disk('public')->delete($activity->image_url);
+                Storage::disk('local')->delete($activity->image_url);
             }
-            $path = $request->file('image')->store('activities', 'public');
+            $path = $request->file('image')->store('activities', 'local');
             $data['image_url'] = $path;
         }
 
@@ -148,7 +148,7 @@ class ActivityController extends Controller
     public function destroy(Activity $activity)
     {
         if ($activity->image_url) {
-            Storage::disk('public')->delete($activity->image_url);
+            Storage::disk('local')->delete($activity->image_url);
         }
 
         $activity->delete();

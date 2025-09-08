@@ -209,7 +209,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                         <TableCell>
                                             {announcement.image_url ? (
                                                 <img
-                                                    src={`/storage/${announcement.image_url}`}
+                                                    src={`/files/${encodeURIComponent(announcement.image_url)}`}
                                                     alt={announcement.title}
                                                     className="h-10 w-14 rounded object-cover"
                                                     onError={(e) => {

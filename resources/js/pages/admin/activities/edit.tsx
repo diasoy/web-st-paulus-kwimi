@@ -4,7 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Save, X } from 'lucide-react';
+import { Save, X, Upload, Calendar, Edit, AlertTriangle, ArrowLeft, Loader2 } from 'lucide-react';
 import { FormEvent, useRef, useState } from 'react';
 
 interface Activity {
@@ -48,14 +48,15 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
         const dd = String(d.getDate()).padStart(2, '0');
         return `${yyyy}-${mm}-${dd}`;
     };
+
     const { data, setData, post, processing, errors } = useForm({
-        _method: 'PUT' as const,
-        name: activity.name || '',
-        description: activity.description || '',
+        name: activity.name,
+        description: activity.description,
         date: formatDate(activity.date),
         time_start: toHHmm(activity.time_start),
         location: activity.location || '',
         image: null as File | null,
+        _method: 'PUT' as const,
     });
 
     const [imageError, setImageError] = useState('');
@@ -64,7 +65,10 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         setData('time_start', toHHmm(data.time_start));
-        post(route('admin.activities.update', activity.id), { forceFormData: true, preserveScroll: true });
+        post(route('admin.activities.update', activity.id), {
+            forceFormData: true,
+            preserveScroll: true,
+        });
     };
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,151 +84,296 @@ export default function ActivityEdit({ activity }: ActivityEditProps) {
 
     const removeImage = () => {
         setData('image', null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
         setImageError('');
-        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     return (
         <AuthenticatedLayout>
             <Head title={`Edit Kegiatan - ${activity.name}`} />
 
-            <div className="space-y-6 p-6 min-h-screen">
-                <div className="space-y-2">
-                    <nav className="flex items-center text-sm text-white">
-                        <Link href={route('admin.activities.index')} className="hover:text-gray-300 transition-colors">
-                            Agenda Kegiatan
-                        </Link>
-                        <span className="mx-2 text-gray-300">/</span>
-                        <Link href={route('admin.activities.show', activity.id)} className="hover:text-gray-300 transition-colors">
-                            Detail
-                        </Link>
-                        <span className="mx-2 text-gray-300">/</span>
-                        <span className="text-white font-medium">Edit</span>
-                    </nav>
-                    <h1 className="text-2xl font-bold tracking-tight text-white">Edit Kegiatan</h1>
-                </div>
+            <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)' }}>
+                <div className="container mx-auto px-4 py-8">
+                    {/* Breadcrumb Navigation */}
+                    <div className="mb-8">
+                        <nav className="flex items-center space-x-2 text-sm">
+                            <Link
+                                href="/admin/dashboard"
+                                className="text-white/70 hover:text-white transition-colors"
+                            >
+                                Dashboard
+                            </Link>
+                            <span className="text-white/50">/</span>
+                            <Link
+                                href="/admin/activities"
+                                className="text-white/70 hover:text-white transition-colors"
+                            >
+                                Agenda Kegiatan
+                            </Link>
+                            <span className="text-white/50">/</span>
+                            <Link
+                                href={`/admin/activities/${activity.id}`}
+                                className="text-white/70 hover:text-white transition-colors"
+                            >
+                                Detail
+                            </Link>
+                            <span className="text-white/50">/</span>
+                            <span className="text-white font-medium">Edit</span>
+                        </nav>
+                    </div>
 
-                    <h2 className="text-lg font-semibold text-white mb-6">Edit Kegiatan</h2>
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            <div className="space-y-2">
-                                <Label htmlFor="name" className="text-white font-medium">Nama Kegiatan *</Label>
-                                <Input
-                                    id="name"
-                                    type="text"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                    placeholder="Masukkan nama kegiatan"
-                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
-                                    required
-                                />
-                                {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
+                    {/* Header Section */}
+                    <div className="bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-8 border border-white/20">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
+                                    <Edit className="h-10 w-10 text-white" />
+                                    Edit Kegiatan
+                                </h1>
+                                <p className="text-orange-100 text-lg">
+                                    Perbarui informasi kegiatan "{activity.name}"
+                                </p>
                             </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="date" className="text-white font-medium">Tanggal *</Label>
-                                <Input
-                                    id="date"
-                                    type="date"
-                                    value={data.date}
-                                    onChange={(e) => setData('date', e.target.value)}
-                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
-                                    required
-                                />
-                                {errors.date && <p className="text-sm text-red-600">{errors.date}</p>}
+                            <div className="hidden md:block">
+                                <div className="bg-white/20 backdrop-blur-sm rounded-full p-6">
+                                    <Calendar className="h-16 w-16 text-white" />
+                                </div>
                             </div>
+                        </div>
+                    </div>
 
-                            <div className="space-y-2">
-                                <Label htmlFor="time_start" className="text-white font-medium">Waktu Mulai</Label>
-                                <Input
-                                    id="time_start"
-                                    type="time"
-                                    value={data.time_start}
-                                    onChange={(e) => setData('time_start', e.target.value)}
-                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
-                                />
-                                {errors.time_start && <p className="text-sm text-red-600">{errors.time_start}</p>}
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="location" className="text-white font-medium">Lokasi</Label>
-                                <Input
-                                    id="location"
-                                    type="text"
-                                    value={data.location}
-                                    onChange={(e) => setData('location', e.target.value)}
-                                    placeholder="Masukkan lokasi kegiatan"
-                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
-                                />
-                                {errors.location && <p className="text-sm text-red-600">{errors.location}</p>}
-                            </div>
-
-                            <div className="md:col-span-2 space-y-2">
-                                <Label htmlFor="description" className="text-white font-medium">Deskripsi *</Label>
-                                <Textarea
-                                    id="description"
-                                    value={data.description}
-                                    onChange={(e) => setData('description', e.target.value)}
-                                    placeholder="Masukkan deskripsi kegiatan"
-                                    className="bg-white text-black border-gray-300 focus:border-green-500 focus:ring-green-500"
-                                    rows={4}
-                                    required
-                                />
-                                {errors.description && <p className="text-sm text-red-600">{errors.description}</p>}
-                            </div>
-
-                            {activity.image_url && (
+                    {/* Form Section */}
+                    <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
+                        <form onSubmit={handleSubmit} className="space-y-8">
+                            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                                 <div className="md:col-span-2">
-                                    <Label className="text-white font-medium">Gambar Saat Ini</Label>
-                                    <div className="mt-2">
-                                        <img
-                                            src={`/files/${encodeURIComponent(activity.image_url)}`}
-                                            alt={activity.name}
-                                            className="h-40 rounded-md border"
-                                        />
+                                    <Label htmlFor="name" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Nama Kegiatan *
+                                    </Label>
+                                    <Input
+                                        id="name"
+                                        type="text"
+                                        value={data.name}
+                                        onChange={(e) => setData('name', e.target.value)}
+                                        placeholder="Contoh: Retreat Remaja"
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                                            errors.name 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-yellow-200 dark:border-yellow-600 focus:border-orange-500 focus:ring-orange-200 hover:border-yellow-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
+                                        required
+                                    />
+                                    {errors.name && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.name}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="date" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Tanggal *
+                                    </Label>
+                                    <Input
+                                        id="date"
+                                        type="date"
+                                        value={data.date}
+                                        onChange={(e) => setData('date', e.target.value)}
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white ${
+                                            errors.date 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-yellow-200 dark:border-yellow-600 focus:border-orange-500 focus:ring-orange-200 hover:border-yellow-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
+                                        required
+                                    />
+                                    {errors.date && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.date}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <Label htmlFor="time_start" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Waktu Mulai *
+                                    </Label>
+                                    <Input
+                                        id="time_start"
+                                        type="time"
+                                        value={data.time_start}
+                                        onChange={(e) => setData('time_start', e.target.value)}
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white ${
+                                            errors.time_start 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-yellow-200 dark:border-yellow-600 focus:border-orange-500 focus:ring-orange-200 hover:border-yellow-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
+                                        required
+                                    />
+                                    {errors.time_start && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.time_start}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Label htmlFor="location" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Lokasi *
+                                    </Label>
+                                    <Input
+                                        id="location"
+                                        type="text"
+                                        value={data.location}
+                                        onChange={(e) => setData('location', e.target.value)}
+                                        placeholder="Contoh: Aula Gereja ST. Paulus Kwimi"
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                                            errors.location 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-yellow-200 dark:border-yellow-600 focus:border-orange-500 focus:ring-orange-200 hover:border-yellow-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
+                                        required
+                                    />
+                                    {errors.location && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.location}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Label htmlFor="description" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Deskripsi Kegiatan *
+                                    </Label>
+                                    <Textarea
+                                        id="description"
+                                        value={data.description}
+                                        onChange={(e) => setData('description', e.target.value)}
+                                        placeholder="Deskripsi singkat tentang kegiatan..."
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                                            errors.description 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-yellow-200 dark:border-yellow-600 focus:border-orange-500 focus:ring-orange-200 hover:border-yellow-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
+                                        rows={4}
+                                        required
+                                    />
+                                    {errors.description && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.description}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Label htmlFor="image" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Gambar Kegiatan (Opsional)
+                                    </Label>
+                                    <div className="space-y-4">
+                                        {activity.image_url && !data.image && (
+                                            <div className="relative w-32 h-32 rounded-xl overflow-hidden bg-gray-100 border border-yellow-200">
+                                                <img
+                                                    src={activity.image_url}
+                                                    alt="Current"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                                    <span className="text-white text-xs font-medium">Gambar Saat Ini</span>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div className="flex items-center gap-4">
+                                            <input
+                                                ref={fileInputRef}
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleImageSelect}
+                                                className="hidden"
+                                            />
+                                            <Button
+                                                type="button"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                                            >
+                                                <Upload className="mr-2 h-5 w-5" />
+                                                {data.image ? 'Ganti Gambar' : 'Pilih Gambar Baru'}
+                                            </Button>
+                                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                                Maksimal 2MB
+                                            </span>
+                                        </div>
+
+                                        {data.image && (
+                                            <div className="relative w-32 h-32 rounded-xl overflow-hidden bg-gray-100 border border-yellow-200">
+                                                <img
+                                                    src={URL.createObjectURL(data.image)}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={removeImage}
+                                                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-all duration-300 hover:scale-110"
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {imageError && (
+                                            <p className="text-sm text-red-600 flex items-center gap-1">
+                                                <AlertTriangle className="h-4 w-4" />
+                                                {imageError}
+                                            </p>
+                                        )}
+                                        {errors.image && (
+                                            <p className="text-sm text-red-600 flex items-center gap-1">
+                                                <AlertTriangle className="h-4 w-4" />
+                                                {errors.image}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
-                            )}
 
-                            <div className="md:col-span-2">
-                                <Label htmlFor="image" className="text-white font-medium">Ganti Gambar (opsional)</Label>
-                                <div className="flex items-center gap-3">
-                                    <input
-                                        ref={fileInputRef}
-                                        id="image"
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageSelect}
-                                        className={errors.image ? 'border-red-500' : ''}
-                                    />
-                                    {imageError && (
-                                        <div style={{ color: 'red', fontSize: '0.875rem', marginLeft: 8 }}>{imageError}</div>
-                                    )}
-                                    {data.image && (
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-sm text-white">{data.image.name}</span>
-                                            <Button type="button" variant="ghost" size="sm" onClick={removeImage} className="h-6 w-6 p-0">
-                                                <X className="h-3 w-3" />
-                                            </Button>
-                                        </div>
-                                    )}
+                                <div className="md:col-span-2 flex justify-end space-x-4 pt-4">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => window.history.back()}
+                                        className="px-8 py-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md hover:scale-105"
+                                    >
+                                        <ArrowLeft className="mr-2 h-5 w-5" />
+                                        Batal
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="px-8 py-3 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                    >
+                                        {processing ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                                Menyimpan...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Save className="mr-2 h-5 w-5" />
+                                                Simpan Perubahan
+                                            </>
+                                        )}
+                                    </Button>
                                 </div>
-                                {errors.image && <p className="mt-1 text-sm text-red-500">{errors.image}</p>}
                             </div>
-                        </div>
-
-                        <div className="flex justify-end gap-4">
-                            <Link href={route('admin.activities.index')}>
-                                <Button className='bg-white text-black border-gray-300 hover:bg-gray-50'>
-                                    Batal
-                                </Button>
-                            </Link>
-                            <Button className="bg-green-600 text-white hover:bg-green-700 disabled:bg-green-400" type="submit" disabled={processing}>
-                                <Save className="mr-2 h-4 w-4" />
-                                {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
-                            </Button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
+                </div>
             </div>
         </AuthenticatedLayout>
     );

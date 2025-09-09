@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -18,6 +17,7 @@ import {
   Search,
   Trash2,
   User,
+  Download,
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -27,9 +27,17 @@ const labelMap: Record<string, string> = {
   'pagination.previous': 'Sebelumnya',
   'pagination.first': 'Pertama',
   'pagination.last': 'Terakhir',
+  '&laquo; Previous': 'Sebelumnya',
+  'Next &raquo;': 'Berikutnya',
+  '&laquo;': 'Sebelumnya',
+  '&raquo;': 'Berikutnya',
 };
 
-const getLabel = (label: string) => labelMap[label] || label;
+const getLabel = (label: string) => {
+  // Clean HTML entities
+  const cleanLabel = label.replace(/&laquo;|&raquo;/g, '').trim();
+  return labelMap[label] || labelMap[cleanLabel] || cleanLabel || label;
+};
 
 interface Community {
   id: number;
@@ -47,15 +55,36 @@ interface WorshipSchedule {
   communities: Community[];
 }
 
+interface PaginationLink {
+  url: string | null;
+  label: string;
+  active: boolean;
+}
+
+interface PaginationMeta {
+  current_page: number;
+  from: number;
+  last_page: number;
+  per_page: number;
+  to: number;
+  total: number;
+}
+
 interface WorshipSchedulesIndexProps {
   worshipSchedules: {
     data: WorshipSchedule[];
-    links: any[];
-    meta: any;
+    links?: PaginationLink[];
+    meta?: PaginationMeta;
   };
 }
 
 export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSchedulesIndexProps) {
+  // Debug: Log the received data
+  console.log('WorshipSchedules data:', worshipSchedules);
+  console.log('Meta:', worshipSchedules.meta);
+  console.log('Links:', worshipSchedules.links);
+  console.log('Data length:', worshipSchedules.data?.length);
+
   const params = new URLSearchParams(
     typeof window !== 'undefined' ? window.location.search : '',
   );
@@ -115,313 +144,342 @@ export default function WorshipSchedulesIndex({ worshipSchedules }: WorshipSched
     <AuthenticatedLayout>
       <Head title="Jadwal Ibadah" />
 
-      <div className="space-y-6 p-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Jadwal Ibadah</h1>
-            <p className="">
-              Kelola jadwal ibadah untuk jemaat ST. Paulus Kwimi
-            </p>
-          </div>
-        </div>
-
-        {/* Filter & Action */}
-        <div className="flex items-center justify-between gap-2">
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            {/* Input Search */}
-            <div className="relative w-full max-w-sm">
-              <Search className="absolute top-2.5 left-2.5 h-4 w-4 " />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) =>
-                  e.key === 'Enter' &&
-                  router.get(
-                    route('admin.worship-schedules.index'),
-                    { search, sort: sortBy, direction: sortDir },
-                    { preserveState: true, replace: true, preserveScroll: true },
-                  )
-                }
-                placeholder="Cari jadwal ibadah..."
-                className="h-9 pl-8 text-sm"
-              />
+      <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)' }}>
+        <div className="container mx-auto px-4 py-8">
+          {/* Header Section */}
+          <div className="bg-white/95 backdrop-blur-lg rounded-3xl overflow-hidden border border-gray-200/50 shadow-2xl mb-8">
+            <div className="bg-gradient-to-r from-blue-600/90 to-purple-600/90 p-8 border-b border-gray-200/50">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="bg-white/20 p-3 rounded-xl">
+                    <Calendar className="h-8 w-8 text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-3xl font-bold text-white mb-1">Jadwal Ibadah</h1>
+                    <p className="text-white/90 text-lg">Kelola jadwal ibadah untuk jemaat ST. Paulus Kwimi</p>
+                  </div>
+                </div>
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={handleDownloadPdf}
+                    variant="outline"
+                    className="bg-white/10 backdrop-blur-sm text-white border-white/20 hover:bg-white/20 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download PDF
+                  </Button>
+                  <Link href={route('admin.worship-schedules.create')}>
+                    <Button className="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Tambah Jadwal
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
 
-            {/* Tombol Cari */}
-            <Button
-              size="sm"
-              className="bg-primary hover:bg-primary/90 text-white"
-              onClick={() =>
-                router.get(
-                  route('admin.worship-schedules.index'),
-                  { search, sort: sortBy, direction: sortDir },
-                  { preserveState: true, replace: true, preserveScroll: true },
-                )
-              }
-            >
-              Cari
-            </Button>
+            {/* Search & Filter Section */}
+            <div className="p-8 bg-gradient-to-r from-gray-50 to-blue-50 border-b border-gray-200/50">
+              <div className="flex flex-col lg:flex-row gap-6">
+                {/* Search Bar */}
+                <div className="flex-1">
+                  <div className="relative">
+                    <Search className="absolute top-3 left-3 h-5 w-5 text-gray-400" />
+                    <Input
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      onKeyDown={(e) =>
+                        e.key === 'Enter' &&
+                        router.get(
+                          route('admin.worship-schedules.index'),
+                          { search, sort: sortBy, direction: sortDir },
+                          { preserveState: true, replace: true, preserveScroll: true },
+                        )
+                      }
+                      placeholder="Cari berdasarkan nama ibadah atau penanggung jawab..."
+                      className="pl-10 bg-white/80 backdrop-blur-sm border-2 border-blue-200 focus:border-blue-500 focus:ring-blue-200 hover:border-blue-300 rounded-xl shadow-sm hover:shadow-md transition-all duration-300"
+                    />
+                  </div>
+                </div>
 
-            {/* Tombol Reset */}
-            {search && (
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() =>
-                  router.get(
-                    route('admin.worship-schedules.index'),
-                    { sort: sortBy, direction: sortDir },
-                    { preserveState: true, replace: true, preserveScroll: true },
-                  )
-                }
-              >
-                Reset
-              </Button>
-            )}
+                {/* Filter & Actions */}
+                <div className="flex flex-wrap gap-3 items-center">
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      router.get(
+                        route('admin.worship-schedules.index'),
+                        { search, sort: sortBy, direction: sortDir },
+                        { preserveState: true, replace: true, preserveScroll: true },
+                      )
+                    }
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                  >
+                    <Search className="mr-2 h-4 w-4" />
+                    Cari
+                  </Button>
 
-            {/* Filter Dropdown */}
-            <select
-              className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-            >
-              <option value="all">Semua Jadwal</option>
-              <option value="week">Seminggu ke depan</option>
-              <option value="month">Sebulan ke depan</option>
-              <option value="custom">Custom Tanggal</option>
-            </select>
+                  {search && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() =>
+                        router.get(
+                          route('admin.worship-schedules.index'),
+                          { sort: sortBy, direction: sortDir },
+                          { preserveState: true, replace: true, preserveScroll: true },
+                        )
+                      }
+                      className="bg-white hover:bg-gray-50 border-gray-300 hover:border-gray-400 shadow-sm hover:shadow-md transition-all duration-300 transform hover:scale-105"
+                    >
+                      Reset
+                    </Button>
+                  )}
 
-            {/* Custom Range */}
-            {filterType === 'custom' && (
-              <>
-                <input
-                  type="date"
-                  className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-                  value={customStart}
-                  onChange={(e) => setCustomStart(e.target.value)}
-                />
-                <span className="mx-1">s/d</span>
-                <input
-                  type="date"
-                  className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-                  value={customEnd}
-                  onChange={(e) => setCustomEnd(e.target.value)}
-                />
-              </>
-            )}
+                  <select
+                    className="h-9 rounded-xl border-2 border-blue-200 bg-white/80 backdrop-blur-sm px-3 text-sm font-medium text-gray-700 focus:border-blue-500 focus:ring-blue-200 hover:border-blue-300 shadow-sm hover:shadow-md transition-all duration-300"
+                    value={filterType}
+                    onChange={(e) => setFilterType(e.target.value)}
+                  >
+                    <option value="all">📅 Semua Jadwal</option>
+                    <option value="week">📆 Seminggu ke depan</option>
+                    <option value="month">🗓️ Sebulan ke depan</option>
+                    <option value="custom">🎯 Custom Tanggal</option>
+                  </select>
 
-            {/* Tombol Download PDF */}
-            <Button
-              variant="outline"
-              className="ml-2 text-primary border-primary hover:bg-primary/10 hover:text-primary"
-              onClick={handleDownloadPdf}
-            >
-              Download PDF
-            </Button>
+                  {filterType === 'custom' && (
+                    <div className="flex gap-2">
+                      <input
+                        type="date"
+                        className="h-9 rounded-xl border-2 border-blue-200 bg-white/80 backdrop-blur-sm px-3 text-sm font-medium text-gray-700 focus:border-blue-500 focus:ring-blue-200 hover:border-blue-300 shadow-sm hover:shadow-md transition-all duration-300"
+                        value={customStart}
+                        onChange={(e) => setCustomStart(e.target.value)}
+                      />
+                      <span className="flex items-center text-gray-500 font-medium">—</span>
+                      <input
+                        type="date"
+                        className="h-9 rounded-xl border-2 border-blue-200 bg-white/80 backdrop-blur-sm px-3 text-sm font-medium text-gray-700 focus:border-blue-500 focus:ring-blue-200 hover:border-blue-300 shadow-sm hover:shadow-md transition-all duration-300"
+                        value={customEnd}
+                        onChange={(e) => setCustomEnd(e.target.value)}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Statistics Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-4 rounded-xl text-white shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <Calendar className="h-8 w-8" />
+                    <div>
+                      <p className="text-blue-100 text-sm">Total Jadwal</p>
+                      <p className="text-2xl font-bold">{worshipSchedules.meta?.total || 0}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 p-4 rounded-xl text-white shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <Clock className="h-8 w-8" />
+                    <div>
+                      <p className="text-emerald-100 text-sm">Halaman Saat Ini</p>
+                      <p className="text-2xl font-bold">{worshipSchedules.meta?.current_page || 1}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-r from-purple-500 to-purple-600 p-4 rounded-xl text-white shadow-lg">
+                  <div className="flex items-center gap-3">
+                    <User className="h-8 w-8" />
+                    <div>
+                      <p className="text-purple-100 text-sm">Per Halaman</p>
+                      <p className="text-2xl font-bold">{worshipSchedules.meta?.per_page || 10}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Tambah Jadwal */}
-          <Link href={route('admin.worship-schedules.create')} className="shrink-0">
-            <Button className="px-2 sm:px-4 text-white bg-primary hover:bg-primary/90">
-              <Plus className="h-4 w-4 sm:mr-2" />
-              <span className="hidden sm:inline">Tambah Jadwal</span>
-            </Button>
-          </Link>
+          {/* Content Area */}
+          <div className="bg-white/95 backdrop-blur-lg rounded-3xl overflow-hidden border border-gray-200/50 shadow-2xl">
+            {!worshipSchedules.data || worshipSchedules.data.length === 0 ? (
+              <div className="text-center py-16">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Calendar className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold text-gray-800 mb-3">Belum Ada Jadwal Ibadah</h3>
+                <p className="text-gray-600 mb-6 max-w-md mx-auto">
+                  Anda belum memiliki jadwal ibadah. Mulai dengan membuat jadwal pertama untuk jemaat.
+                </p>
+                <Link href={route('admin.worship-schedules.create')}>
+                  <Button className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                    <Plus className="mr-2 h-4 w-4" />
+                    Buat Jadwal Pertama
+                  </Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gradient-to-r from-gray-50 to-blue-50 border-b border-gray-200">
+                      <TableHead className="font-bold text-gray-800">
+                        <SortButton
+                          title="Nama Ibadah"
+                          field="name"
+                          sortBy={sortBy}
+                          sortDir={sortDir}
+                          setSortBy={setSortBy}
+                          setSortDir={setSortDir}
+                          search={search}
+                        />
+                      </TableHead>
+                      <TableHead className="font-bold text-gray-800">
+                        <SortButton
+                          title="Tanggal"
+                          field="date"
+                          sortBy={sortBy}
+                          sortDir={sortDir}
+                          setSortBy={setSortBy}
+                          setSortDir={setSortDir}
+                          search={search}
+                        />
+                      </TableHead>
+                      <TableHead className="font-bold text-gray-800">
+                        <SortButton
+                          title="Waktu"
+                          field="time_start"
+                          sortBy={sortBy}
+                          sortDir={sortDir}
+                          setSortBy={setSortBy}
+                          setSortDir={setSortDir}
+                          search={search}
+                        />
+                      </TableHead>
+                      <TableHead className="font-bold text-gray-800">Penanggung Jawab</TableHead>
+                      <TableHead className="font-bold text-gray-800">Komunitas</TableHead>
+                      <TableHead className="font-bold text-gray-800 text-center">Aksi</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {worshipSchedules.data && worshipSchedules.data.map((schedule, index) => (
+                      <TableRow 
+                        key={schedule.id} 
+                        className={`hover:bg-blue-50/50 transition-colors ${
+                          index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'
+                        }`}
+                      >
+                        <TableCell className="font-medium text-gray-900">
+                          <div className="flex items-center gap-2">
+                            <div className="bg-gradient-to-r from-blue-500 to-purple-500 w-2 h-8 rounded-full"></div>
+                            {schedule.name}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Calendar className="h-4 w-4 text-blue-500" />
+                            <span className="text-gray-700">{formatDate(schedule.date)}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Clock className="h-4 w-4 text-emerald-500" />
+                            <span className="font-medium text-gray-700">{formatTime(schedule.time_start)}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <User className="h-4 w-4 text-purple-500" />
+                            <span className="text-gray-700">{schedule.pic}</span>
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex flex-wrap gap-1">
+                            {schedule.communities.map((community) => (
+                              <Badge 
+                                key={community.id} 
+                                variant="secondary"
+                                className="bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200 hover:from-blue-200 hover:to-purple-200 transition-colors"
+                              >
+                                {community.name}
+                              </Badge>
+                            ))}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center justify-center gap-2">
+                            <Link href={route('admin.worship-schedules.show', schedule.id)}>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="bg-blue-500 hover:bg-blue-600 text-white border-blue-500 hover:border-blue-600 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Link href={route('admin.worship-schedules.edit', schedule.id)}>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="bg-emerald-500 hover:bg-emerald-600 text-white border-emerald-500 hover:border-emerald-600 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              onClick={() => handleDelete(schedule.id)}
+                              className="bg-red-500 hover:bg-red-600 text-white border-red-500 hover:border-red-600 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+
+                {/* Pagination */}
+                {worshipSchedules.links && worshipSchedules.links.length > 3 && (
+                  <div className="p-6 bg-gradient-to-r from-gray-50 to-blue-50 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <p className="text-sm text-gray-600">
+                        {worshipSchedules.meta?.total && worshipSchedules.meta.total > 0 
+                          ? `Menampilkan ${worshipSchedules.meta.from || 1} - ${worshipSchedules.meta.to || 0} dari ${worshipSchedules.meta.total} jadwal`
+                          : 'Tidak ada data jadwal ibadah'
+                        }
+                      </p>
+                      <div className="flex items-center gap-2">
+                        {worshipSchedules.links && worshipSchedules.links.map((link, index) => (
+                          <Link
+                            key={index}
+                            href={link.url || '#'}
+                            className={`px-3 py-2 text-sm rounded-lg transition-all duration-300 ${
+                              link.active
+                                ? 'bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-md'
+                                : link.url
+                                ? 'bg-white hover:bg-blue-50 text-gray-700 border border-gray-300 hover:border-blue-300 shadow-sm hover:shadow-md transform hover:scale-105'
+                                : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            }`}
+                          >
+                            <span>{getLabel(link.label)}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-
-        {/* Tabel Data */}
-        {worshipSchedules.data.length === 0 ? (
-          <div className="py-8 text-center">
-            <p className="">Belum ada jadwal ibadah</p>
-            <Link href={route('admin.worship-schedules.create')}>
-              <Button className="mt-4">
-                <Plus className="mr-2 h-4 w-4" />
-                Buat Jadwal Pertama
-              </Button>
-            </Link>
-          </div>
-        ) : (
-          <div className="border bg-secondary">
-            <Table>
-              <TableHeader>
-                <TableRow className="bg-white">
-                  {/* Kolom Nama Ibadah */}
-                  <TableHead>
-                    <SortButton
-                      title="Nama Ibadah"
-                      field="name"
-                      sortBy={sortBy}
-                      sortDir={sortDir}
-                      setSortBy={setSortBy}
-                      setSortDir={setSortDir}
-                      search={search}
-                    />
-                  </TableHead>
-
-                  {/* Kolom Tanggal */}
-                  <TableHead>
-                    <SortButton
-                      title="Tanggal"
-                      field="date"
-                      sortBy={sortBy}
-                      sortDir={sortDir}
-                      setSortBy={setSortBy}
-                      setSortDir={setSortDir}
-                      search={search}
-                    />
-                  </TableHead>
-
-                  {/* Kolom Waktu */}
-                  <TableHead>
-                    <SortButton
-                      title="Waktu"
-                      field="time_start"
-                      sortBy={sortBy}
-                      sortDir={sortDir}
-                      setSortBy={setSortBy}
-                      setSortDir={setSortDir}
-                      search={search}
-                    />
-                  </TableHead>
-
-                  {/* Kolom Pemimpin */}
-                  <TableHead>
-                    <SortButton
-                      title="Pemimpin"
-                      field="pic"
-                      sortBy={sortBy}
-                      sortDir={sortDir}
-                      setSortBy={setSortBy}
-                      setSortDir={setSortDir}
-                      search={search}
-                    />
-                  </TableHead>
-
-                  <TableHead>Komunitas</TableHead>
-                  <TableHead className="text-right">Aksi</TableHead>
-                </TableRow>
-              </TableHeader>
-
-              <TableBody>
-                {worshipSchedules.data.map((schedule) => (
-                  <TableRow key={schedule.id}>
-                    <TableCell className="font-medium">{schedule.name}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        {formatDate(schedule.date)}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        {formatTime(schedule.time_start)}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4" />
-                        {schedule.pic}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      {schedule.communities && schedule.communities.length > 0 ? (
-                        <div className="flex flex-wrap gap-1">
-                          {schedule.communities.slice(0, 2).map((community) => (
-                            <Badge key={community.id} variant="secondary" className="text-xs">
-                              {community.name}
-                            </Badge>
-                          ))}
-                          {schedule.communities.length > 2 && (
-                            <Badge variant="outline" className="text-xs">
-                              +{schedule.communities.length - 2}
-                            </Badge>
-                          )}
-                        </div>
-                      ) : (
-                        <span className="">Semua komunitas</span>
-                      )}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="bg-secondary hover:bg-secondary/90"
-                        >
-                          <Link href={route('admin.worship-schedules.show', schedule.id)}>
-                            <Eye className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          asChild
-                          className="bg-primary hover:bg-primary/90"
-                        >
-                          <Link href={route('admin.worship-schedules.edit', schedule.id)}>
-                            <Edit className="h-4 w-4" />
-                          </Link>
-                        </Button>
-                        <Button
-                          variant="destructive"
-                          size="sm"
-                          onClick={() => handleDelete(schedule.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
-
-        {/* Pagination */}
-        {worshipSchedules.links && worshipSchedules.links.length > 3 && (
-          <div className="flex justify-center space-x-2">
-            {worshipSchedules.links.map((link: any, index: number) => {
-              const baseClass =
-                'px-3 py-1 rounded-md font-medium transition-all duration-150 border cursor-pointer';
-              const activeClass = 'bg-secondary text-white border-secondary hover:opacity-80';
-              const inactiveClass = 'bg-white text-secondary border-secondary hover:opacity-80';
-              const disabledClass =
-                'bg-secondary  border-secondary opacity-60 cursor-not-allowed';
-              const label = getLabel(link.label);
-
-              if (link.url) {
-                return (
-                  <Link
-                    key={index}
-                    href={link.url}
-                    className={baseClass + ' ' + (link.active ? activeClass : inactiveClass)}
-                    dangerouslySetInnerHTML={{ __html: label }}
-                  />
-                );
-              } else {
-                return (
-                  <span
-                    key={index}
-                    className={baseClass + ' ' + disabledClass}
-                    dangerouslySetInnerHTML={{ __html: label }}
-                  />
-                );
-              }
-            })}
-          </div>
-        )}
       </div>
     </AuthenticatedLayout>
   );
 }
 
-/**
- * Komponen SortButton untuk header tabel agar kode lebih ringkas
- */
 interface SortButtonProps {
   title: string;
   field: string;
@@ -443,7 +501,7 @@ function SortButton({
 }: SortButtonProps) {
   const handleSort = () => {
     const nextDir: 'asc' | 'desc' =
-      sortBy === field ? (sortDir === 'asc' ? 'desc' : 'asc') : 'asc';
+      sortBy === field && sortDir === 'asc' ? 'desc' : 'asc';
     setSortBy(field);
     setSortDir(nextDir);
     router.get(
@@ -454,19 +512,17 @@ function SortButton({
   };
 
   return (
-    <button
-      type="button"
-      onClick={handleSort}
-      className="flex items-center font-semibold hover:text-foreground/90"
-    >
+    <Button variant="ghost" size="sm" onClick={handleSort} className="flex items-center gap-2 h-auto p-0 font-bold text-gray-800 hover:text-blue-600">
       {title}
-      {sortBy !== field ? (
-        <ChevronsUpDown className="ml-1 h-4 w-4 " />
-      ) : sortDir === 'asc' ? (
-        <ArrowUp className="ml-1 h-4 w-4" />
+      {sortBy === field ? (
+        sortDir === 'asc' ? (
+          <ArrowUp className="h-4 w-4 text-blue-500" />
+        ) : (
+          <ArrowDown className="h-4 w-4 text-blue-500" />
+        )
       ) : (
-        <ArrowDown className="ml-1 h-4 w-4" />
+        <ChevronsUpDown className="h-4 w-4 text-gray-400" />
       )}
-    </button>
+    </Button>
   );
 }

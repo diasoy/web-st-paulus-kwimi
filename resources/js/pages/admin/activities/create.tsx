@@ -1,11 +1,11 @@
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import AuthenticatedLayout from '@/layouts/app-layout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { Save, Upload, X } from 'lucide-react';
-import { ChangeEvent, FormEventHandler, useRef, useState } from 'react';
+import { Save, Upload, X, Calendar, Plus, AlertTriangle, ArrowLeft, Loader2 } from 'lucide-react';
+import { FormEventHandler, useRef, useState } from 'react';
 
 export default function ActivitiesCreate() {
     const { data, setData, post, processing, errors } = useForm({
@@ -35,9 +35,11 @@ export default function ActivitiesCreate() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // Ensure time_start is HH:mm (or empty)
         setData('time_start', toHHmm(data.time_start));
-        post(route('admin.activities.store'), { forceFormData: true, preserveScroll: true });
+        post(route('admin.activities.store'), { 
+            forceFormData: true, 
+            preserveScroll: true 
+        });
     };
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -53,150 +55,276 @@ export default function ActivitiesCreate() {
 
     const removeImage = () => {
         setData('image', null);
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
         setImageError('');
-        if (fileInputRef.current) fileInputRef.current.value = '';
     };
 
     return (
         <AuthenticatedLayout>
-            <Head title="Tambah Agenda Kegiatan" />
+            <Head title="Tambah Kegiatan" />
 
-            <div className="space-y-6 p-6">
-                <div className="space-y-2">
-                    <nav className="flex items-center text-sm text-muted-foreground">
-                        <Link href={route('admin.activities.index')} className="hover:text-foreground">
-                            Agenda Kegiatan
-                        </Link>
-                        <span className="mx-2">/</span>
-                        <span className="text-foreground">Tambah Baru</span>
-                    </nav>
-                    <h1 className="text-2xl font-bold tracking-tight">Tambah Agenda Kegiatan</h1>
-                </div>
+            <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #0f2027, #203a43, #2c5364)' }}>
+                <div className="container mx-auto px-4 py-8">
+                    {/* Breadcrumb Navigation */}
+                    <div className="mb-8">
+                        <nav className="flex items-center space-x-2 text-sm">
+                            <Link
+                                href="/admin/dashboard"
+                                className="text-white/70 hover:text-white transition-colors"
+                            >
+                                Dashboard
+                            </Link>
+                            <span className="text-white/50">/</span>
+                            <Link
+                                href="/admin/activities"
+                                className="text-white/70 hover:text-white transition-colors"
+                            >
+                                Agenda Kegiatan
+                            </Link>
+                            <span className="text-white/50">/</span>
+                            <span className="text-white font-medium">Tambah</span>
+                        </nav>
+                    </div>
 
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Form Agenda Kegiatan</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-6">
-                        <form onSubmit={submit} className="space-y-6">
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                                {' '}
+                    {/* Header Section */}
+                    <div className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 backdrop-blur-sm rounded-2xl shadow-2xl p-8 mb-8 border border-white/20">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <h1 className="text-4xl font-bold text-white mb-2 flex items-center gap-3">
+                                    <Calendar className="h-10 w-10 text-white" />
+                                    Tambah Kegiatan
+                                </h1>
+                                <p className="text-green-100 text-lg">
+                                    Buat agenda kegiatan baru untuk jemaat
+                                </p>
+                            </div>
+                            <div className="hidden md:block">
+                                <div className="bg-white/20 backdrop-blur-sm rounded-full p-6">
+                                    <Plus className="h-16 w-16 text-white" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Form Section */}
+                    <div className="bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm rounded-2xl shadow-2xl p-8 border border-white/20">
+                        <form onSubmit={submit} className="space-y-8">
+                            <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                                 <div className="md:col-span-2">
-                                    <Label htmlFor="name">Nama Kegiatan *</Label>
+                                    <Label htmlFor="name" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Nama Kegiatan *
+                                    </Label>
                                     <Input
                                         id="name"
                                         type="text"
                                         value={data.name}
                                         onChange={(e) => setData('name', e.target.value)}
-                                        placeholder="Masukkan nama kegiatan"
-                                        className={errors.name ? 'border-red-500' : ''}
+                                        placeholder="Contoh: Retreat Remaja"
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                                            errors.name 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-green-200 dark:border-green-600 focus:border-emerald-500 focus:ring-emerald-200 hover:border-green-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
                                         required
                                     />
-                                    {errors.name && <p className="mt-1 text-sm text-red-500">{errors.name}</p>}
+                                    {errors.name && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.name}
+                                        </p>
+                                    )}
                                 </div>
-                                <div className="md:col-span-2">
-                                    <Label htmlFor="description">Deskripsi Kegiatan *</Label>{' '}
-                                    <textarea
-                                        id="description"
-                                        value={data.description}
-                                        onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setData('description', e.target.value)}
-                                        placeholder="Deskripsi detail tentang kegiatan"
-                                        className={`flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 ${errors.description ? 'border-red-500' : ''}`}
-                                        rows={4}
-                                    />
-                                    {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
-                                </div>
+
                                 <div>
-                                    <Label htmlFor="date">Tanggal Kegiatan *</Label>
+                                    <Label htmlFor="date" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Tanggal *
+                                    </Label>
                                     <Input
                                         id="date"
                                         type="date"
                                         value={data.date}
                                         onChange={(e) => setData('date', e.target.value)}
-                                        className={errors.date ? 'border-red-500' : ''}
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white ${
+                                            errors.date 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-green-200 dark:border-green-600 focus:border-emerald-500 focus:ring-emerald-200 hover:border-green-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
                                         required
                                     />
-                                    {errors.date && <p className="mt-1 text-sm text-red-500">{errors.date}</p>}
-                                </div>{' '}
+                                    {errors.date && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.date}
+                                        </p>
+                                    )}
+                                </div>
+
                                 <div>
-                                    <Label htmlFor="time_start">Waktu Mulai</Label>
+                                    <Label htmlFor="time_start" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Waktu Mulai *
+                                    </Label>
                                     <Input
                                         id="time_start"
                                         type="time"
-                                        value={toHHmm(data.time_start)}
-                                        onChange={(e) => setData('time_start', toHHmm(e.target.value))}
-                                        placeholder="Contoh: 08:00"
-                                        className={errors.time_start ? 'border-red-500' : ''}
+                                        value={data.time_start}
+                                        onChange={(e) => setData('time_start', e.target.value)}
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white ${
+                                            errors.time_start 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-green-200 dark:border-green-600 focus:border-emerald-500 focus:ring-emerald-200 hover:border-green-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
+                                        required
                                     />
-                                    {errors.time_start && <p className="mt-1 text-sm text-red-500">{errors.time_start}</p>}
+                                    {errors.time_start && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.time_start}
+                                        </p>
+                                    )}
                                 </div>
+
                                 <div className="md:col-span-2">
-                                    <Label htmlFor="location">Lokasi Kegiatan</Label>
+                                    <Label htmlFor="location" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Lokasi *
+                                    </Label>
                                     <Input
                                         id="location"
                                         type="text"
                                         value={data.location}
                                         onChange={(e) => setData('location', e.target.value)}
-                                        placeholder="Contoh: Gereja ST. Paulus Kwimi"
-                                        className={errors.location ? 'border-red-500' : ''}
+                                        placeholder="Contoh: Aula Gereja ST. Paulus Kwimi"
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                                            errors.location 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-green-200 dark:border-green-600 focus:border-emerald-500 focus:ring-emerald-200 hover:border-green-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
+                                        required
                                     />
-                                    {errors.location && <p className="mt-1 text-sm text-red-500">{errors.location}</p>}{' '}
+                                    {errors.location && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.location}
+                                        </p>
+                                    )}
                                 </div>
+
                                 <div className="md:col-span-2">
-                                    <Label>Gambar (opsional)</Label>
-                                    <div className="mt-2 space-y-3">
-                                        <div className="flex items-center gap-3">
+                                    <Label htmlFor="description" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Deskripsi Kegiatan *
+                                    </Label>
+                                    <Textarea
+                                        id="description"
+                                        value={data.description}
+                                        onChange={(e) => setData('description', e.target.value)}
+                                        placeholder="Deskripsi singkat tentang kegiatan..."
+                                        className={`bg-white dark:bg-slate-800 backdrop-blur-sm border-2 transition-all duration-300 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 ${
+                                            errors.description 
+                                                ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
+                                                : 'border-green-200 dark:border-green-600 focus:border-emerald-500 focus:ring-emerald-200 hover:border-green-300'
+                                        } focus:ring-4 focus:ring-offset-2 rounded-xl shadow-sm hover:shadow-md`}
+                                        rows={4}
+                                        required
+                                    />
+                                    {errors.description && (
+                                        <p className="mt-2 text-sm text-red-600 flex items-center gap-1">
+                                            <AlertTriangle className="h-4 w-4" />
+                                            {errors.description}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div className="md:col-span-2">
+                                    <Label htmlFor="image" className="text-base font-bold text-gray-900 dark:text-white mb-2 block">
+                                        Gambar Kegiatan (Opsional)
+                                    </Label>
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-4">
                                             <input
                                                 ref={fileInputRef}
                                                 type="file"
                                                 accept="image/*"
                                                 onChange={handleImageSelect}
                                                 className="hidden"
-                                                id="activity-image-upload"
                                             />
                                             <Button
                                                 type="button"
-                                                variant="outline"
-                                                size="sm"
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className={`${errors.image ? 'border-red-500' : ''}
-                                                hover:cursor-pointer hover:bg-white text-black hover:text-black`}
+                                                className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
                                             >
-                                                <Upload className="mr-2 h-4 w-4" />
+                                                <Upload className="mr-2 h-5 w-5" />
                                                 Pilih Gambar
                                             </Button>
-                                            {imageError && (
-                                                <div style={{ color: 'red', fontSize: '0.875rem', marginLeft: 8 }}>{imageError}</div>
-                                            )}
-                                            {data.image && (
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-sm text-muted-foreground">{data.image.name}</span>
-                                                    <Button type="button" variant="ghost" size="sm" onClick={removeImage} className="h-6 w-6 p-0">
-                                                        <X className="h-3 w-3" />
-                                                    </Button>
-                                                </div>
-                                            )}
+                                            <span className="text-sm text-gray-600 dark:text-gray-400">
+                                                Maksimal 2MB
+                                            </span>
                                         </div>
-                                        {errors.image && <p className="text-sm text-red-500">{errors.image}</p>}
-                                        <p className="text-sm text-muted-foreground">Unggah gambar (jpg, png, webp).</p>
+
+                                        {data.image && (
+                                            <div className="relative w-32 h-32 rounded-xl overflow-hidden bg-gray-100 border border-green-200">
+                                                <img
+                                                    src={URL.createObjectURL(data.image)}
+                                                    alt="Preview"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={removeImage}
+                                                    className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-all duration-300 hover:scale-110"
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        {imageError && (
+                                            <p className="text-sm text-red-600 flex items-center gap-1">
+                                                <AlertTriangle className="h-4 w-4" />
+                                                {imageError}
+                                            </p>
+                                        )}
+                                        {errors.image && (
+                                            <p className="text-sm text-red-600 flex items-center gap-1">
+                                                <AlertTriangle className="h-4 w-4" />
+                                                {errors.image}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="flex justify-end space-x-4">
-                                <Link href="/admin/activities">
-                                    <Button type="button" variant="outline" className='bg-white border hover:bg-white hover:cursor-pointer text-black hover:text-black'>
+                                <div className="md:col-span-2 flex justify-end space-x-4 pt-4">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => window.history.back()}
+                                        className="px-8 py-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-700 hover:border-gray-400 dark:hover:border-gray-500 transition-all duration-300 rounded-xl shadow-sm hover:shadow-md hover:scale-105"
+                                    >
+                                        <ArrowLeft className="mr-2 h-5 w-5" />
                                         Batal
                                     </Button>
-                                </Link>
-                                <Button type="submit" className='bg-primary text-white hover:bg-primary/80' disabled={processing}>
-                                    <Save className="mr-2 h-4 w-4" />
-                                    {processing ? 'Menyimpan...' : 'Simpan Kegiatan'}
-                                </Button>
+                                    <Button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 border-0 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                                    >
+                                        {processing ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                                                Menyimpan...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Save className="mr-2 h-5 w-5" />
+                                                Simpan
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
                             </div>
                         </form>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         </AuthenticatedLayout>
     );

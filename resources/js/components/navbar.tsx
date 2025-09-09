@@ -90,7 +90,6 @@ export default function Navbar() {
                             <span className="text-xl font-bold bg-gradient-to-r from-green-700 to-teal-700 bg-clip-text text-transparent">
                                 ST. Paulus Kwimi
                             </span>
-                            <p className="text-xs text-gray-600">Gereja Katolik</p>
                         </div>
                     </Link>
                 </div>

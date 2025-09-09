@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, Heart, Cross } from 'lucide-react';
+import { Phone, Mail, MapPin, Cross } from 'lucide-react';
 import React from 'react';
 
 export default function Footer() {
@@ -43,10 +43,6 @@ export default function Footer() {
                                 Gereja yang berkomitmen untuk menjadi terang dan garam dunia, 
                                 melayani dengan kasih dan membangun komunitas yang kuat dalam iman.
                             </p>
-                            <div className="flex items-center gap-2 text-sm text-green-200">
-                                <Heart className="h-4 w-4 text-red-400" />
-                                <span>"Karena Allah begitu mengasihi dunia ini"</span>
-                            </div>
                         </div>
                         {/* Navigation Section */}
                         <div className="lg:col-span-1">
@@ -161,17 +157,6 @@ export default function Footer() {
                                     </svg>
                                 </a>
                             </div>
-                            
-                            {/* Prayer Request Section */}
-                            <div className="bg-gradient-to-r from-green-700/50 to-teal-700/50 backdrop-blur-sm rounded-xl p-4 border border-green-600/30">
-                                <h5 className="text-sm font-semibold text-yellow-300 mb-2">Doa & Dukungan</h5>
-                                <p className="text-xs text-green-100 mb-3">
-                                    Kirimkan permintaan doa Anda kepada kami
-                                </p>
-                                <button className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white text-xs font-medium py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105">
-                                    Kirim Permintaan Doa
-                                </button>
-                            </div>
                         </div>
                     </div>
                     {/* Bottom section with enhanced styling */}
@@ -184,9 +169,6 @@ export default function Footer() {
                             <div className="text-center md:text-left">
                                 <p className="text-sm text-green-200">
                                     © 2025 Gereja St. Paulus Kwimi. All rights reserved.
-                                </p>
-                                <p className="text-xs text-green-300 mt-1">
-                                    Dibuat dengan <Heart className="h-3 w-3 inline mx-1 text-red-400" /> untuk komunitas beriman
                                 </p>
                             </div>
                             

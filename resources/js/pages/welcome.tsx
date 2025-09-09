@@ -127,25 +127,20 @@ export default function Welcome({ announcements = [], activities = [], worshipSc
               
               {/* Content with enhanced styling */}
               <div className="relative z-10 container mx-auto flex min-h-screen flex-col items-center justify-center px-4 py-20">
-                
                
                 <h1 className="mb-4 md:mb-6 text-center text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl leading-tight font-bold text-white drop-shadow-2xl">
                   <span className="block bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 bg-clip-text text-transparent animate-pulse">
                     Selamat Datang
                   </span>
                   <span className="block mt-1 md:mt-2 text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
-                    di Aplikasi Lingkungan
+                    di Web Lingkungan
                   </span>
                   <span className="block mt-1 md:mt-2 bg-gradient-to-r from-blue-400 via-teal-400 to-blue-500 bg-clip-text text-transparent text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl">
                     St.Paulus Kwimi 
                   </span>
                 </h1>
                 <p className="mx-auto max-w-4xl text-center text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-white/95 drop-shadow-lg font-light px-2">
-                  🙏 Temukan kedamaian, komunitas, dan pertumbuhan rohani bersama kami 🙏
-                  <br className="hidden sm:block" />
-                  <span className="block mt-2 sm:mt-0 sm:inline text-yellow-300 font-medium text-xs sm:text-sm md:text-base lg:text-lg">
-                    "Karena di mana dua atau tiga orang berkumpul dalam nama-Ku, di situ Aku ada di tengah-tengah mereka."
-                  </span>
+                  Temukan informasi seputar lingkungan st paulus Kwimi
                 </p>
                 
                 
@@ -319,7 +314,7 @@ export default function Welcome({ announcements = [], activities = [], worshipSc
                                 <Users className="h-5 w-5 text-white" />
                               </div>
                               <div>
-                                <p className="text-xs text-gray-500 font-medium">Penanggung Jawab</p>
+                                <p className="text-xs text-gray-500 font-medium">Pemimpin</p>
                                 <p className="text-sm font-semibold text-gray-800">{schedule.pic}</p>
                               </div>
                             </div>

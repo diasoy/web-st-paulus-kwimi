@@ -138,8 +138,7 @@ class AdminDashboardController extends Controller {
         $users = User::query()
             ->with(['community:id,name', 'role:id,name'])
             ->when($request->search, function ($query, $search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                $query->where('name', 'like', "%{$search}%");
             })
             ->when($request->role, function ($query, $role) {
                 // Map role string to role_id
@@ -213,6 +212,7 @@ class AdminDashboardController extends Controller {
                         'id' => $pdf->id,
                         'file_name' => $pdf->file_name,
                         'file_url' => asset('storage/' . $pdf->file_path),
+                        'created_at' => $pdf->created_at,
                     ];
                 }),
             ]
@@ -246,6 +246,7 @@ class AdminDashboardController extends Controller {
                     return [
                         'id' => $pdf->id,
                         'file_name' => $pdf->file_name,
+                        'created_at' => $pdf->created_at,
                     ];
                 }),
             ],

@@ -5,6 +5,17 @@
 /public/storage
 /storage/*.key
 /storage/pail
+# Ignore all uploaded files but keep folder structure
+/storage/app/public/images/*/*
+!/storage/app/public/images/*/.gitkeep
+# Ignore old structure (legacy)
+/storage/app/public/activities/*
+/storage/app/public/announcements/*
+!/storage/app/public/activities/.gitkeep
+!/storage/app/public/announcements/.gitkeep
+# Ignore user uploaded PDFs but keep folder structure
+/storage/app/private/user_pdfs/*
+!/storage/app/private/user_pdfs/.gitkeep
 /vendor
 .env
 .env.backup

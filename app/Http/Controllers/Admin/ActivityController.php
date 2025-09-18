@@ -16,7 +16,7 @@ class ActivityController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $sort = $request->query('sort', 'date');
+        $sort = $request->query('sort', 'created_at');
         $direction = $request->query('direction', 'desc');
 
         $sortable = ['name', 'date', 'location', 'created_at'];
@@ -39,6 +39,14 @@ class ActivityController extends Controller
         }
 
         $activities = $query->paginate(10)->withQueryString();
+
+        // Transform image URLs untuk storage
+        $activities->getCollection()->transform(function ($activity) {
+            if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
+                $activity->image_url = Storage::url($activity->image_url);
+            }
+            return $activity;
+        });
 
         return Inertia::render('admin/activities/index', [
             'activities' => $activities
@@ -76,8 +84,8 @@ class ActivityController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('activities', 'local');
-            $data['image_url'] = $path; // relative path like activities/xxx.jpg
+            $path = $request->file('image')->store('images/activities', 'public');
+            $data['image_url'] = $path; // relative path like images/activities/xxx.jpg
         }
 
         Activity::create($data);
@@ -91,6 +99,11 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
+        // Transform image URL untuk storage
+        if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
+            $activity->image_url = Storage::url($activity->image_url);
+        }
+
         return Inertia::render('admin/activities/show', [
             'activity' => $activity
         ]);
@@ -101,6 +114,11 @@ class ActivityController extends Controller
      */
     public function edit(Activity $activity)
     {
+        // Transform image URL untuk storage
+        if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
+            $activity->image_url = Storage::url($activity->image_url);
+        }
+
         return Inertia::render('admin/activities/edit', [
             'activity' => $activity
         ]);
@@ -130,9 +148,9 @@ class ActivityController extends Controller
 
         if ($request->hasFile('image')) {
             if ($activity->image_url) {
-                Storage::disk('local')->delete($activity->image_url);
+                Storage::disk('public')->delete($activity->image_url);
             }
-            $path = $request->file('image')->store('activities', 'local');
+            $path = $request->file('image')->store('images/activities', 'public');
             $data['image_url'] = $path;
         }
 
@@ -148,7 +166,7 @@ class ActivityController extends Controller
     public function destroy(Activity $activity)
     {
         if ($activity->image_url) {
-            Storage::disk('local')->delete($activity->image_url);
+            Storage::disk('public')->delete($activity->image_url);
         }
 
         $activity->delete();

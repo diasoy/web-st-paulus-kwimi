@@ -149,7 +149,7 @@ export default function ActivityShow({ activity }: ActivityShowProps) {
                                     </div>
                                     <div className="relative rounded-xl overflow-hidden shadow-xl">
                                         <img 
-                                            src={`/files/${encodeURIComponent(activity.image_url)}`} 
+                                            src={activity.image_url} 
                                             alt={activity.name}
                                             className="w-full h-auto max-h-96 object-cover"
                                         />

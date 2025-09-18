@@ -152,10 +152,10 @@ export default function ActivitiesIndex({ activities }: Props) {
                             onChange={(e) => setFilter(e.target.value)}
                             className="border rounded-lg px-3 py-2"
                         >
-                            <option value="default">Semua Mendatang</option>
-                            <option value="week">Seminggu ke Depan</option>
-                            <option value="month">Sebulan ke Depan</option>
-                            <option value="custom">Custom</option>
+                            <option value="default" className='text-black'>Semua Mendatang</option>
+                            <option value="week" className='text-black'>Seminggu ke Depan</option>
+                            <option value="month" className='text-black'>Sebulan ke Depan</option>
+                            <option value="custom" className='text-black'>Custom</option>
                         </select>
 
                         {filter === 'custom' && (

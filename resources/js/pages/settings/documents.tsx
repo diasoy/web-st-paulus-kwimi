@@ -81,7 +81,7 @@ export default function Document({ pdfs = [] }: DocumentProps) {
 
   const handleClearNewFile = useCallback((idx: number) => {
     const newPdfs = [...data.pdfs];
-    newPdfs[idx] = null; I
+    newPdfs[idx] = null;
     setData('pdfs', newPdfs);
 
     // Reset file input
@@ -137,34 +137,16 @@ export default function Document({ pdfs = [] }: DocumentProps) {
                       {/* Existing file display */}
                       {existingPdf && !isMarkedForRemoval && !hasNewFile && (
                         <div className="bg-green-50 border border-green-200 rounded-md p-3">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                              <FileText className="w-4 h-4 text-green-600" />
-                              <span className="text-sm font-medium text-green-800">
+                          <div className="flex items-center space-x-2">
+                            <FileText className="w-4 h-4 text-green-600" />
+                            <div className="flex-1">
+                              <span className="text-sm font-medium text-green-800 block">
                                 {existingPdf.file_name}
                               </span>
+                              <div className="text-xs text-green-600 mt-1">
+                                Uploaded: {new Date(existingPdf.created_at).toLocaleDateString('id-ID')}
+                              </div>
                             </div>
-                            <div className="flex space-x-1">
-                              <button
-                                type="button"
-                                onClick={() => handleDownload(existingPdf.id)}
-                                className="p-1 text-green-600 hover:bg-green-100 rounded"
-                                title="Download"
-                              >
-                                <Download className="w-4 h-4" />
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveExisting(idx)}
-                                className="p-1 text-red-600 hover:bg-red-100 rounded"
-                                title="Hapus"
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          </div>
-                          <div className="text-xs text-green-600 mt-1">
-                            Uploaded: {new Date(existingPdf.created_at).toLocaleDateString('id-ID')}
                           </div>
                         </div>
                       )}
@@ -182,7 +164,7 @@ export default function Document({ pdfs = [] }: DocumentProps) {
                             <button
                               type="button"
                               onClick={() => handleUndoRemove(idx)}
-                              className="text-xs text-red-600 hover:text-red-800 underline"
+                              className="px-3 py-1 text-xs text-red-600 hover:text-red-800 hover:bg-red-100 rounded-md transition-colors border border-red-200"
                             >
                               Batal Hapus
                             </button>
@@ -206,7 +188,7 @@ export default function Document({ pdfs = [] }: DocumentProps) {
                             <button
                               type="button"
                               onClick={() => handleClearNewFile(idx)}
-                              className="p-1 text-red-600 hover:bg-red-100 rounded"
+                              className="p-2 text-red-600 hover:bg-red-100 rounded-md transition-colors"
                               title="Hapus file baru"
                             >
                               <X className="w-4 h-4" />
@@ -242,21 +224,39 @@ export default function Document({ pdfs = [] }: DocumentProps) {
 
                       {/* Replace existing file option */}
                       {hasExistingFile && !hasNewFile && (
-                        <div>
-                          <input
-                            type="file"
-                            accept="application/pdf"
-                            id={`pdf-input-${idx}`}
-                            onChange={handleSinglePdfChange(idx)}
-                            className="hidden"
-                          />
-                          <label
-                            htmlFor={`pdf-input-${idx}`}
-                            className="flex items-center justify-center gap-2 cursor-pointer px-3 py-2 border border-blue-300 rounded-md text-sm text-blue-700 bg-blue-50 hover:bg-blue-100 transition w-full"
+                        <div className="flex gap-2">
+                          <div className="flex-1">
+                            <input
+                              type="file"
+                              accept="application/pdf"
+                              id={`pdf-input-${idx}`}
+                              onChange={handleSinglePdfChange(idx)}
+                              className="hidden"
+                            />
+                            <label
+                              htmlFor={`pdf-input-${idx}`}
+                              className="flex items-center justify-center gap-2 cursor-pointer px-3 py-2 border border-blue-300 rounded-md text-sm text-blue-700 bg-blue-50 hover:bg-blue-100 transition w-full"
+                            >
+                              <Upload className="w-4 h-4" />
+                              <span>Ganti File</span>
+                            </label>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleDownload(existingPdf.id)}
+                            className="px-3 py-2 text-green-600 hover:bg-green-100 rounded-md transition-colors border border-green-300"
+                            title="Download"
                           >
-                            <Upload className="w-4 h-4" />
-                            <span>Ganti File</span>
-                          </label>
+                            <Download className="w-4 h-4" />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveExisting(idx)}
+                            className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-md transition-colors border border-red-300"
+                            title="Hapus"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       )}
                     </div>

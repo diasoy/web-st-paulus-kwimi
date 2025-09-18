@@ -101,7 +101,7 @@ export default function AnnouncementsCreate() {
                                         value={data.title}
                                         onChange={(e) => setData('title', e.target.value)}
                                         placeholder="Masukkan judul pengumuman"
-                                        className={`mt-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 transition-all duration-300 ${
+                                        className={`mt-2 bg-white/80 text-black dark:bg-slate-800/80 backdrop-blur-sm border-2 transition-all duration-300 ${
                                             errors.title 
                                                 ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
                                                 : 'border-orange-200 dark:border-orange-600 focus:border-orange-500 focus:ring-orange-200 hover:border-orange-300'
@@ -125,7 +125,7 @@ export default function AnnouncementsCreate() {
                                         value={data.description}
                                         onChange={(e) => setData('description', e.target.value)}
                                         placeholder="Deskripsi pengumuman"
-                                        className={`mt-2 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 transition-all duration-300 ${
+                                        className={`mt-2 text-black bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border-2 transition-all duration-300 ${
                                             errors.description 
                                                 ? 'border-red-300 focus:border-red-500 focus:ring-red-200' 
                                                 : 'border-orange-200 dark:border-orange-600 focus:border-orange-500 focus:ring-orange-200 hover:border-orange-300'

@@ -166,7 +166,7 @@ export default function Welcome({ announcements = [], activities = [], worshipSc
                     Pengumuman Terkini
                   </h2>
                   <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-yellow-500 to-orange-500 mx-auto mb-3 md:mb-4 rounded-full"></div>
-                  <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-4">Informasi terbaru seputar kegiatan gereja dan jemaat yang perlu Anda ketahui.</p>
+                  <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-4">Informasi terbaru seputar kegiatan gereja yang perlu umat ketahui</p>
                 </div>
                 <div className="grid grid-cols-1 gap-6 md:gap-8 md:grid-cols-2 lg:grid-cols-3">
                   {announcements && announcements.length > 0 ? (

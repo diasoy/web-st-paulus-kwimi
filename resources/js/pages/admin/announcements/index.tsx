@@ -241,7 +241,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                                     <div className="flex items-center justify-center">
                                                         {announcement.image_url ? (
                                                             <img
-                                                                src={`/files/${encodeURIComponent(announcement.image_url)}`}
+                                                                src={announcement.image_url}
                                                                 alt={announcement.title}
                                                                 className="h-12 w-16 rounded-lg object-cover shadow-md border-2 border-gray-200"
                                                                 onError={(e) => {

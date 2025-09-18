@@ -28,7 +28,7 @@ class LandingController extends Controller
             ->take(3)
             ->get(['id', 'name', 'date', 'time_start', 'pic']);
 
-        // Transform image_url jika perlu (untuk announcements dan activities)
+        // Transform image URLs untuk storage
         foreach ($announcements as $a) {
             if ($a->image_url && !filter_var($a->image_url, FILTER_VALIDATE_URL)) {
                 $a->image_url = \Illuminate\Support\Facades\Storage::url($a->image_url);

@@ -142,7 +142,7 @@ export default function AnnouncementShow({ announcement }: { announcement: Annou
                                             </h3>
                                             <div className="relative group">
                                                 <img 
-                                                    src={`/files/${encodeURIComponent(announcement.image_url)}`} 
+                                                    src={announcement.image_url} 
                                                     alt={announcement.title} 
                                                     className="w-full rounded-xl border-2 border-purple-200 shadow-lg hover:shadow-xl transition-all duration-300 transform group-hover:scale-105"
                                                 />

@@ -146,7 +146,7 @@ export default function AnnouncementsEdit({ announcement }: { announcement: Anno
                                         <div className="mt-3">
                                             <div className="relative inline-block">
                                                 <img
-                                                    src={`/files/${encodeURIComponent(announcement.image_url)}`}
+                                                    src={announcement.image_url}
                                                     alt={announcement.title}
                                                     className="h-40 w-auto rounded-xl border-2 border-yellow-200 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
                                                 />

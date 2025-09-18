@@ -24,8 +24,8 @@ class AnnouncementController extends Controller
         // Transform image URLs untuk storage
         $announcements->getCollection()->transform(function ($announcement) {
             if ($announcement->image_url && !filter_var($announcement->image_url, FILTER_VALIDATE_URL)) {
-                // Jika bukan URL lengkap, anggap sebagai path di storage/app
-                $announcement->image_url = route('files.serve', ['path' => urlencode($announcement->image_url)]);
+                // Gunakan Storage::url untuk gambar dari public disk
+                $announcement->image_url = Storage::url($announcement->image_url);
             }
             return $announcement;
         });
@@ -50,7 +50,7 @@ class AnnouncementController extends Controller
 
         // Transform image URL untuk storage
         if ($announcement->image_url && !filter_var($announcement->image_url, FILTER_VALIDATE_URL)) {
-            $announcement->image_url = route('files.serve', ['path' => urlencode($announcement->image_url)]);
+            $announcement->image_url = Storage::url($announcement->image_url);
         }
         
         return Inertia::render("umat/announcements/show", [

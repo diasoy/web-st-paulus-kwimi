@@ -33,6 +33,14 @@ class AnnouncementController extends Controller
         }
         $announcements = $query->orderBy($sort, $direction)->paginate(10)->withQueryString();
 
+        // Transform image URLs untuk storage
+        $announcements->getCollection()->transform(function ($announcement) {
+            if ($announcement->image_url && !filter_var($announcement->image_url, FILTER_VALIDATE_URL)) {
+                $announcement->image_url = Storage::url($announcement->image_url);
+            }
+            return $announcement;
+        });
+
         return Inertia::render('admin/announcements/index', [
             'announcements' => $announcements
         ]);
@@ -65,10 +73,10 @@ class AnnouncementController extends Controller
             'is_publish' => $validated['is_publish'] ?? false,
         ];
 
-        // Handle image upload to local storage (local disk)
+        // Handle image upload to public storage (public disk)
         if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('announcements', 'local');
-            $data['image_url'] = $path; // store relative path like announcements/xxx.jpg
+            $path = $request->file('image')->store('images/announcements', 'public');
+            $data['image_url'] = $path; // store relative path like images/announcements/xxx.jpg
         }
 
         Announcement::create($data);
@@ -82,6 +90,11 @@ class AnnouncementController extends Controller
      */
     public function show(Announcement $announcement)
     {
+        // Transform image URL untuk storage
+        if ($announcement->image_url && !filter_var($announcement->image_url, FILTER_VALIDATE_URL)) {
+            $announcement->image_url = Storage::url($announcement->image_url);
+        }
+
         return Inertia::render('admin/announcements/show', [
             'announcement' => $announcement
         ]);
@@ -92,6 +105,11 @@ class AnnouncementController extends Controller
      */
     public function edit(Announcement $announcement)
     {
+        // Transform image URL untuk storage
+        if ($announcement->image_url && !filter_var($announcement->image_url, FILTER_VALIDATE_URL)) {
+            $announcement->image_url = Storage::url($announcement->image_url);
+        }
+
         return Inertia::render('admin/announcements/edit', [
             'announcement' => $announcement
         ]);
@@ -118,9 +136,9 @@ class AnnouncementController extends Controller
         // If new image uploaded, replace old one
         if ($request->hasFile('image')) {
             if ($announcement->image_url) {
-                Storage::disk('local')->delete($announcement->image_url);
+                Storage::disk('public')->delete($announcement->image_url);
             }
-            $path = $request->file('image')->store('announcements', 'local');
+            $path = $request->file('image')->store('images/announcements', 'public');
             $data['image_url'] = $path;
         }
 
@@ -137,7 +155,7 @@ class AnnouncementController extends Controller
     {
         // Delete stored image if exists
         if ($announcement->image_url) {
-            Storage::disk('local')->delete($announcement->image_url);
+            Storage::disk('public')->delete($announcement->image_url);
         }
 
         $announcement->delete();

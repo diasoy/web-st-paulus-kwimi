@@ -29,8 +29,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Document({ pdfs = [] }: DocumentProps) {
-  const { data, setData, post, processing, errors, delete: destroy } = useForm({
-    pdfs: [null, null, null, null] as (File | null)[],
+  const { data, setData, post, processing, errors, delete: destroy } = useForm<{
+    pdfs: (File | null)[];
+    removePdf: boolean[];
+  }>({
+    pdfs: [null, null, null, null],
     removePdf: [false, false, false, false],
   });
 
@@ -71,7 +74,7 @@ export default function Document({ pdfs = [] }: DocumentProps) {
     if (fileInput) {
       fileInput.value = '';
     }
-  }, [data.removePdf, setData]);
+  }, [data.pdfs, data.removePdf, setData]);
 
   const handleUndoRemove = useCallback((idx: number) => {
     const newRemovePdf = [...data.removePdf];

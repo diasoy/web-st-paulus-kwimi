@@ -11,6 +11,7 @@
 # Ignore old structure (legacy)
 /storage/app/public/activities/*
 /storage/app/public/announcements/*
+/storage/app/public/pdfs/*
 !/storage/app/public/activities/.gitkeep
 !/storage/app/public/announcements/.gitkeep
 # Ignore user uploaded PDFs but keep folder structure

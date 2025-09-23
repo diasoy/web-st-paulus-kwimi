@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\UserPdf;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
 
 class DocumentController extends Controller
 {
@@ -15,8 +16,12 @@ class DocumentController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $pdfs = $user->pdfs()->orderBy('id')->get();
-        
+        $pdfs = $user->pdfs()->orderBy('id')->get()->map(function ($pdf) {
+            // Menggunakan Storage::url() untuk mendapatkan URL publik yang benar
+            $pdf->file_url = Storage::disk('public')->url($pdf->file_path);
+            return $pdf;
+        });
+
         return inertia('settings/documents', [
             'pdfs' => $pdfs,
         ]);
@@ -28,7 +33,7 @@ class DocumentController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        
+
         $validated = $request->validate([
             'pdfs.*' => 'nullable|file|mimes:pdf|max:5120', // 5MB max
             'removePdf.*' => 'boolean',
@@ -36,15 +41,10 @@ class DocumentController extends Controller
 
         $files = $request->file('pdfs', []);
         $removeFlags = $request->input('removePdf', []);
-        
+
         // Get existing PDFs ordered by ID
         $existingPdfs = UserPdf::where('user_id', $user->id)->orderBy('id')->get();
 
-        $destinationPath = base_path('repositories/public/assets');
-        if (!is_dir($destinationPath)) {
-            mkdir($destinationPath, 0755, true);
-        }
-        
         for ($i = 0; $i < 4; $i++) {
             $newFile = isset($files[$i]) ? $files[$i] : null;
             $shouldRemove = isset($removeFlags[$i]) ? $removeFlags[$i] : false;
@@ -52,10 +52,8 @@ class DocumentController extends Controller
 
             // Handle removal of existing file
             if ($shouldRemove && $existingPdf) {
-                $oldPath = public_path($existingPdf->file_path);
-                if (file_exists($oldPath)) {
-                    @unlink($oldPath);
-                }
+                // Hapus file dari storage menggunakan Storage::disk
+                Storage::disk('public')->delete($existingPdf->file_path);
                 $existingPdf->delete();
                 $existingPdf = null;
             }
@@ -64,21 +62,18 @@ class DocumentController extends Controller
             if ($newFile) {
                 // Remove existing file if there is one at this position
                 if ($existingPdf) {
-                    $oldPath = public_path($existingPdf->file_path);
-                    if (file_exists($oldPath)) {
-                        @unlink($oldPath);
-                    }
+                    Storage::disk('public')->delete($existingPdf->file_path);
                     $existingPdf->delete();
                 }
 
-                // Store new file in public/assets
+                // Simpan file baru ke folder 'pdfs' di disk 'public'
                 $filename = uniqid('pdf_') . '_' . $newFile->getClientOriginalName();
-                $newFile->move($destinationPath, $filename);
+                $path = $newFile->storeAs('pdfs', $filename, 'public');
 
                 // Create new database record
                 UserPdf::create([
                     'user_id' => $user->id,
-                    'file_path' => 'assets/' . $filename,
+                    'file_path' => $path, // Simpan jalur relatif
                     'file_name' => $newFile->getClientOriginalName(),
                 ]);
             }
@@ -96,14 +91,12 @@ class DocumentController extends Controller
             abort(403, 'Unauthorized access to this document.');
         }
 
-        $filePath = public_path($pdf->file_path);
-        if (!file_exists($filePath)) {
+        // Gunakan Storage::disk('public') untuk mengambil file
+        if (!Storage::disk('public')->exists($pdf->file_path)) {
             return redirect()->route('document.index')->with('error', 'File tidak ditemukan.');
         }
 
-        return response()->download($filePath, $pdf->file_name, [
-            'Content-Type' => 'application/pdf',
-        ]);
+        return Storage::disk('public')->download($pdf->file_path, $pdf->file_name);
     }
 
     /**
@@ -115,10 +108,8 @@ class DocumentController extends Controller
             abort(403, 'Unauthorized access to this document.');
         }
 
-        $filePath = public_path($pdf->file_path);
-        if (file_exists($filePath)) {
-            @unlink($filePath);
-        }
+        // Hapus file dari storage menggunakan Storage::disk
+        Storage::disk('public')->delete($pdf->file_path);
 
         $pdf->delete();
 
@@ -134,10 +125,13 @@ class DocumentController extends Controller
             abort(403, 'Unauthorized access to this document.');
         }
 
-        $filePath = public_path($pdf->file_path);
-        if (!file_exists($filePath)) {
+        // Gunakan Storage::disk('public') untuk memeriksa file
+        if (!Storage::disk('public')->exists($pdf->file_path)) {
             abort(404, 'File not found.');
         }
+
+        // Dapatkan jalur absolut dari file untuk response()->file()
+        $filePath = Storage::disk('public')->path($pdf->file_path);
 
         return response()->file($filePath, [
             'Content-Type' => 'application/pdf',

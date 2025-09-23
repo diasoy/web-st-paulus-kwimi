@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
 
 class AnnouncementController extends Controller
 {
@@ -24,7 +25,7 @@ class AnnouncementController extends Controller
         $query = Announcement::query();
         if ($search) {
             $query->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                ->orWhere('description', 'like', "%{$search}%");
         }
 
         $announcements = $query->orderBy($sort, $direction)
@@ -32,21 +33,7 @@ class AnnouncementController extends Controller
             ->withQueryString();
 
         $announcements->getCollection()->transform(function ($announcement) {
-            $img = ltrim($announcement->image_url ?? '', '/'); // bersihkan leading slash
-            $finalUrl = null;
-
-            if (!empty($img) && file_exists(public_path($img))) {
-                // path stored valid di public/
-                $finalUrl = url($img);
-            } elseif (!empty($img)) {
-                // coba cari di public/assets berdasarkan basename (untuk data lama yang mungkin disimpan berbeda)
-                $basename = basename($img);
-                if (file_exists(public_path('assets/' . $basename))) {
-                    $finalUrl = url('assets/' . $basename);
-                }
-            }
-
-            $announcement->image_url = $finalUrl ?: url('images/default.png');
+            $announcement->image_url = $this->resolveImageUrl($announcement->image_url);
             return $announcement;
         });
 
@@ -70,22 +57,13 @@ class AnnouncementController extends Controller
             'is_publish'  => 'nullable|boolean',
         ]);
 
-        // pastikan is_publish selalu boolean
         $validated['is_publish'] = $request->boolean('is_publish');
 
         if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $filename = uniqid('announcement_') . '.' . $image->getClientOriginalExtension();
-            $destinationPath = base_path('repositories/public/assets');
-
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            $image->move($destinationPath, $filename);
-
-            // simpan path relatif ke public
-            $validated['image_url'] = 'assets/' . $filename;
+            // Gunakan Storage facade untuk menyimpan gambar
+            $path = $request->file('image')->store('announcements', 'public');
+            // Simpan hanya nama filenya di database
+            $validated['image_url'] = basename($path);
         }
 
         Announcement::create($validated);
@@ -121,19 +99,12 @@ class AnnouncementController extends Controller
         $validated['is_publish'] = $request->boolean('is_publish');
 
         if ($request->hasFile('image')) {
+            // Hapus gambar lama jika ada
             $this->deletePhysicalImage($announcement->image_url);
 
-            $image = $request->file('image');
-            $filename = uniqid('announcement_') . '.' . $image->getClientOriginalExtension();
-            $destinationPath = base_path('repositories/public/assets');
-
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            $image->move($destinationPath, $filename);
-
-            $validated['image_url'] = 'assets/' . $filename;
+            // Simpan gambar baru menggunakan Storage facade
+            $path = $request->file('image')->store('announcements', 'public');
+            $validated['image_url'] = basename($path);
         }
 
         $announcement->update($validated);
@@ -143,7 +114,6 @@ class AnnouncementController extends Controller
 
     public function destroy(Announcement $announcement)
     {
-        // hapus file fisik jika ada
         $this->deletePhysicalImage($announcement->image_url);
 
         $announcement->delete();
@@ -154,35 +124,41 @@ class AnnouncementController extends Controller
 
     protected function resolveImageUrl(?string $storedPath): string
     {
-        $img = ltrim($storedPath ?? '', '/');
-        if (!empty($img) && file_exists(public_path($img))) {
-            return url($img);
+        if (empty($storedPath)) {
+            return url('images/default.png');
         }
 
-        if (!empty($img)) {
-            $basename = basename($img);
-            if (file_exists(public_path('assets/' . $basename))) {
-                return url('assets/' . $basename);
-            }
+        // Cek apakah file ada di direktori storage/app/public/announcements
+        $storagePath = 'announcements/' . basename($storedPath);
+        if (Storage::disk('public')->exists($storagePath)) {
+            return Storage::disk('public')->url($storagePath);
+        }
+
+        // Fallback untuk file lama yang mungkin ada di public/assets
+        if (file_exists(public_path('assets/' . basename($storedPath)))) {
+            return url('assets/' . basename($storedPath));
         }
 
         return url('images/default.png');
     }
+
     protected function deletePhysicalImage(?string $storedPath): void
     {
-        $img = ltrim($storedPath ?? '', '/');
-
-        if (!empty($img) && file_exists(public_path($img))) {
-            @unlink(public_path($img));
+        if (empty($storedPath)) {
             return;
         }
 
-        if (!empty($img)) {
-            $basename = basename($img);
-            $altPath = public_path('assets/' . $basename);
-            if (file_exists($altPath)) {
-                @unlink($altPath);
-            }
+        // Hapus file dari storage/app/public
+        $storagePath = 'announcements/' . basename($storedPath);
+        if (Storage::disk('public')->exists($storagePath)) {
+            Storage::disk('public')->delete($storagePath);
+            return;
+        }
+
+        // Fallback untuk file lama yang mungkin ada di public/assets
+        $altPath = public_path('assets/' . basename($storedPath));
+        if (file_exists($altPath)) {
+            @unlink($altPath);
         }
     }
 }

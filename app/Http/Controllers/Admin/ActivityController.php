@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Storage; // Tambahkan ini
 
 class ActivityController extends Controller
 {
@@ -73,17 +74,9 @@ class ActivityController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            // Semua upload baru masuk ke public/assets
-            $image = $request->file('image');
-            $filename = uniqid('activity_') . '.' . $image->getClientOriginalExtension();
-            $destinationPath = base_path('repositories/public/assets');
-
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            $image->move($destinationPath, $filename);
-            $data['image_url'] = 'assets/' . $filename; // simpan path relatif ke public
+            // Gunakan Storage facade untuk menyimpan gambar ke folder activities di public disk
+            $path = $request->file('image')->store('activities', 'public');
+            $data['image_url'] = basename($path);
         }
 
         Activity::create($data);
@@ -128,20 +121,12 @@ class ActivityController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            // hapus file fisik lama (cek beberapa kemungkinan lokasi)
+            // Hapus file fisik lama
             $this->deletePhysicalImage($activity->image_url);
 
-            // simpan file baru ke public/assets
-            $image = $request->file('image');
-            $filename = uniqid('activity_') . '.' . $image->getClientOriginalExtension();
-            $destinationPath = base_path('repositories/public/assets');
-
-            if (!is_dir($destinationPath)) {
-                mkdir($destinationPath, 0755, true);
-            }
-
-            $image->move($destinationPath, $filename);
-            $data['image_url'] = 'assets/' . $filename;
+            // Simpan file baru menggunakan Storage facade
+            $path = $request->file('image')->store('activities', 'public');
+            $data['image_url'] = basename($path);
         }
 
         $activity->update($data);
@@ -161,65 +146,64 @@ class ActivityController extends Controller
     }
 
     /**
-     * Resolve image url:
-     * - cek apakah path yang tersimpan ada di public/<path>
-     * - jika tidak ada, coba public/assets/<basename> (prefer root assets)
-     * - jika tidak ada, coba public/assets/activities/<basename> (fallback data lama)
-     * - jika tetap tidak ada, fallback ke images/default.png
+     * Resolve image url using Storage facade
      */
     protected function resolveImageUrl(?string $storedPath): string
     {
-        $img = ltrim($storedPath ?? '', '/');
-
-        // 1) jika path yang disimpan valid di public/
-        if (!empty($img) && file_exists(public_path($img))) {
-            return url($img);
+        if (empty($storedPath)) {
+            return url('images/default.png');
         }
 
-        // 2) coba cari di public/assets/<basename> (prefer root assets)
-        if (!empty($img)) {
-            $basename = basename($img);
-            if (file_exists(public_path('assets/' . $basename))) {
-                return url('assets/' . $basename);
-            }
+        $basename = basename($storedPath);
+        $storagePath = 'activities/' . $basename;
 
-            // 3) fallback: kemungkinan file lama di public/assets/activities/<basename>
-            if (file_exists(public_path('assets/activities/' . $basename))) {
-                return url('assets/activities/' . $basename);
-            }
+        // Cek apakah file ada di direktori storage/app/public/activities
+        if (Storage::disk('public')->exists($storagePath)) {
+            return Storage::disk('public')->url($storagePath);
+        }
+
+        // Fallback untuk file lama yang mungkin ada di public/assets
+        if (file_exists(public_path('assets/' . $basename))) {
+            return url('assets/' . $basename);
+        }
+
+        // Fallback tambahan untuk public/assets/activities
+        if (file_exists(public_path('assets/activities/' . $basename))) {
+            return url('assets/activities/' . $basename);
         }
 
         return url('images/default.png');
     }
 
     /**
-     * Hapus file fisik jika ada. Mencoba beberapa kemungkinan lokasi:
-     * - public/<storedPath>
-     * - public/assets/<basename>
-     * - public/assets/activities/<basename> (data lama)
+     * Hapus file fisik jika ada, mencakup lokasi lama dan baru.
      */
     protected function deletePhysicalImage(?string $storedPath): void
     {
-        $img = ltrim($storedPath ?? '', '/');
-
-        if (!empty($img) && file_exists(public_path($img))) {
-            @unlink(public_path($img));
+        if (empty($storedPath)) {
             return;
         }
 
-        if (!empty($img)) {
-            $basename = basename($img);
+        $basename = basename($storedPath);
+        $storagePath = 'activities/' . $basename;
 
-            $alt1 = public_path('assets/' . $basename);
-            if (file_exists($alt1)) {
-                @unlink($alt1);
-                return;
-            }
+        // Hapus file dari storage/app/public (lokasi baru)
+        if (Storage::disk('public')->exists($storagePath)) {
+            Storage::disk('public')->delete($storagePath);
+            return;
+        }
 
-            $alt2 = public_path('assets/activities/' . $basename);
-            if (file_exists($alt2)) {
-                @unlink($alt2);
-            }
+        // Cek dan hapus file di public/assets (lokasi lama)
+        $alt1 = public_path('assets/' . $basename);
+        if (file_exists($alt1)) {
+            @unlink($alt1);
+            return;
+        }
+
+        // Cek dan hapus file di public/assets/activities (lokasi lama lainnya)
+        $alt2 = public_path('assets/activities/' . $basename);
+        if (file_exists($alt2)) {
+            @unlink($alt2);
         }
     }
 }

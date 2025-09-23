@@ -17,23 +17,24 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Hash;
 
 
-class AdminDashboardController extends Controller {
+class AdminDashboardController extends Controller
+{
     /**
      * Export semua data umat ke PDF
      */
     public function exportAllUsersPdf()
     {
         $users = User::with(['community:id,name'])->orderBy('name')->get();
-        $pdf = Pdf::loadView('pdfs.all_users', [ 'users' => $users ]);
+        $pdf = Pdf::loadView('pdfs.all_users', ['users' => $users]);
         $pdf->setPaper('A4', 'portrait');
         return $pdf->download('Data_Semua_Umat.pdf');
     }
+
     /**
      * Download user detail as PDF
      */
     public function downloadUserDetailPdf(User $user)
     {
-        // Gunakan dompdf atau snappy, contoh dengan dompdf
         $data = [
             'user' => $user->load(['community:id,name']),
         ];
@@ -49,6 +50,7 @@ class AdminDashboardController extends Controller {
     public function deleteUserPdf(User $user, $pdfId)
     {
         $pdf = $user->pdfs()->findOrFail($pdfId);
+        // Hapus file dari storage/app/public
         Storage::disk('public')->delete($pdf->file_path);
         $pdf->delete();
         return redirect()->route('admin.users.show', $user->id)
@@ -61,14 +63,19 @@ class AdminDashboardController extends Controller {
     public function downloadUserPdf(User $user, $pdfId)
     {
         $pdf = $user->pdfs()->findOrFail($pdfId);
-        $filePath = public_path($pdf->file_path);
-        if (!file_exists($filePath)) {
+
+        // Gunakan Storage::disk('public') untuk mengambil file
+        if (!Storage::disk('public')->exists($pdf->file_path)) {
             return redirect()->route('admin.users.show', $user->id)->with('error', 'File tidak ditemukan.');
         }
+
+        $filePath = Storage::disk('public')->path($pdf->file_path);
+
         return response()->download($filePath, $pdf->file_name, [
             'Content-Type' => 'application/pdf',
         ]);
     }
+
     /**
      * Display the admin dashboard
      */
@@ -88,6 +95,11 @@ class AdminDashboardController extends Controller {
         // Recent items
         $recent_users = User::latest()->take(5)->get(['id', 'name', 'username', 'role_id', 'created_at']);
         $recent_announcements = Announcement::latest()->take(5)->get(['id', 'title', 'is_publish', 'created_at', 'image_url']);
+        // Transform image URL for announcements
+        $recent_announcements->transform(function ($announcement) {
+            $announcement->image_url = $this->resolveImageUrlForAnnouncement($announcement->image_url);
+            return $announcement;
+        });
 
         // Upcoming worship schedules (next 5)
         $upcoming_worship = WorshipSchedule::where('date', '>=', Carbon::today()->toDateString())
@@ -136,19 +148,15 @@ class AdminDashboardController extends Controller {
                 $query->where('name', 'like', "%{$search}%");
             })
             ->when($request->role, function ($query, $role) {
-                // Map role string to role_id
                 $roleId = $role === 'admin' ? 1 : 2;
                 $query->where('role_id', $roleId);
             }, function ($query) {
-                // Default to umat if no role filter specified
                 $query->where('role_id', 2);
             })
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Transform the data to match frontend interface
         $users->through(function ($user) {
-            // Calculate age from birth_date, always integer (floor)
             $age = null;
             if ($user->birth_date) {
                 $birth = Carbon::parse($user->birth_date);
@@ -168,7 +176,6 @@ class AdminDashboardController extends Controller {
                     'id' => $user->community->id,
                     'name' => $user->community->name,
                 ] : null,
-                // aksi: id, bisa dipakai untuk edit/hapus di frontend
             ];
         });
 
@@ -206,8 +213,8 @@ class AdminDashboardController extends Controller {
                     return [
                         'id' => $pdf->id,
                         'file_name' => $pdf->file_name,
-                        'file_url' => asset('/' . $pdf->file_path),
-                        'public_url' => $pdf->file_path ? asset('/' . $pdf->file_path) : null,
+                        // Gunakan Storage::url untuk mendapatkan URL publik yang benar
+                        'file_url' => Storage::disk('public')->url($pdf->file_path),
                         'created_at' => $pdf->created_at,
                     ];
                 }),
@@ -220,8 +227,6 @@ class AdminDashboardController extends Controller {
      */
     public function editUser(User $user): Response
     {
-        // Debug: log yang sedang diakses
-
         $user->load(['community:id,name', 'role:id,name', 'pdfs']);
         $communities = Community::all(['id', 'name']);
 
@@ -271,12 +276,10 @@ class AdminDashboardController extends Controller {
 
         $user->update($validated);
 
-        // Ambil semua PDF lama (urut sesuai id ASC)
         $existingPdfs = $user->pdfs()->orderBy('id')->get();
         $removePdf = $request->input('removePdf', []);
         $files = $request->file('pdfs', []);
 
-        // Proses tiap slot (0-3)
         for ($i = 0; $i < 4; $i++) {
             $pdfModel = $existingPdfs->get($i);
             $shouldRemove = isset($removePdf[$i]) && $removePdf[$i];
@@ -284,27 +287,25 @@ class AdminDashboardController extends Controller {
 
             // Jika user hapus file lama
             if ($pdfModel && $shouldRemove) {
-                $oldPath = public_path($pdfModel->file_path);
-                if (file_exists($oldPath)) {
-                    @unlink($oldPath);
-                }
+                // Hapus file dari storage menggunakan Storage::disk
+                Storage::disk('public')->delete($pdfModel->file_path);
                 $pdfModel->delete();
             }
 
             // Jika user upload file baru (ganti slot lama atau tambah baru)
             if ($newFile) {
                 if ($pdfModel && !$shouldRemove) {
-                    $oldPath = public_path($pdfModel->file_path);
-                    if (file_exists($oldPath)) {
-                        @unlink($oldPath);
-                    }
+                    // Hapus file lama sebelum upload yang baru
+                    Storage::disk('public')->delete($pdfModel->file_path);
                     $pdfModel->delete();
                 }
+
                 $filename = uniqid('pdf_') . '_' . $newFile->getClientOriginalName();
-                $destinationPath = base_path('repositories/public/assets');
-                $newFile->move($destinationPath, $filename);
+                // Simpan file baru ke 'pdfs' folder di disk 'public'
+                $path = $newFile->storeAs('pdfs', $filename, 'public');
+
                 $user->pdfs()->create([
-                    'file_path' => 'assets/' . $filename,
+                    'file_path' => $path,
                     'file_name' => $newFile->getClientOriginalName(),
                 ]);
             }
@@ -322,6 +323,11 @@ class AdminDashboardController extends Controller {
         if ($user->role_id === 1 && User::where('role_id', 1)->count() <= 1) {
             return redirect()->route('admin.users')
                 ->with('error', 'Tidak dapat menghapus admin terakhir.');
+        }
+
+        // Hapus file PDF terkait sebelum menghapus user
+        foreach ($user->pdfs as $pdf) {
+            Storage::disk('public')->delete($pdf->file_path);
         }
 
         $user->delete();
@@ -377,5 +383,21 @@ class AdminDashboardController extends Controller {
 
         return redirect()->route('admin.users')
             ->with('success', 'Umat baru berhasil ditambahkan.');
+    }
+
+    // Helper function untuk AnnoucementController
+    protected function resolveImageUrlForAnnouncement(?string $storedPath): string
+    {
+        if (empty($storedPath)) {
+            return url('images/default.png');
+        }
+
+        // Cek apakah file ada di direktori storage/app/public/announcements
+        $storagePath = 'announcements/' . basename($storedPath);
+        if (Storage::disk('public')->exists($storagePath)) {
+            return Storage::disk('public')->url($storagePath);
+        }
+
+        return url('images/default.png');
     }
 }

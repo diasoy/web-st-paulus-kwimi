@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Mapping label pagination agar tidak tampil 'pagination.next' di frontend
 const labelMap: Record<string, string> = {
     'pagination.next': 'Berikutnya',

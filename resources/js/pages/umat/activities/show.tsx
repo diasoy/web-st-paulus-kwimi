@@ -219,11 +219,6 @@ export default function ActivityShow({ activity }: Props) {
                                 <div className="text-sm text-church-text/70">
                                     Terakhir diperbarui: {format(new Date(activity.updated_at), 'dd MMMM yyyy HH:mm', { locale: id })}
                                 </div>
-                                <Link href="/umat/activities">
-                                    <Button className="bg-church-primary hover:bg-church-primary/90 text-white">
-                                        Lihat Kegiatan Lainnya
-                                    </Button>
-                                </Link>
                             </div>
                         </div>
                     </Card>

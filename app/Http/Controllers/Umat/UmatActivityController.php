@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -50,11 +51,14 @@ class UmatActivityController extends Controller
             ->paginate(12)
             ->appends($request->query()); // supaya pagination bawa query filter
 
-        // Transform image URLs
+        // Transform image URLs: gunakan helper agar path tidak double storage/
         $activities->getCollection()->transform(function ($activity) {
-            if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
-                $activity->image_url = Storage::url($activity->image_url);
-            }
+            $activity->image_url = getImageUrl($activity->image_url);
+            // Debug: log image_url yang diambil
+            Log::info('Activity image_url', [
+                'id' => $activity->id,
+                'image_url' => $activity->image_url
+            ]);
             return $activity;
         });
 
@@ -75,10 +79,11 @@ class UmatActivityController extends Controller
     public function show(Activity $activity): Response
     {
         // Transform image URL untuk storage
-        if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
-            $activity->image_url = Storage::url($activity->image_url);
-        }
-
+        $activity->image_url = getImageUrl($activity->image_url);
+        Log::info('Activity show image_url', [
+            'id' => $activity->id,
+            'image_url' => $activity->image_url
+        ]);
         return Inertia::render("umat/activities/show", [
             'activity' => $activity
         ]);

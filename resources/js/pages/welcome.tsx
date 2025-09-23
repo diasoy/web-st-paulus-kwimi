@@ -179,24 +179,23 @@ export default function Welcome({ announcements = [], activities = [], worshipSc
                         }}
                       >
                         <div className="relative">
-                          {announcement.image_url && !imageErrors[announcement.id] ? (
-                            <div className="relative aspect-video bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
-                              <img
-                                src={announcement.image_url}
-                                alt={announcement.title}
-                                className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                                onError={() => handleImageError(announcement.id)}
-                              />
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
-                            </div>
-                          ) : (
-                            <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
-                              <div className="text-center">
-                                <ImageIcon className="h-16 w-16 text-blue-400 mx-auto mb-2" />
-                                <span className="text-sm text-blue-600 font-medium">Gambar Pengumuman</span>
+                          <div className="relative aspect-video bg-gradient-to-br from-gray-100 to-gray-200 overflow-hidden">
+                            <img
+                              src={announcement.image_url && !imageErrors[announcement.id] ? announcement.image_url : '/images/default.png'}
+                              alt={announcement.title}
+                              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              onError={() => handleImageError(announcement.id)}
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                            {imageErrors[announcement.id] && (
+                              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
+                                <div className="text-center">
+                                  <ImageIcon className="h-16 w-16 text-blue-400 mx-auto mb-2" />
+                                  <span className="text-sm text-blue-600 font-medium">Gambar Pengumuman</span>
+                                </div>
                               </div>
-                            </div>
-                          )}
+                            )}
+                          </div>
                           {/* Floating badge */}
                           <div className="absolute top-4 right-4">
                             <div className="bg-gradient-to-r from-green-500 to-teal-500 text-white px-3 py-1 rounded-full text-xs font-medium shadow-lg">

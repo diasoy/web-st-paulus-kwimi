@@ -1,13 +1,13 @@
 <IfModule mod_rewrite.c>
+    Options -Indexes
+    ErrorDocument 403 /public/index.php
 
-Options -Indexes
-ErrorDocument 403 “Akses folder ini tidak diperbolehkan.”
+    RewriteEngine On
 
-RewriteEngine On
+    # Pastikan akses ke file/folder yang memang ada tetap bisa
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
 
-# RewriteBase
-
-RewriteCond %{REQUEST_URI} !^/public
-RewriteRule ^(.\*)$ public/$1 [L]
-
+    # Redirect semua request ke public/index.php
+    RewriteRule ^(.*)$ public/index.php [L]
 </IfModule>

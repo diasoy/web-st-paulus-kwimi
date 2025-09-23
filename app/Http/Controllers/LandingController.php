@@ -28,16 +28,12 @@ class LandingController extends Controller
             ->take(3)
             ->get(['id', 'name', 'date', 'time_start', 'pic']);
 
-        // Transform image URLs untuk storage
+        // Transform image URLs menggunakan helper agar konsisten (fallback, storage, url penuh)
         foreach ($announcements as $a) {
-            if ($a->image_url && !filter_var($a->image_url, FILTER_VALIDATE_URL)) {
-                $a->image_url = \Illuminate\Support\Facades\Storage::url($a->image_url);
-            }
+            $a->image_url = getImageUrl($a->image_url);
         }
         foreach ($activities as $act) {
-            if ($act->image_url && !filter_var($act->image_url, FILTER_VALIDATE_URL)) {
-                $act->image_url = \Illuminate\Support\Facades\Storage::url($act->image_url);
-            }
+            $act->image_url = getImageUrl($act->image_url);
         }
 
         return \Inertia\Inertia::render('welcome', [

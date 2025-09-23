@@ -61,12 +61,10 @@ class AdminDashboardController extends Controller {
     public function downloadUserPdf(User $user, $pdfId)
     {
         $pdf = $user->pdfs()->findOrFail($pdfId);
-        // Check if file exists
-        if (!Storage::disk('public')->exists($pdf->file_path)) {
+        $filePath = public_path($pdf->file_path);
+        if (!file_exists($filePath)) {
             return redirect()->route('admin.users.show', $user->id)->with('error', 'File tidak ditemukan.');
         }
-        // Get file path and return download response
-        $filePath = Storage::disk('public')->path($pdf->file_path);
         return response()->download($filePath, $pdf->file_name, [
             'Content-Type' => 'application/pdf',
         ]);
@@ -208,8 +206,8 @@ class AdminDashboardController extends Controller {
                     return [
                         'id' => $pdf->id,
                         'file_name' => $pdf->file_name,
-                        'file_url' => asset('storage/' . $pdf->file_path),
-                        'public_url' => $pdf->file_path ? asset('storage/' . $pdf->file_path) : null,
+                        'file_url' => asset('/' . $pdf->file_path),
+                        'public_url' => $pdf->file_path ? asset('/' . $pdf->file_path) : null,
                         'created_at' => $pdf->created_at,
                     ];
                 }),
@@ -286,19 +284,27 @@ class AdminDashboardController extends Controller {
 
             // Jika user hapus file lama
             if ($pdfModel && $shouldRemove) {
-                Storage::disk('public')->delete($pdfModel->file_path);
+                $oldPath = public_path($pdfModel->file_path);
+                if (file_exists($oldPath)) {
+                    @unlink($oldPath);
+                }
                 $pdfModel->delete();
             }
 
             // Jika user upload file baru (ganti slot lama atau tambah baru)
             if ($newFile) {
                 if ($pdfModel && !$shouldRemove) {
-                    Storage::disk('public')->delete($pdfModel->file_path);
+                    $oldPath = public_path($pdfModel->file_path);
+                    if (file_exists($oldPath)) {
+                        @unlink($oldPath);
+                    }
                     $pdfModel->delete();
                 }
-                $path = $newFile->store('images/user_pdfs', 'public');
+                $filename = uniqid('pdf_') . '_' . $newFile->getClientOriginalName();
+                $destinationPath = public_path('assets');
+                $newFile->move($destinationPath, $filename);
                 $user->pdfs()->create([
-                    'file_path' => $path,
+                    'file_path' => 'assets/' . $filename,
                     'file_name' => $newFile->getClientOriginalName(),
                 ]);
             }

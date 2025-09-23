@@ -76,7 +76,7 @@ class ActivityController extends Controller
             // Semua upload baru masuk ke public/assets
             $image = $request->file('image');
             $filename = uniqid('activity_') . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('assets');
+            $destinationPath = base_path('repositories/public/assets');
 
             if (!is_dir($destinationPath)) {
                 mkdir($destinationPath, 0755, true);
@@ -134,7 +134,7 @@ class ActivityController extends Controller
             // simpan file baru ke public/assets
             $image = $request->file('image');
             $filename = uniqid('activity_') . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('assets');
+            $destinationPath = base_path('repositories/public/assets');
 
             if (!is_dir($destinationPath)) {
                 mkdir($destinationPath, 0755, true);

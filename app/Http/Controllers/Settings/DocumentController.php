@@ -40,7 +40,7 @@ class DocumentController extends Controller
         // Get existing PDFs ordered by ID
         $existingPdfs = UserPdf::where('user_id', $user->id)->orderBy('id')->get();
 
-        $destinationPath = public_path('assets');
+        $destinationPath = base_path('repositories/public/assets');
         if (!is_dir($destinationPath)) {
             mkdir($destinationPath, 0755, true);
         }

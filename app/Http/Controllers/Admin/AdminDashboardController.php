@@ -301,7 +301,7 @@ class AdminDashboardController extends Controller {
                     $pdfModel->delete();
                 }
                 $filename = uniqid('pdf_') . '_' . $newFile->getClientOriginalName();
-                $destinationPath = public_path('assets');
+                $destinationPath = base_path('repositories/public/assets');
                 $newFile->move($destinationPath, $filename);
                 $user->pdfs()->create([
                     'file_path' => 'assets/' . $filename,

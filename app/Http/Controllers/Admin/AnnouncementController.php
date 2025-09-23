@@ -76,7 +76,7 @@ class AnnouncementController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $filename = uniqid('announcement_') . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('assets');
+            $destinationPath = base_path('repositories/public/assets');
 
             if (!is_dir($destinationPath)) {
                 mkdir($destinationPath, 0755, true);
@@ -125,7 +125,7 @@ class AnnouncementController extends Controller
 
             $image = $request->file('image');
             $filename = uniqid('announcement_') . '.' . $image->getClientOriginalExtension();
-            $destinationPath = public_path('assets');
+            $destinationPath = base_path('repositories/public/assets');
 
             if (!is_dir($destinationPath)) {
                 mkdir($destinationPath, 0755, true);

@@ -1,8 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
+use function App\Helpers\getImageUrl;
 
 class LandingController extends Controller
 {

@@ -40,14 +40,6 @@ class ActivityController extends Controller
 
         $activities = $query->paginate(10)->withQueryString();
 
-        // Transform image URLs untuk storage
-        $activities->getCollection()->transform(function ($activity) {
-            if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
-                $activity->image_url = Storage::url($activity->image_url);
-            }
-            return $activity;
-        });
-
         return Inertia::render('admin/activities/index', [
             'activities' => $activities
         ]);
@@ -99,11 +91,6 @@ class ActivityController extends Controller
      */
     public function show(Activity $activity)
     {
-        // Transform image URL untuk storage
-        if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
-            $activity->image_url = Storage::url($activity->image_url);
-        }
-
         return Inertia::render('admin/activities/show', [
             'activity' => $activity
         ]);
@@ -114,11 +101,6 @@ class ActivityController extends Controller
      */
     public function edit(Activity $activity)
     {
-        // Transform image URL untuk storage
-        if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
-            $activity->image_url = Storage::url($activity->image_url);
-        }
-
         return Inertia::render('admin/activities/edit', [
             'activity' => $activity
         ]);

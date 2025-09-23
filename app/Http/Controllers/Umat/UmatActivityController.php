@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Umat;
 use App\Http\Controllers\Controller;
 use App\Models\Activity;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -51,10 +50,18 @@ class UmatActivityController extends Controller
             ->paginate(12)
             ->appends($request->query()); // supaya pagination bawa query filter
 
-        // Transform image URLs: gunakan helper agar path tidak double storage/
+        // Transform image URLs: gunakan Storage::url atau asset
         $activities->getCollection()->transform(function ($activity) {
-            $activity->image_url = getImageUrl($activity->image_url);
-            // Debug: log image_url yang diambil
+            $img = ltrim($activity->image_url ?? '', '/');
+            if ($img) {
+                if (!filter_var($img, FILTER_VALIDATE_URL)) {
+                    $activity->image_url = asset('/' . $img);
+                } else {
+                    $activity->image_url = $img;
+                }
+            } else {
+                $activity->image_url = asset('images/default.png');
+            }
             Log::info('Activity image_url', [
                 'id' => $activity->id,
                 'image_url' => $activity->image_url
@@ -78,8 +85,17 @@ class UmatActivityController extends Controller
      */
     public function show(Activity $activity): Response
     {
-        // Transform image URL untuk storage
-        $activity->image_url = getImageUrl($activity->image_url);
+        // Transform image URL untuk 
+        $img = ltrim($activity->image_url ?? '', '/');
+        if ($img) {
+            if (!filter_var($img, FILTER_VALIDATE_URL)) {
+                $activity->image_url = asset('/' . $img);
+            } else {
+                $activity->image_url = $img;
+            }
+        } else {
+            $activity->image_url = asset('images/default.png');
+        }
         Log::info('Activity show image_url', [
             'id' => $activity->id,
             'image_url' => $activity->image_url
@@ -102,8 +118,15 @@ class UmatActivityController extends Controller
 
         // Transform image URLs untuk storage
         $activities->getCollection()->transform(function ($activity) {
-            if ($activity->image_url && !filter_var($activity->image_url, FILTER_VALIDATE_URL)) {
-                $activity->image_url = Storage::url($activity->image_url);
+            $img = ltrim($activity->image_url ?? '', '/');
+            if ($img) {
+                if (!filter_var($img, FILTER_VALIDATE_URL)) {
+                    $activity->image_url = asset('storage/' . $img);
+                } else {
+                    $activity->image_url = $img;
+                }
+            } else {
+                $activity->image_url = asset('images/default.png');
             }
             return $activity;
         });

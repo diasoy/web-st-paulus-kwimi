@@ -16,7 +16,7 @@ class AnnouncementController extends Controller
             ->paginate(10);
 
         $announcements->getCollection()->transform(function ($announcement) {
-            $announcement->image_url = getImageUrl($announcement->image_url);
+            $announcement->image_url = $announcement->image_url ? asset('/' . ltrim($announcement->image_url, '/')) : asset('images/default.png');
             return $announcement;
         });
         
@@ -32,7 +32,7 @@ class AnnouncementController extends Controller
         }
 
         $announcement->load('user:id,name');
-        $announcement->image_url = getImageUrl($announcement->image_url);
+    $announcement->image_url = $announcement->image_url ? asset('/' . ltrim($announcement->image_url, '/')) : asset('images/default.png');
         
         return Inertia::render("umat/announcements/show", [
             'announcement' => $announcement

@@ -143,7 +143,6 @@ export default function Announcements({ announcements }: Props) {
                       </div>
                     )}
                     <div className="absolute inset-0 pointer-events-none rounded-t-xl" />
-
                     <CardHeader>
                       <div className="flex flex-col-reverse mb-2">
                         <span

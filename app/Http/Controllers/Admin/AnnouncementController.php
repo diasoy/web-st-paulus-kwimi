@@ -33,9 +33,16 @@ class AnnouncementController extends Controller
             ->withQueryString();
 
         $announcements->getCollection()->transform(function ($announcement) {
-            $announcement->image_url = getImageUrl($announcement->image_url);
+            $img = ltrim($announcement->image_url ?? '', '/');
+            if ($img) {
+                // cukup sekali saja
+                $announcement->image_url = asset('/' . $img);
+            } else {
+                $announcement->image_url = asset('images/default.png');
+            }
             return $announcement;
         });
+
 
         return Inertia::render('admin/announcements/index', [
             'announcements' => $announcements
@@ -48,47 +55,51 @@ class AnnouncementController extends Controller
     }
 
     public function store(Request $request)
-{
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'is_publish' => 'boolean',
-    ]);
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'is_publish' => 'boolean',
+        ]);
 
-    if ($request->hasFile('image')) {
-        $path = $request->file('image')->store('images/announcements', 'public');
-        $validated['image_url'] = $path; // simpan relatif (tanpa /storage/)
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('images/announcements', 'public');
+            $validated['image_url'] = $path; // simpan relatif (tanpa /storage/)
+        }
+
+        Announcement::create($validated);
+
+        return redirect()->route('admin.announcements.index')->with('success', 'Pengumuman berhasil ditambahkan');
     }
 
-    Announcement::create($validated);
+    public function update(Request $request, Announcement $announcement)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'is_publish' => 'boolean',
+        ]);
 
-    return redirect()->route('admin.announcements.index')->with('success', 'Pengumuman berhasil ditambahkan');
-}
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('images/announcements', 'public');
+            $validated['image_url'] = $path;
+        }
 
-public function update(Request $request, Announcement $announcement)
-{
-    $validated = $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        'is_publish' => 'boolean',
-    ]);
+        $announcement->update($validated);
 
-    if ($request->hasFile('image')) {
-        $path = $request->file('image')->store('images/announcements', 'public');
-        $validated['image_url'] = $path;
+        return redirect()->route('admin.announcements.index')->with('success', 'Pengumuman berhasil diperbarui');
     }
-
-    $announcement->update($validated);
-
-    return redirect()->route('admin.announcements.index')->with('success', 'Pengumuman berhasil diperbarui');
-}
 
     public function show(Announcement $announcement)
     {
-        $announcement->image_url = getImageUrl($announcement->image_url);
-
+        $img = ltrim($announcement->image_url ?? '', '/');
+        if ($img) {
+            $announcement->image_url = asset('/' . $img);
+        } else {
+            $announcement->image_url = asset('images/default.png');
+        }
         return Inertia::render('admin/announcements/show', [
             'announcement' => $announcement
         ]);
@@ -96,8 +107,12 @@ public function update(Request $request, Announcement $announcement)
 
     public function edit(Announcement $announcement)
     {
-        $announcement->image_url = getImageUrl($announcement->image_url);
-
+        $img = ltrim($announcement->image_url ?? '', '/');
+        if ($img) {
+            $announcement->image_url = asset('/' . $img);
+        } else {
+            $announcement->image_url = asset('images/default.png');
+        }
         return Inertia::render('admin/announcements/edit', [
             'announcement' => $announcement
         ]);

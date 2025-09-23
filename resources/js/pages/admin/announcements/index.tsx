@@ -249,6 +249,7 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                                   const fallback = (e.currentTarget.nextSibling as HTMLElement) || null;
                                   if (fallback) fallback.style.display = 'flex';
                                 }}
+                                
                               />
                             ) : null}
                             <div
@@ -261,9 +262,6 @@ export default function AnnouncementsIndex({ announcements }: AnnouncementsIndex
                         </TableCell>
                         <TableCell className="font-medium py-4">
                           <div className="flex items-center gap-3">
-                            <div className="rounded-full bg-orange-100 p-2">
-                              <FileText className="h-4 w-4 text-orange-600" />
-                            </div>
                             <span className="font-semibold text-gray-900">{announcement.title}</span>
                           </div>
                         </TableCell>

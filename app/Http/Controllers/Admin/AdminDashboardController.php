@@ -49,7 +49,7 @@ class AdminDashboardController extends Controller {
     public function deleteUserPdf(User $user, $pdfId)
     {
         $pdf = $user->pdfs()->findOrFail($pdfId);
-        Storage::disk('local')->delete($pdf->file_path);
+        Storage::disk('public')->delete($pdf->file_path);
         $pdf->delete();
         return redirect()->route('admin.users.show', $user->id)
             ->with('success', 'File PDF berhasil dihapus.');
@@ -61,15 +61,12 @@ class AdminDashboardController extends Controller {
     public function downloadUserPdf(User $user, $pdfId)
     {
         $pdf = $user->pdfs()->findOrFail($pdfId);
-        
         // Check if file exists
-        if (!Storage::disk('local')->exists($pdf->file_path)) {
+        if (!Storage::disk('public')->exists($pdf->file_path)) {
             return redirect()->route('admin.users.show', $user->id)->with('error', 'File tidak ditemukan.');
         }
-
         // Get file path and return download response
-        $filePath = Storage::disk('local')->path($pdf->file_path);
-        
+        $filePath = Storage::disk('public')->path($pdf->file_path);
         return response()->download($filePath, $pdf->file_name, [
             'Content-Type' => 'application/pdf',
         ]);
@@ -212,6 +209,7 @@ class AdminDashboardController extends Controller {
                         'id' => $pdf->id,
                         'file_name' => $pdf->file_name,
                         'file_url' => asset('storage/' . $pdf->file_path),
+                        'public_url' => $pdf->file_path ? asset('storage/' . $pdf->file_path) : null,
                         'created_at' => $pdf->created_at,
                     ];
                 }),
@@ -282,25 +280,23 @@ class AdminDashboardController extends Controller {
 
         // Proses tiap slot (0-3)
         for ($i = 0; $i < 4; $i++) {
-            // Hapus PDF jika diminta
             $pdfModel = $existingPdfs->get($i);
             $shouldRemove = isset($removePdf[$i]) && $removePdf[$i];
             $newFile = isset($files[$i]) ? $files[$i] : null;
 
             // Jika user hapus file lama
             if ($pdfModel && $shouldRemove) {
-                Storage::disk('local')->delete($pdfModel->file_path);
+                Storage::disk('public')->delete($pdfModel->file_path);
                 $pdfModel->delete();
             }
 
             // Jika user upload file baru (ganti slot lama atau tambah baru)
             if ($newFile) {
-                // Jika ada file lama dan tidak dihapus, hapus dulu
                 if ($pdfModel && !$shouldRemove) {
-                    Storage::disk('local')->delete($pdfModel->file_path);
+                    Storage::disk('public')->delete($pdfModel->file_path);
                     $pdfModel->delete();
                 }
-                $path = $newFile->store('user_pdfs', 'local');
+                $path = $newFile->store('images/user_pdfs', 'public');
                 $user->pdfs()->create([
                     'file_path' => $path,
                     'file_name' => $newFile->getClientOriginalName(),

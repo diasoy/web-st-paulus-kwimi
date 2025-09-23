@@ -221,7 +221,7 @@ export default function CreateUser({ communities }: CreateUserProps) {
                                         type="button" 
                                         variant="outline" 
                                         onClick={() => window.location.href = route('admin.users')}
-                                        className="h-12 px-8 text-lg font-semibold border-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 rounded-xl transition-all duration-200"
+                                        className="h-12 px-8 text-lg font-semibold border-2 border-gray-300 text-white hover:bg-gray-50 hover:text-black hover:border-gray-400 rounded-xl transition-all duration-200"
                                     >
                                         Batal
                                     </Button>

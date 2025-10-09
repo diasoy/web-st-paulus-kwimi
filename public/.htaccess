@@ -1,6 +1,10 @@
 # Enable URL rewriting
 RewriteEngine On
 
+# Handle storage symlink for cPanel hosting
+RewriteCond %{REQUEST_URI} ^/storage/(.*)$
+RewriteRule ^storage/(.*)$ public/storage/$1 [L,R=301]
+
 # Redirect all requests to index.php except for existing files and directories
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

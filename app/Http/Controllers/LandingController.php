@@ -6,6 +6,7 @@ use Inertia\Inertia;
 use App\Models\Announcement;
 use App\Models\Activity;
 use App\Models\WorshipSchedule;
+use Illuminate\Support\Facades\Storage;
 
 class LandingController extends Controller
 {
@@ -48,22 +49,39 @@ class LandingController extends Controller
 
     protected function resolveImageUrl(?string $storedPath): string
     {
-        $img = ltrim($storedPath ?? '', '/');
-
-        if ($img && file_exists(public_path($img))) {
-            return url($img);
+        if (empty($storedPath)) {
+            return asset('images/default.png');
         }
 
-        if ($img) {
-            $basename = basename($img);
-            if (file_exists(public_path('assets/' . $basename))) {
-                return url('assets/' . $basename);
-            }
-            if (file_exists(public_path('assets/activities/' . $basename))) {
-                return url('assets/activities/' . $basename);
+        // Normalisasi: jika hanya nama file, prefix dengan announcements/ atau activities/
+        $normalized = '';
+        if (str_starts_with($storedPath, 'announcements/') || str_starts_with($storedPath, 'activities/')) {
+            $normalized = $storedPath;
+        } else {
+            // Coba sebagai announcements dulu
+            $normalized = 'announcements/' . ltrim(basename($storedPath), '/');
+            if (!Storage::disk('public')->exists($normalized)) {
+                // Jika tidak ada, coba sebagai activities
+                $normalized = 'activities/' . ltrim(basename($storedPath), '/');
             }
         }
 
-        return url('images/default.png');
+        if (Storage::disk('public')->exists($normalized)) {
+            return asset('storage/' . $normalized);
+        }
+
+        // Fallback untuk file lama di public/assets
+        $legacy = public_path('assets/' . basename($storedPath));
+        if (file_exists($legacy)) {
+            return asset('assets/' . basename($storedPath));
+        }
+
+        // Fallback untuk file activities di public/assets/activities
+        $legacyActivity = public_path('assets/activities/' . basename($storedPath));
+        if (file_exists($legacyActivity)) {
+            return asset('assets/activities/' . basename($storedPath));
+        }
+
+        return asset('images/default.png');
     }
 }

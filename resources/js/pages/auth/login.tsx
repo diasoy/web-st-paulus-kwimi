@@ -200,22 +200,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     <InputError message={errors.password} />
                   </div>
 
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center space-x-3">
-                      <Checkbox
-                        id="remember"
-                        name="remember"
-                        checked={data.remember}
-                        onClick={() => setData('remember', !data.remember)}
-                        tabIndex={3}
-                        disabled={processing}
-                        className="data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-                      />
-                      <Label htmlFor="remember" className="text-foreground font-medium cursor-pointer">Ingat saya</Label>
-                    </div>
-                  </div>
-
-                  <Button
+                   <Button
                     type="submit"
                     className="mt-8 w-full h-12 hover:opacity-90 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 hover:cursor-pointer"
                     tabIndex={5}

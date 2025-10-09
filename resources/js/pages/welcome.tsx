@@ -215,7 +215,7 @@ export default function Welcome({ announcements = [], activities = [], worshipSc
                         <CardContent className="pt-0 px-4 md:px-6">
                           <div className="flex h-full min-h-[120px] md:min-h-[140px] flex-col items-start">
                             <p className="line-clamp-3 text-xs md:text-sm text-gray-600 leading-relaxed mb-3 md:mb-4">{announcement.description}</p>
-                            <Button variant="outline" asChild className="mt-auto group/btn border-2 border-blue-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2">
+                            <Button variant="outline" asChild className="mb-4 mt-auto group/btn border-2 border-blue-200 hover:border-blue-500 hover:bg-blue-50 transition-all duration-300 text-xs md:text-sm px-3 md:px-4 py-1.5 md:py-2">
                               <Link href="/login" className="flex items-center text-blue-600 hover:text-blue-700 font-medium">
                                 Baca Selengkapnya
                                 <Eye className="ml-1 md:ml-2 h-3 w-3 md:h-4 md:w-4 group-hover/btn:translate-x-1 transition-transform duration-300" />

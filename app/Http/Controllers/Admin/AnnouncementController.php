@@ -60,10 +60,9 @@ class AnnouncementController extends Controller
         $validated['is_publish'] = $request->boolean('is_publish');
 
         if ($request->hasFile('image')) {
-            // Gunakan Storage facade untuk menyimpan gambar
+            // Simpan file dan simpan path relatif lengkap (mis: announcements/abc.jpg)
             $path = $request->file('image')->store('announcements', 'public');
-            // Simpan hanya nama filenya di database
-            $validated['image_url'] = basename($path);
+            $validated['image_url'] = $path; // konsisten: simpan path lengkap
         }
 
         Announcement::create($validated);
@@ -102,9 +101,9 @@ class AnnouncementController extends Controller
             // Hapus gambar lama jika ada
             $this->deletePhysicalImage($announcement->image_url);
 
-            // Simpan gambar baru menggunakan Storage facade
+            // Simpan gambar baru menggunakan Storage facade dan path lengkap
             $path = $request->file('image')->store('announcements', 'public');
-            $validated['image_url'] = basename($path);
+            $validated['image_url'] = $path;
         }
 
         $announcement->update($validated);
@@ -125,21 +124,26 @@ class AnnouncementController extends Controller
     protected function resolveImageUrl(?string $storedPath): string
     {
         if (empty($storedPath)) {
-            return url('images/default.png');
+            return asset('images/default.png');
         }
 
-        // Cek apakah file ada di direktori storage/app/public/announcements
-        $storagePath = 'announcements/' . basename($storedPath);
-        if (Storage::disk('public')->exists($storagePath)) {
-            return Storage::disk('public')->url($storagePath);
+        // Normalisasi: jika hanya nama file, prefix dengan announcements/
+        $normalized = str_starts_with($storedPath, 'announcements/')
+            ? $storedPath
+            : 'announcements/' . ltrim(basename($storedPath), '/');
+
+        if (Storage::disk('public')->exists($normalized)) {
+            // Gunakan asset() dengan path manual untuk menghindari duplikasi /storage/
+            return asset('storage/' . $normalized);
         }
 
-        // Fallback untuk file lama yang mungkin ada di public/assets
-        if (file_exists(public_path('assets/' . basename($storedPath)))) {
-            return url('assets/' . basename($storedPath));
+        // Fallback untuk file lama di public/assets
+        $legacy = public_path('assets/' . basename($storedPath));
+        if (file_exists($legacy)) {
+            return asset('assets/' . basename($storedPath));
         }
 
-        return url('images/default.png');
+        return asset('images/default.png');
     }
 
     protected function deletePhysicalImage(?string $storedPath): void

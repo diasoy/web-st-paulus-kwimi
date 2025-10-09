@@ -73,12 +73,7 @@ export default function UserShow({ user }: UserShowProps) {
     };
 
     const handleDownloadUserPdf = (pdfId: number) => {
-        const pdf = pdfs.find((p: any) => p.id === pdfId);
-        if (pdf && pdf.public_url) {
-            window.open(pdf.public_url, '_blank');
-        } else {
-            alert('File tidak ditemukan.');
-        }
+        window.open(route('admin.users.pdfs.download', { user: user.id, pdf: pdfId }), '_blank');
     };
 
     return (

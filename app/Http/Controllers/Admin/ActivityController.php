@@ -74,9 +74,9 @@ class ActivityController extends Controller
         ];
 
         if ($request->hasFile('image')) {
-            // Gunakan Storage facade untuk menyimpan gambar ke folder activities di public disk
+            // Simpan file dan simpan path relatif lengkap (mis: activities/abc.jpg)
             $path = $request->file('image')->store('activities', 'public');
-            $data['image_url'] = basename($path);
+            $data['image_url'] = $path; // konsisten: simpan path lengkap
         }
 
         Activity::create($data);
@@ -124,9 +124,9 @@ class ActivityController extends Controller
             // Hapus file fisik lama
             $this->deletePhysicalImage($activity->image_url);
 
-            // Simpan file baru menggunakan Storage facade
+            // Simpan file baru menggunakan Storage facade dan path lengkap
             $path = $request->file('image')->store('activities', 'public');
-            $data['image_url'] = basename($path);
+            $data['image_url'] = $path;
         }
 
         $activity->update($data);
@@ -151,28 +151,31 @@ class ActivityController extends Controller
     protected function resolveImageUrl(?string $storedPath): string
     {
         if (empty($storedPath)) {
-            return url('images/default.png');
+            return asset('images/default.png');
         }
 
-        $basename = basename($storedPath);
-        $storagePath = 'activities/' . $basename;
+        // Normalisasi: jika hanya nama file, prefix dengan activities/
+        $normalized = str_starts_with($storedPath, 'activities/')
+            ? $storedPath
+            : 'activities/' . ltrim(basename($storedPath), '/');
 
-        // Cek apakah file ada di direktori storage/app/public/activities
-        if (Storage::disk('public')->exists($storagePath)) {
-            return Storage::disk('public')->url($storagePath);
+        if (Storage::disk('public')->exists($normalized)) {
+            return asset('storage/' . $normalized);
         }
 
-        // Fallback untuk file lama yang mungkin ada di public/assets
-        if (file_exists(public_path('assets/' . $basename))) {
-            return url('assets/' . $basename);
+        // Fallback untuk file lama di public/assets
+        $legacy = public_path('assets/' . basename($storedPath));
+        if (file_exists($legacy)) {
+            return asset('assets/' . basename($storedPath));
         }
 
         // Fallback tambahan untuk public/assets/activities
-        if (file_exists(public_path('assets/activities/' . $basename))) {
-            return url('assets/activities/' . $basename);
+        $legacyActivity = public_path('assets/activities/' . basename($storedPath));
+        if (file_exists($legacyActivity)) {
+            return asset('assets/activities/' . basename($storedPath));
         }
 
-        return url('images/default.png');
+        return asset('images/default.png');
     }
 
     /**

@@ -139,11 +139,6 @@ export default function AnnouncementShow({ announcement }: Props) {
                                 <div className="text-sm text-church-text/70">
                                     Terakhir diperbarui: {format(new Date(announcement.updated_at), 'dd MMMM yyyy HH:mm', { locale: id })}
                                 </div>
-                                <Link href="/announcements">
-                                    <Button className="bg-church-primary hover:bg-church-primary/90 text-white">
-                                        Lihat Pengumuman Lainnya
-                                    </Button>
-                                </Link>
                             </div>
                         </div>
                     </Card>

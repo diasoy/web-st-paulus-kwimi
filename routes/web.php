@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Controllers\LandingController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 
 // Route to serve files from storage/app
 Route::get('/files/{path}', function (Request $request, $path) {
@@ -34,6 +36,12 @@ Route::get('/files/{path}', function (Request $request, $path) {
 })->where('path', '.*')->name('files.serve');
 
 Route::get('/', [LandingController::class, 'index'])->name('home');
+
+// Public feedback - redirect GET to home, POST for submission
+Route::get('/feedback', function () {
+    return redirect()->route('home', ['_fragment' => 'feedback'])->with('info', 'Silakan isi form kritik dan saran di bagian bawah halaman.');
+})->name('feedback.index');
+Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     // Main dashboard yang akan redirect berdasarkan role
@@ -71,6 +79,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('activities', ActivityController::class);
         // Kelola Komunitas Basis
         Route::resource('communities', CommunityController::class);
+        // Kelola Feedback
+        Route::get('feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
+        Route::get('feedback/{feedback}', [AdminFeedbackController::class, 'show'])->name('feedback.show');
+        Route::delete('feedback/{feedback}', [AdminFeedbackController::class, 'destroy'])->name('feedback.destroy');
+        Route::patch('feedback/{feedback}/mark-read', [AdminFeedbackController::class, 'markAsRead'])->name('feedback.mark-read');
+        Route::patch('feedback/{feedback}/mark-unread', [AdminFeedbackController::class, 'markAsUnread'])->name('feedback.mark-unread');
     });
 
     // Umat Routes - Hanya bisa melihat pengumuman dan kegiatan

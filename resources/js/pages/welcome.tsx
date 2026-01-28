@@ -1,14 +1,18 @@
 import { Link } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
-import { Bell, CalendarDays, Clock, Eye, Image as ImageIcon, MapPin, Users } from 'lucide-react';
-import { useState } from 'react';
+import { Bell, CalendarDays, Clock, Eye, Image as ImageIcon, MapPin, Users, MessageSquare, Send, User } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 import Footer from '@/components/footer';
 import Navbar from '@/components/navbar';
 import SEO from '@/components/seo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { useForm, usePage } from '@inertiajs/react';
 
 interface Announcement {
   id: number;
@@ -44,9 +48,35 @@ interface Props {
 
 export default function Welcome({ announcements = [], activities = [], worshipSchedules = [] }: Props) {
   const [imageErrors, setImageErrors] = useState<Record<number, boolean>>({});
+  const { flash } = usePage<{ flash?: { success?: string; error?: string } }>().props;
+  
+  const { data, setData, post, processing, errors, reset } = useForm({
+    name: '',
+    message: '',
+  });
+
+  // Auto scroll to feedback section on success
+  useEffect(() => {
+    if (flash?.success) {
+      const feedbackSection = document.getElementById('feedback');
+      if (feedbackSection) {
+        feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [flash?.success]);
 
   const handleImageError = (id: number) => {
     setImageErrors((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const handleSubmitFeedback = (e: React.FormEvent) => {
+    e.preventDefault();
+    post(route('feedback.store'), {
+      preserveScroll: true,
+      onSuccess: () => {
+        reset();
+      },
+    });
   };
 
   const formatDate = (dateString: string, formatStr: string) => {
@@ -467,6 +497,132 @@ export default function Welcome({ announcements = [], activities = [], worshipSc
                       <p className="text-gray-400 text-sm mt-2">Nantikan kegiatan-kegiatan menarik dari kami segera.</p>
                     </div>
                   )}
+                </div>
+              </div>
+            </section>
+
+            {/* Kritik dan Saran Section */}
+            <section id="feedback" className="py-12 md:py-20 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 relative overflow-hidden">
+              {/* Section background decorations */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-purple-200/30 to-pink-200/30 rounded-full blur-2xl"></div>
+                <div className="absolute bottom-20 right-20 w-48 h-48 bg-gradient-to-tr from-blue-200/40 to-indigo-200/40 rounded-full blur-2xl"></div>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-gradient-to-r from-pink-200/20 to-purple-200/20 rounded-full blur-xl"></div>
+              </div>
+
+              <div className="container mx-auto px-4 relative z-10">
+                <div className="mb-12 md:mb-16 text-center">
+                  <div className="inline-flex items-center gap-2 mb-3 md:mb-4 px-3 md:px-4 py-1.5 md:py-2 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full">
+                    <MessageSquare className="h-4 w-4 md:h-5 md:w-5 text-purple-600" />
+                    <span className="text-xs md:text-sm font-medium text-purple-800">Suara Anda Penting</span>
+                  </div>
+                  <h2 className="mb-3 md:mb-4 text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-gradient-to-r from-purple-700 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
+                    Kritik dan Saran
+                  </h2>
+                  <div className="w-16 md:w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-3 md:mb-4 rounded-full"></div>
+                  <p className="text-gray-600 text-sm md:text-base lg:text-lg max-w-2xl mx-auto px-4">
+                    Kami menghargai setiap masukan dari Anda untuk meningkatkan pelayanan gereja
+                  </p>
+                </div>
+
+                <div className="max-w-3xl mx-auto">
+                  {flash?.success && (
+                    <div className="mb-6 p-4 bg-green-50 border-2 border-green-500 rounded-xl shadow-lg animate-pulse">
+                      <p className="text-green-800 font-medium text-center flex items-center justify-center gap-2">
+                        <span className="text-2xl">✅</span>
+                        {flash.success}
+                      </p>
+                    </div>
+                  )}
+                  
+                  {flash?.error && (
+                    <div className="mb-6 p-4 bg-red-50 border-2 border-red-500 rounded-xl shadow-lg">
+                      <p className="text-red-800 font-medium text-center flex items-center justify-center gap-2">
+                        <span className="text-2xl">❌</span>
+                        {flash.error}
+                      </p>
+                    </div>
+                  )}
+
+                  <Card className="overflow-hidden rounded-2xl border-0 bg-white/90 backdrop-blur-sm shadow-2xl">
+                    <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-6 text-white relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
+                      <div className="absolute bottom-0 left-0 w-16 h-16 bg-white/10 rounded-full translate-y-4 -translate-x-4"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                            <MessageSquare className="h-6 w-6 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="text-2xl font-bold">Sampaikan Pendapat Anda</h3>
+                            <p className="text-white/90 text-sm">Kami siap mendengarkan saran dan kritik Anda</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <CardContent className="p-6 md:p-8">
+                      <form onSubmit={handleSubmitFeedback} className="space-y-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="name" className="text-gray-700 font-medium flex items-center gap-2">
+                            <User className="h-4 w-4 text-purple-500" />
+                            Nama (boleh samaran)
+                          </Label>
+                          <Input
+                            id="name"
+                            type="text"
+                            placeholder="Masukkan nama Anda"
+                            value={data.name}
+                            onChange={(e) => setData('name', e.target.value)}
+                            className="border-gray-300 focus:border-purple-500 focus:ring-purple-500"
+                            required
+                          />
+                          {errors.name && <p className="text-sm text-red-600">{errors.name}</p>}
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="message" className="text-gray-700 font-medium flex items-center gap-2">
+                            <Send className="h-4 w-4 text-purple-500" />
+                            Kritik & Saran Anda
+                          </Label>
+                          <Textarea
+                            id="message"
+                            placeholder="Tulis kritik atau saran Anda di sini..."
+                            rows={8}
+                            value={data.message}
+                            onChange={(e) => setData('message', e.target.value)}
+                            className="border-gray-300 bg-white resize-none"
+                            required
+                          />
+                          {errors.message && <p className="text-sm text-red-600">{errors.message}</p>}
+                        </div>
+
+                        <Button 
+                          type="submit" 
+                          disabled={processing}
+                          className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-medium py-6 text-lg transition-all duration-300 shadow-lg hover:shadow-xl disabled:opacity-50"
+                        >
+                          {processing ? (
+                            <span className="flex items-center justify-center gap-2">
+                              <span className="animate-spin">⏳</span>
+                              Mengirim...
+                            </span>
+                          ) : (
+                            <span className="flex items-center justify-center gap-2">
+                              <Send className="h-5 w-5" />
+                              Kirim Kritik & Saran
+                            </span>
+                          )}
+                        </Button>
+                      </form>
+
+                      <div className="mt-6 p-4 bg-purple-50 rounded-xl">
+                        <p className="text-sm text-gray-600 text-center">
+                          <span className="font-medium text-purple-700">Catatan:</span> Kritik dan saran Anda akan disampaikan langsung kepada tim pengelola gereja. Anda dapat menggunakan nama samaran jika ingin anonim.
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </div>
             </section>

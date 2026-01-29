@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\AnnouncementController as AdminAnnouncementController;
 use App\Http\Controllers\Admin\WorshipScheduleController;
 use App\Http\Controllers\Admin\ActivityController;
+use App\Http\Controllers\Admin\ActivityReportController;
 use App\Http\Controllers\Admin\CommunityController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
@@ -77,6 +78,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('worship-schedules', WorshipScheduleController::class);
         // Kelola Agenda Kegiatan
         Route::resource('activities', ActivityController::class);
+        // Laporan Kegiatan Gereja
+        Route::get('activity-reports', [ActivityReportController::class, 'index'])->name('activity-reports.index');
+        Route::get('activity-reports/exportpdf', [ActivityReportController::class, 'exportPdf'])->name('activity-reports.exportpdf');
         // Kelola Komunitas Basis
         Route::resource('communities', CommunityController::class);
         // Kelola Feedback

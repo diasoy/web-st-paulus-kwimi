@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\WorshipScheduleController;
 use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\ActivityReportController;
 use App\Http\Controllers\Admin\CommunityController;
+use App\Http\Controllers\Admin\ChurchOfficialController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Umat\UmatWorshipScheduleController;
@@ -83,6 +84,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('activity-reports/exportpdf', [ActivityReportController::class, 'exportPdf'])->name('activity-reports.exportpdf');
         // Kelola Komunitas Basis
         Route::resource('communities', CommunityController::class);
+        // Kelola Data Pengurus Gereja
+        Route::resource('church-officials', ChurchOfficialController::class);
         // Kelola Feedback
         Route::get('feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
         Route::get('feedback/{feedback}', [AdminFeedbackController::class, 'show'])->name('feedback.show');

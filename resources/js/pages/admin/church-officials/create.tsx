@@ -42,7 +42,7 @@ export default function ChurchOfficialCreate({ communities, positions }: ChurchO
     department: '',
     start_date: '',
     end_date: '',
-    is_active: true,
+    is_active: true as boolean,
     notes: '',
   });
 

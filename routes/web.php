@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\ActivityController;
 use App\Http\Controllers\Admin\ActivityReportController;
 use App\Http\Controllers\Admin\CommunityController;
 use App\Http\Controllers\Admin\ChurchOfficialController;
+use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Umat\UmatWorshipScheduleController;
@@ -79,6 +80,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('worship-schedules', WorshipScheduleController::class);
         // Kelola Agenda Kegiatan
         Route::resource('activities', ActivityController::class);
+        // Pencatatan Keuangan Gereja
+        Route::resource('finances', FinanceController::class)->except(['show']);
         // Laporan Kegiatan Gereja
         Route::get('activity-reports', [ActivityReportController::class, 'index'])->name('activity-reports.index');
         Route::get('activity-reports/exportpdf', [ActivityReportController::class, 'exportPdf'])->name('activity-reports.exportpdf');

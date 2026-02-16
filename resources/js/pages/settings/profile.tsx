@@ -170,7 +170,7 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
                             <Label htmlFor="address">Alamat</Label>
                             <Textarea
                                 id="address"
-                                className="mt-1 block w-full min-h-[100px]"
+                                className="mt-1 border p-2 rounded-md block w-full min-h-[100px]"
                                 value={data.address}
                                 onChange={(e) => setData('address', e.target.value)}
                                 autoComplete="street-address"

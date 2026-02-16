@@ -287,7 +287,7 @@ export default function FinancesIndex({ finances, summary, filters }: FinancesIn
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       placeholder="Contoh: kolekte, renovasi, konsumsi"
-                      className="pl-9"
+                      className="pl-9 text-black"
                     />
                   </div>
                 </div>
@@ -295,7 +295,7 @@ export default function FinancesIndex({ finances, summary, filters }: FinancesIn
                 <div>
                   <label className="text-sm font-semibold text-gray-700 mb-2 block">Tipe</label>
                   <Select value={typeFilter} onValueChange={(v) => setTypeFilter(v)}>
-                    <SelectTrigger>
+                    <SelectTrigger className="text-black">
                       <SelectValue placeholder="Semua tipe" />
                     </SelectTrigger>
                     <SelectContent>
@@ -309,16 +309,16 @@ export default function FinancesIndex({ finances, summary, filters }: FinancesIn
                 <div>
                   <label className="text-sm font-semibold text-gray-700 mb-2 block">Dari Tanggal</label>
                   <div className="relative">
-                    <CalendarClock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="pl-9" />
+                    <CalendarClock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-black" />
+                    <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} className="pl-9 text-black" />
                   </div>
                 </div>
 
                 <div>
                   <label className="text-sm font-semibold text-gray-700 mb-2 block">Sampai Tanggal</label>
                   <div className="relative">
-                    <CalendarClock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                    <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="pl-9" />
+                    <CalendarClock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-black" />
+                    <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} className="pl-9 text-black" />
                   </div>
                 </div>
               </div>
@@ -397,7 +397,7 @@ export default function FinancesIndex({ finances, summary, filters }: FinancesIn
                                   {item.category}
                                 </span>
                               ) : (
-                                <span className="px-2 py-1 rounded-lg bg-gray-50 text-gray-400 border border-dashed border-gray-200">
+                                <span className="px-2 py-1 rounded-lg bg-gray-50 text-black border border-dashed border-gray-200">
                                   Tanpa kategori
                                 </span>
                               )}
@@ -453,7 +453,7 @@ export default function FinancesIndex({ finances, summary, filters }: FinancesIn
               ) : (
                 <div className="py-16 text-center">
                   <div className="rounded-full bg-gray-100 p-6 w-24 h-24 mx-auto mb-6">
-                    <FileText className="h-12 w-12 text-gray-400" />
+                    <FileText className="h-12 w-12 text-black" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Belum ada transaksi</h3>
                   <p className="text-gray-600 mb-6">Mulai catat pemasukan atau pengeluaran pertama.</p>

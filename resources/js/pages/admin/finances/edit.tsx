@@ -35,11 +35,18 @@ interface FinancesEditProps {
 }
 
 export default function FinancesEdit({ finance }: FinancesEditProps) {
+  // Format date to yyyy-MM-dd for input type="date"
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
+
   const { data, setData, put, processing, errors } = useForm({
     title: finance.title || '',
     type: finance.type || 'income',
     amount: finance.amount !== undefined && finance.amount !== null ? finance.amount.toString() : '',
-    date: finance.date || '',
+    date: formatDate(finance.date),
     category: finance.category || '',
     description: finance.description || '',
   });

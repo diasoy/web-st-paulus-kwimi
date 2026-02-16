@@ -96,8 +96,8 @@ interface ChurchOfficialsIndexProps {
 export default function ChurchOfficialsIndex({ officials, positions }: ChurchOfficialsIndexProps) {
   const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
   const [search, setSearch] = useState<string>(params.get('search') || '');
-  const [sortBy, setSortBy] = useState<string>(params.get('sort') || 'name');
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>((params.get('direction') as 'asc' | 'desc') || 'asc');
+  const [sortBy, setSortBy] = useState<string>(params.get('sort') || 'created_at');
+  const [sortDir, setSortDir] = useState<'asc' | 'desc'>((params.get('direction') as 'asc' | 'desc') || 'desc');
   const [positionFilter, setPositionFilter] = useState<string>(params.get('position') || 'all');
   const [statusFilter, setStatusFilter] = useState<string>(params.get('status') || 'all');
 

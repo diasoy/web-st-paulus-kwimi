@@ -49,6 +49,13 @@ interface ChurchOfficialEditProps {
 }
 
 export default function ChurchOfficialEdit({ official, communities, positions }: ChurchOfficialEditProps) {
+  // Format date to yyyy-MM-dd for input type="date"
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
+
   const { data, setData, post, processing, errors } = useForm({
     name: official.name || '',
     position: official.position || '',
@@ -58,8 +65,8 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
     photo: null as File | null,
     community_id: official.community_id?.toString() || 'none',
     department: official.department || '',
-    start_date: official.start_date || '',
-    end_date: official.end_date || '',
+    start_date: formatDate(official.start_date),
+    end_date: formatDate(official.end_date),
     is_active: official.is_active ?? true,
     notes: official.notes || '',
     _method: 'PUT',
@@ -166,11 +173,11 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       value={data.name}
                       onChange={(e) => setData('name', e.target.value)}
                       placeholder="Contoh: Romo Yohanes Paulus"
-                      className={`${
+                      className={`h-12 text-base ${
                         errors.name
                           ? 'border-red-300 focus:border-red-500 focus:ring-red-200'
                           : 'border-blue-200 focus:border-blue-500 focus:ring-blue-200'
-                      }`}
+                      } text-gray-900 dark:text-gray-900 placeholder:text-gray-500 bg-white`}
                       required
                     />
                     {errors.name && (
@@ -187,7 +194,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       Jabatan *
                     </Label>
                     <Select value={data.position} onValueChange={(value) => setData('position', value)}>
-                      <SelectTrigger className={`${errors.position ? 'border-red-300' : ''}`}>
+                      <SelectTrigger className={`h-12 ${errors.position ? 'border-red-300' : ''} text-gray-900 bg-white`}>
                         <SelectValue placeholder="Pilih Jabatan" />
                       </SelectTrigger>
                       <SelectContent>
@@ -217,7 +224,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       value={data.department}
                       onChange={(e) => setData('department', e.target.value)}
                       placeholder="Contoh: Liturgi, Sosial, dll"
-                      className={errors.department ? 'border-red-300' : ''}
+                      className={`h-12 text-base ${errors.department ? 'border-red-300' : ''} text-gray-900 placeholder:text-gray-500 bg-white`}
                     />
                     {errors.department && (
                       <p className="mt-2 text-sm text-red-600">{errors.department}</p>
@@ -243,7 +250,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       value={data.phone}
                       onChange={(e) => setData('phone', e.target.value)}
                       placeholder="0812-3456-7890"
-                      className={errors.phone ? 'border-red-300' : ''}
+                      className={`h-12 text-base ${errors.phone ? 'border-red-300' : ''} text-gray-900 placeholder:text-gray-500 bg-white`}
                     />
                     {errors.phone && (
                       <p className="mt-2 text-sm text-red-600">{errors.phone}</p>
@@ -261,7 +268,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       value={data.email}
                       onChange={(e) => setData('email', e.target.value)}
                       placeholder="email@example.com"
-                      className={errors.email ? 'border-red-300' : ''}
+                      className={`h-12 text-base ${errors.email ? 'border-red-300' : ''} text-gray-900 placeholder:text-gray-500 bg-white`}
                     />
                     {errors.email && (
                       <p className="mt-2 text-sm text-red-600">{errors.email}</p>
@@ -279,7 +286,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       onChange={(e) => setData('address', e.target.value)}
                       placeholder="Alamat lengkap..."
                       rows={3}
-                      className={errors.address ? 'border-red-300' : ''}
+                      className={`text-base ${errors.address ? 'border-red-300' : ''} text-gray-900 placeholder:text-gray-500 bg-white`}
                     />
                     {errors.address && (
                       <p className="mt-2 text-sm text-red-600">{errors.address}</p>
@@ -300,7 +307,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       Lingkungan
                     </Label>
                     <Select value={data.community_id} onValueChange={(value) => setData('community_id', value)}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12 text-gray-900 bg-white">
                         <SelectValue placeholder="Pilih Lingkungan (Opsional)" />
                       </SelectTrigger>
                       <SelectContent>
@@ -327,7 +334,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       type="date"
                       value={data.start_date}
                       onChange={(e) => setData('start_date', e.target.value)}
-                      className={errors.start_date ? 'border-red-300' : ''}
+                      className={`h-12 text-base ${errors.start_date ? 'border-red-300' : ''} text-gray-900 bg-white`}
                     />
                     {errors.start_date && (
                       <p className="mt-2 text-sm text-red-600">{errors.start_date}</p>
@@ -344,7 +351,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                       type="date"
                       value={data.end_date}
                       onChange={(e) => setData('end_date', e.target.value)}
-                      className={errors.end_date ? 'border-red-300' : ''}
+                      className={`h-12 text-base ${errors.end_date ? 'border-red-300' : ''} text-gray-900 bg-white`}
                     />
                     {errors.end_date && (
                       <p className="mt-2 text-sm text-red-600">{errors.end_date}</p>
@@ -439,7 +446,7 @@ export default function ChurchOfficialEdit({ official, communities, positions }:
                   onChange={(e) => setData('notes', e.target.value)}
                   placeholder="Catatan tambahan..."
                   rows={4}
-                  className={errors.notes ? 'border-red-300' : ''}
+                  className={`text-base ${errors.notes ? 'border-red-300' : ''} text-gray-900 placeholder:text-gray-500 bg-white`}
                 />
                 {errors.notes && (
                   <p className="mt-2 text-sm text-red-600">{errors.notes}</p>

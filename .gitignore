@@ -9,9 +9,7 @@
 /storage/app/public/images/*/*
 !/storage/app/public/images/*/.gitkeep
 # Ignore old structure (legacy)
-/storage/app/public/activities/*
-/storage/app/public/announcements/*
-/storage/app/public/pdfs/*
+/storage/app/public/*
 !/storage/app/public/activities/.gitkeep
 !/storage/app/public/announcements/.gitkeep
 # Ignore user uploaded PDFs but keep folder structure

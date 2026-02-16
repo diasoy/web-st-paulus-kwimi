@@ -19,13 +19,13 @@ class ChurchOfficialController extends Controller
     public function index(Request $request)
     {
         $search = $request->query('search');
-        $sort = $request->query('sort', 'name');
-        $direction = strtolower($request->query('direction', 'asc')) === 'desc' ? 'desc' : 'asc';
+        $sort = $request->query('sort', 'created_at');
+        $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
         $position = $request->query('position');
         $status = $request->query('status');
 
         if (!in_array($sort, $this->sortable)) {
-            $sort = 'name';
+            $sort = 'created_at';
         }
 
         $query = ChurchOfficial::with('community:id,name');

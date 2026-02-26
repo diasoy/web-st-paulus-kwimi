@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             RoleSeeder::class,
             CommunitySeeder::class,
             UserSeeder::class,
+            ChurchOfficialSeeder::class,
             AnnouncementSeeder::class,
             ActivitySeeder::class,
             WorshipScheduleSeeder::class,

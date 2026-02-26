@@ -25,7 +25,7 @@ class ChurchOfficial extends Model
         'notes',
     ];
 
-    protected $appends = ['photo_url'];
+    protected $appends = ['photo_url', 'position_label'];
 
     protected function casts(): array
     {

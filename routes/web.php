@@ -12,6 +12,10 @@ use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Umat\UmatWorshipScheduleController;
 use App\Http\Controllers\Umat\UmatActivityController;
+use App\Http\Controllers\Umat\UmatDashboardController;
+use App\Http\Controllers\Umat\UmatChurchOfficialController;
+use App\Http\Controllers\Umat\UmatFinanceController;
+use App\Http\Controllers\Umat\UmatCommunityController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -52,7 +56,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
         $user = Auth::user();
         if ($user && $user->role_id == 2) {
-            return redirect()->route('umat.announcements.index');
+            return redirect()->route('umat.dashboard');
         }
         // Default: admin atau lainnya tetap ke dashboard
         return app(DashboardController::class)->index();
@@ -97,15 +101,26 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::patch('feedback/{feedback}/mark-unread', [AdminFeedbackController::class, 'markAsUnread'])->name('feedback.mark-unread');
     });
 
-    // Umat Routes - Hanya bisa melihat pengumuman dan kegiatan
+    // Umat Routes
     Route::middleware('role_id:2')->prefix('umat')->name('umat.')->group(function () {
+        // Dashboard Umat
+        Route::get('dashboard', [UmatDashboardController::class, 'index'])->name('dashboard');
+        // Pengumuman
         Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
         Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
+        // Jadwal Ibadah
         Route::get('worship-schedules', [UmatWorshipScheduleController::class, 'index'])->name('worship-schedules.index');
         Route::get('worship-schedules/{worshipSchedule}', [UmatWorshipScheduleController::class, 'show'])->name('worship-schedules.show');
-        // Activities for Umat
+        // Agenda Kegiatan
         Route::get('activities', [UmatActivityController::class, 'index'])->name('activities.index');
         Route::get('activities/{activity}', [UmatActivityController::class, 'show'])->name('activities.show');
+        // Pengurus Gereja (read-only)
+        Route::get('church-officials', [UmatChurchOfficialController::class, 'index'])->name('church-officials.index');
+        Route::get('church-officials/{churchOfficial}', [UmatChurchOfficialController::class, 'show'])->name('church-officials.show');
+        // Transparansi Keuangan (read-only)
+        Route::get('finances', [UmatFinanceController::class, 'index'])->name('finances.index');
+        // Komunitas Basis (read-only)
+        Route::get('communities', [UmatCommunityController::class, 'index'])->name('communities.index');
     });
 });
 

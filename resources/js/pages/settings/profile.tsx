@@ -93,15 +93,15 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
 
             <SettingsLayout>
                 <div className="space-y-6">
-                    <HeadingSmall title="Profile information" description="Update your profile information"/>
+                    <HeadingSmall title="Informasi Profil" description="Perbarui informasi profil Anda" />
 
                     <form onSubmit={submit} className="space-y-6">
                         {/* Name only */}
                         <div className="grid gap-2">
-                            <Label htmlFor="name">Nama Lengkap</Label>
+                            <Label htmlFor="name" className="text-sm font-semibold text-gray-700">Nama Lengkap</Label>
                             <Input
                                 id="name"
-                                className="mt-1 block w-full"
+                                className="h-10 border-2 border-gray-200 focus:border-green-500 rounded-xl bg-white text-gray-800"
                                 value={data.name}
                                 onChange={(e) => setData('name', e.target.value)}
                                 required
@@ -113,11 +113,11 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
 
                         {/* Birth Date only */}
                         <div className="grid gap-2">
-                            <Label htmlFor="birth_date">Tanggal Lahir</Label>
+                            <Label htmlFor="birth_date" className="text-sm font-semibold text-gray-700">Tanggal Lahir</Label>
                             <Input
                                 id="birth_date"
                                 type="date"
-                                className="mt-1 block w-full"
+                                className="h-10 border-2 border-gray-200 focus:border-green-500 rounded-xl bg-white text-gray-800"
                                 value={data.birth_date}
                                 onChange={(e) => setData('birth_date', e.target.value)}
                                 autoComplete="bday"
@@ -128,12 +128,12 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
                         {/* Gender and Community in 2 columns */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="gender">Jenis Kelamin</Label>
+                                <Label htmlFor="gender" className="text-sm font-semibold text-gray-700">Jenis Kelamin</Label>
                                 <Select
                                     value={data.gender}
                                     onValueChange={(value: 'male' | 'female') => setData('gender', value)}
                                 >
-                                    <SelectTrigger className="mt-1">
+                                    <SelectTrigger className="h-10 border-2 border-gray-200 rounded-xl bg-white text-gray-800">
                                         <SelectValue placeholder="Pilih jenis kelamin" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -145,12 +145,12 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="community_id">Kombas</Label>
+                                <Label htmlFor="community_id" className="text-sm font-semibold text-gray-700">Kombas</Label>
                                 <Select
                                     value={data.community_id.toString()}
                                     onValueChange={(value: string) => setData('community_id', parseInt(value))}
                                 >
-                                    <SelectTrigger className="mt-1">
+                                    <SelectTrigger className="h-10 border-2 border-gray-200 rounded-xl bg-white text-gray-800">
                                         <SelectValue placeholder="Pilih kombas" />
                                     </SelectTrigger>
                                     <SelectContent>
@@ -167,10 +167,10 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
 
                         {/* Address as full width textarea */}
                         <div className="grid gap-2">
-                            <Label htmlFor="address">Alamat</Label>
+                            <Label htmlFor="address" className="text-sm font-semibold text-gray-700">Alamat</Label>
                             <Textarea
                                 id="address"
-                                className="mt-1 border p-2 rounded-md block w-full min-h-[100px]"
+                                className="block w-full border-2 border-gray-200 bg-white px-3 py-2 text-sm text-gray-800 rounded-xl min-h-[100px] focus:outline-none focus:border-green-500 focus:ring-0"
                                 value={data.address}
                                 onChange={(e) => setData('address', e.target.value)}
                                 autoComplete="street-address"
@@ -203,7 +203,7 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
                         )}
 
                         <div className="flex items-center gap-4">
-                            <Button className='text-white hover:cursor-pointer' disabled={processing}>Simpan</Button>
+                            <Button className='bg-green-700 hover:bg-green-800 text-white hover:cursor-pointer' disabled={processing}>Simpan</Button>
 
                             <Transition
                                 show={recentlySuccessful}
@@ -212,7 +212,7 @@ export default function Profile({ mustVerifyEmail, status, communities }: Props)
                                 leave="transition ease-in-out"
                                 leaveTo="opacity-0"
                             >
-                                <p className="text-sm text-neutral-600">Tersimpan</p>
+                                <p className="text-sm text-green-700 font-medium">Tersimpan</p>
                             </Transition>
                         </div>
                     </form>

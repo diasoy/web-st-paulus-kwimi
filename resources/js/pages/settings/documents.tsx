@@ -215,7 +215,7 @@ export default function Document({ pdfs = [] }: DocumentProps) {
                           />
                           <label
                             htmlFor={`pdf-input-${idx}`}
-                            className="flex items-center justify-center gap-2 cursor-pointer px-3 py-2 border border-dashed border-gray-300 rounded-md text-sm bg-background hover:bg-muted transition w-full"
+                            className="flex items-center justify-center gap-2 cursor-pointer px-3 py-2 border border-dashed border-gray-300 rounded-md text-sm text-slate-600 bg-white hover:bg-gray-50 transition w-full"
                           >
                             <Upload className="w-4 h-4" />
                             <span>

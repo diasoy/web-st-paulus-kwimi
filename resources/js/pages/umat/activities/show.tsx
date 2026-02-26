@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
 import { ArrowLeft, Calendar, Clock, MapPin, Image as ImageIcon } from 'lucide-react';
 import { format, formatDistanceToNow, isToday, isTomorrow, isPast } from 'date-fns';
@@ -110,14 +110,14 @@ export default function ActivityShow({ activity }: Props) {
         <AppLayout>
             <Head title={`${activity.name} - Kegiatan`} />
 
-            <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
-                <div className="container mx-auto px-4 py-8">
+            <div className="p-6 dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
+                <div className="container mx-auto">
                     {/* Header Navigation */}
-                    <div className="mb-8">
+                    <div className="mb-6">
                         <Link href="/umat/activities">
                             <Button 
                                 variant="outline" 
-                                className="mb-6 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 transition-all duration-300"
+                                className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 transition-all duration-300"
                             >
                                 <ArrowLeft className="h-4 w-4 mr-2" />
                                 Kembali ke Agenda Kegiatan
@@ -126,65 +126,67 @@ export default function ActivityShow({ activity }: Props) {
                     </div>
 
                     {/* Main Content */}
-                    <Card className="max-w-5xl mx-auto bg-white/80 backdrop-blur-sm border-secondary/20 shadow-lg overflow-hidden border">
-                        {/* Hero Section with Date */}
-                        <div className="relative ">
-                            {activity.image_url && !imageError ? (
-                                <div className=" aspect-video bg-gray-100 relative overflow-hidden">
-                                    <img
-                                        src={activity.image_url}
-                                        alt={activity.name}
-                                        className="absolute inset-0 w-full h-full object-cover"
-                                        onError={handleImageError}
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
-                                </div>
-                            ) : (
-                                <div className="aspect-video bg-gradient-to-br from-secondary/10 to-church-secondary/10 flex items-center justify-center">
-                                    <ImageIcon className="h-24 w-24 text-secondary/50" />
-                                </div>
-                            )}
+                    <div className="max-w-5xl mx-auto bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden">
+                        {/* Accent bar */}
+                        <div className="h-2 bg-gradient-to-r from-orange-500 to-amber-500" />
 
-                            {/* Status Badge */}
-                            <div className="absolute top-3 left-3">
-                                <div className={`px-3 py-1 rounded-full bg-secondary text-sm font-medium ${statusInfo.color} border-0 shadow-lg`}>
-                                    {statusInfo.text}
-                                </div>
+                        {/* Hero Image */}
+                        {activity.image_url && !imageError ? (
+                            <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                                <img
+                                    src={activity.image_url}
+                                    alt={activity.name}
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                    onError={handleImageError}
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none" />
                             </div>
+                        ) : (
+                            <div className="aspect-video bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
+                                <ImageIcon className="h-24 w-24 text-orange-300" />
+                            </div>
+                        )}
+
+                        {/* Title + Status */}
+                        <div className="px-8 pt-6 pb-2 flex items-start justify-between gap-3">
+                            <h1 className="text-2xl font-bold text-slate-800">{activity.name}</h1>
+                            <Badge className={`${statusInfo.color} border-0 shadow-sm shrink-0 mt-0.5`}>
+                                {statusInfo.text}
+                            </Badge>
                         </div>
 
                         {/* Activity Info */}
-                        <div className="bg-church-cream/30 px-8 py-6 border-b border-church-primary/10">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div className="flex items-center">
-                                    <div className="bg-church-primary/10 p-3 rounded-full mr-4">
-                                        <Calendar className="h-6 w-6 text-church-primary" />
+                        <div className="bg-orange-50 mx-8 mb-6 rounded-2xl border border-orange-100 p-5">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-orange-100 p-3 rounded-full shrink-0">
+                                        <Calendar className="h-5 w-5 text-orange-600" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-church-text/70">Tanggal</p>
-                                        <p className="font-semibold text-church-dark">{dateInfo.full}</p>
-                                        <p className="text-xs text-church-text/60">{dateInfo.relative}</p>
+                                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Tanggal</p>
+                                        <p className="font-semibold text-slate-800 text-sm">{dateInfo.full}</p>
+                                        <p className="text-xs text-slate-400">{dateInfo.relative}</p>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center">
-                                    <div className="bg-church-secondary/10 p-3 rounded-full mr-4">
-                                        <Clock className="h-6 w-6 text-church-secondary" />
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-indigo-100 p-3 rounded-full shrink-0">
+                                        <Clock className="h-5 w-5 text-indigo-600" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-church-text/70">Waktu</p>
-                                        <p className="font-semibold text-church-dark">{timeInfo}</p>
+                                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Waktu</p>
+                                        <p className="font-semibold text-slate-800 text-sm">{timeInfo}</p>
                                     </div>
                                 </div>
 
                                 {activity.location && (
-                                    <div className="flex items-center">
-                                        <div className="bg-church-accent/10 p-3 rounded-full mr-4">
-                                            <MapPin className="h-6 w-6 text-church-accent" />
+                                    <div className="flex items-center gap-3">
+                                        <div className="bg-rose-100 p-3 rounded-full shrink-0">
+                                            <MapPin className="h-5 w-5 text-rose-600" />
                                         </div>
                                         <div>
-                                            <p className="text-sm text-church-text/70">Lokasi</p>
-                                            <p className="font-semibold text-church-dark line-clamp-2">
+                                            <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Lokasi</p>
+                                            <p className="font-semibold text-slate-800 text-sm line-clamp-2">
                                                 {activity.location}
                                             </p>
                                         </div>
@@ -194,34 +196,28 @@ export default function ActivityShow({ activity }: Props) {
                         </div>
 
                         {/* Description */}
-                        <CardContent className="p-8">
-                            <div className="mb-8">
-                                <h2 className="text-2xl font-semibold text-church-dark mb-4">
-                                    Deskripsi Kegiatan
-                                </h2>
-                                <div className="prose prose-lg max-w-none">
-                                    {activity.description ? (
-                                        <p className="text-church-text leading-relaxed text-lg whitespace-pre-wrap">
-                                            {activity.description}
-                                        </p>
-                                    ) : (
-                                        <p className="text-church-text/60 italic">
-                                            Deskripsi kegiatan belum tersedia.
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-                        </CardContent>
+                        <div className="px-8 pb-8">
+                            <h2 className="text-lg font-semibold text-slate-800 mb-3">
+                                Deskripsi Kegiatan
+                            </h2>
+                            {activity.description ? (
+                                <p className="text-slate-700 leading-relaxed text-base whitespace-pre-wrap">
+                                    {activity.description}
+                                </p>
+                            ) : (
+                                <p className="text-slate-400 italic">
+                                    Deskripsi kegiatan belum tersedia.
+                                </p>
+                            )}
+                        </div>
 
                         {/* Footer */}
-                        <div className="bg-church-cream/30 px-8 py-6 border-t border-church-primary/10">
-                            <div className="flex items-center justify-between">
-                                <div className="text-sm text-church-text/70">
-                                    Terakhir diperbarui: {format(new Date(activity.updated_at), 'dd MMMM yyyy HH:mm', { locale: id })}
-                                </div>
+                        <div className="bg-gray-50 px-8 py-4 border-t border-gray-100">
+                            <div className="text-sm text-slate-500">
+                                Terakhir diperbarui: {format(new Date(activity.updated_at), 'dd MMMM yyyy HH:mm', { locale: id })}
                             </div>
                         </div>
-                    </Card>
+                    </div>
                 </div>
             </div>
         </AppLayout>

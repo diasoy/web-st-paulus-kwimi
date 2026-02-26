@@ -10,7 +10,6 @@ const labelMap: Record<string, string> = {
 const getLabel = (label: string) => labelMap[label] || label;
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
 import { Calendar, MapPin, Clock, Eye, Image as ImageIcon } from 'lucide-react';
@@ -125,147 +124,141 @@ export default function ActivitiesIndex({ activities }: Props) {
         <AppLayout>
             <Head title="Agenda Kegiatan" />
 
-            <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
-                <div className="container mx-auto px-4 py-8">
+            <div className="p-6 dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
+                <div className="container mx-auto space-y-6">
                     {/* Header */}
-                    <div className="mb-8">
-                        <div className="flex items-center justify-between mb-6">
-                            <div className="flex items-center">
-                                <div className="bg-white/20 backdrop-blur-sm p-3 rounded-full mr-4">
-                                    <Calendar className="h-8 w-8 text-white" />
-                                </div>
-                                <div>
-                                    <h1 className="text-4xl font-bold text-white drop-shadow-lg">
-                                        Agenda Kegiatan
-                                    </h1>
-                                    <p className="text-lg text-white/90 drop-shadow-md">
-                                        Kegiatan dan acara Gereja St. Paulus Kwimi
-                                    </p>
-                                </div>
+                    <div className="relative bg-gradient-to-r from-orange-600 via-amber-600 to-orange-700 rounded-2xl p-8 shadow-2xl overflow-hidden">
+                        <div className="relative z-10 text-center">
+                            <div className="relative inline-block mb-3">
+                                <h1 className="text-4xl font-bold text-white drop-shadow-lg">Agenda Kegiatan</h1>
+                                <div className="absolute -inset-1 bg-gradient-to-r from-orange-400 to-amber-400 rounded-lg blur opacity-20"></div>
                             </div>
+                            <p className="text-white/90 text-lg font-medium">
+                                Kegiatan dan acara Gereja St. Paulus Kwimi
+                            </p>
                         </div>
+                        <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
                     </div>
 
                     {/* Filter */}
-                    <div className="flex flex-wrap items-center gap-4 mb-8">
-                        <select
-                            value={filter}
-                            onChange={(e) => setFilter(e.target.value)}
-                            className="border rounded-lg px-3 py-2"
-                        >
-                            <option value="default" className='text-black'>Semua Mendatang</option>
-                            <option value="week" className='text-black'>Seminggu ke Depan</option>
-                            <option value="month" className='text-black'>Sebulan ke Depan</option>
-                            <option value="custom" className='text-black'>Custom</option>
-                        </select>
+                    <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-200/50 p-5">
+                        <div className="flex flex-wrap items-center gap-3">
+                            <select
+                                value={filter}
+                                onChange={(e) => setFilter(e.target.value)}
+                                className="h-10 border border-gray-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                            >
+                                <option value="default">Semua Mendatang</option>
+                                <option value="week">Seminggu ke Depan</option>
+                                <option value="month">Sebulan ke Depan</option>
+                                <option value="custom">Rentang Tanggal</option>
+                            </select>
 
-                        {filter === 'custom' && (
-                            <>
-                                <input
-                                    type="date"
-                                    value={startDate}
-                                    onChange={(e) => setStartDate(e.target.value)}
-                                    className="border rounded-lg px-3 py-2"
-                                />
-                                <input
-                                    type="date"
-                                    value={endDate}
-                                    onChange={(e) => setEndDate(e.target.value)}
-                                    className="border rounded-lg px-3 py-2"
-                                />
-                            </>
-                        )}
+                            {filter === 'custom' && (
+                                <>
+                                    <input
+                                        type="date"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        className="h-10 border border-gray-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                                    />
+                                    <input
+                                        type="date"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        className="h-10 border border-gray-200 rounded-lg px-3 py-2 text-sm text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                                    />
+                                </>
+                            )}
 
-                        <button
-                            onClick={applyFilter}
-                            className="bg-secondary text-white px-4 py-2 rounded-lg hover:cursor-pointer"
-                        >
-                            Terapkan
-                        </button>
+                            <button
+                                onClick={applyFilter}
+                                className="h-10 bg-orange-600 hover:bg-orange-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors duration-200 cursor-pointer"
+                            >
+                                Terapkan
+                            </button>
+                        </div>
                     </div>
 
                     {/* Activities Grid */}
                     {activities.data.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {activities.data.map((activity) => {
                                 const dateInfo = formatDate(activity.date);
                                 const timeInfo = formatTime(activity.time_start);
                                 const badgeInfo = getDateBadgeInfo(activity.date);
 
                                 return (
-                                    <Card key={activity.id} className="group hover:shadow-lg transition-all duration-300 border-secondary/20 bg-white/80 backdrop-blur-sm overflow-hidden rounded-xl p-0">
+                                    <div key={activity.id} className="group bg-white/95 backdrop-blur-sm rounded-2xl border border-gray-200 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col">
                                         <div className="relative">
                                             {activity.image_url && !imageErrors[activity.id] ? (
                                                 <div className="aspect-video bg-gray-100 relative overflow-hidden">
                                                     <img
                                                         src={activity.image_url}
                                                         alt={activity.name}
-                                                        className="absolute inset-0 w-full h-full object-cover rounded-t-xl group-hover:scale-105 transition-transform duration-300"
+                                                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                         onError={() => handleImageError(activity.id)}
                                                         loading="lazy"
                                                     />
                                                 </div>
                                             ) : (
-                                                <div className="aspect-video bg-gray-100 flex items-center justify-center rounded-t-xl">
-                                                    <ImageIcon className="h-12 w-12 text-secondary/50" />
+                                                <div className="aspect-video bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center">
+                                                    <ImageIcon className="h-12 w-12 text-orange-300" />
                                                 </div>
                                             )}
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none rounded-t-xl" />
                                             {/* Date Badge */}
                                             <div className="absolute top-3 right-3 z-10">
-                                                <Badge className={`${badgeInfo.color} border-0 shadow-lg`}>
+                                                <Badge className={`${badgeInfo.color} border-0 shadow-lg text-xs`}>
                                                     {badgeInfo.text}
                                                 </Badge>
                                             </div>
                                         </div>
 
-                                        <CardHeader className="pb-3">
-                                            <CardTitle className="text-xl text-church-dark group-hover:text-secondary transition-colors duration-300 line-clamp-2">
+                                        <div className="p-5 flex flex-col flex-1">
+                                            <h3 className="text-base font-bold text-slate-800 group-hover:text-orange-700 transition-colors duration-200 line-clamp-2 mb-3">
                                                 {activity.name}
-                                            </CardTitle>
+                                            </h3>
 
-                                            <div className="space-y-2 text-sm text-church-text/80">
-                                                <div className="flex items-center">
-                                                    <Calendar className="h-4 w-4 mr-2 text-secondary" />
+                                            <div className="space-y-2 text-sm text-slate-600 mb-4">
+                                                <div className="flex items-center gap-2">
+                                                    <Calendar className="h-4 w-4 text-orange-500 shrink-0" />
                                                     <span title={dateInfo.full}>{dateInfo.short}</span>
                                                 </div>
 
-                                                <div className="flex items-center">
-                                                    <Clock className="h-4 w-4 mr-2 text-church-secondary" />
+                                                <div className="flex items-center gap-2">
+                                                    <Clock className="h-4 w-4 text-indigo-500 shrink-0" />
                                                     <span>{timeInfo}</span>
                                                 </div>
 
                                                 {activity.location && (
-                                                    <div className="flex items-center">
-                                                        <MapPin className="h-4 w-4 mr-2 text-church-accent" />
+                                                    <div className="flex items-center gap-2">
+                                                        <MapPin className="h-4 w-4 text-rose-500 shrink-0" />
                                                         <span className="truncate">{activity.location}</span>
                                                     </div>
                                                 )}
                                             </div>
-                                        </CardHeader>
 
-                                        <CardContent className="pt-0 pb-5">
-                                            <Link
-                                                href={`/umat/activities/${activity.id}`}
-                                                className="inline-flex items-center px-4 py-2 text-sm bg-secondary text-white rounded-lg hover:bg-secondary/90 transition-colors duration-300"
-                                            >
-                                                <Eye className="h-4 w-4 mr-2" />
-                                                Lihat Detail
-                                            </Link>
-                                        </CardContent>
-                                    </Card>
+                                            <div className="mt-auto">
+                                                <Link
+                                                    href={`/umat/activities/${activity.id}`}
+                                                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors duration-200"
+                                                >
+                                                    <Eye className="h-4 w-4" />
+                                                    Lihat Detail
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
                                 );
                             })}
                         </div>
                     ) : (
-                        <div className="text-center py-16">
-                            <div className="bg-white/20 backdrop-blur-sm w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                                <Calendar className="h-12 w-12 text-white" />
+                        <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-200/50 p-16 text-center">
+                            <div className="rounded-full bg-orange-100 p-5 w-fit mx-auto mb-4">
+                                <Calendar className="h-10 w-10 text-orange-400" />
                             </div>
-                            <h3 className="text-xl font-semibold text-white mb-2">
-                                Belum Ada Kegiatan
-                            </h3>
-                            <p className="text-white/80 max-w-md mx-auto">
+                            <h3 className="text-lg font-semibold text-slate-800 mb-2">Belum Ada Kegiatan</h3>
+                            <p className="text-slate-500">
                                 Kegiatan atau acara gereja akan ditampilkan di sini ketika sudah dijadwalkan.
                             </p>
                         </div>
@@ -273,14 +266,14 @@ export default function ActivitiesIndex({ activities }: Props) {
 
                     {/* Pagination */}
                     {activities.last_page > 1 && (
-                        <div className="flex justify-center items-center space-x-2">
+                        <div className="flex justify-center items-center gap-2 flex-wrap">
                             {activities.links.map((link, index) => {
                                 const label = getLabel(link.label);
                                 if (!link.url) {
                                     return (
                                         <span
                                             key={index}
-                                            className="px-3 py-2 text-white/60 bg-white/20 backdrop-blur-sm rounded-md border border-white/20"
+                                            className="px-4 py-2 text-sm font-medium text-gray-400 bg-white border border-gray-200 rounded-lg cursor-not-allowed"
                                             dangerouslySetInnerHTML={{ __html: label }}
                                         />
                                     );
@@ -289,9 +282,9 @@ export default function ActivitiesIndex({ activities }: Props) {
                                     <Link
                                         key={index}
                                         href={link.url}
-                                        className={`px-3 py-2 rounded-md border transition-colors duration-300 ${link.active
-                                            ? 'bg-secondary text-white border-secondary'
-                                            : 'bg-white/20 backdrop-blur-sm text-white border-white/20 hover:bg-white/30'
+                                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${link.active
+                                            ? 'bg-orange-600 text-white shadow-md'
+                                            : 'bg-white border border-gray-200 text-gray-700 hover:bg-orange-50 hover:border-orange-300'
                                             }`}
                                         dangerouslySetInnerHTML={{ __html: label }}
                                     />

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Eye, User, Image as ImageIcon } from 'lucide-react';
 import { formatDistanceToNow, format } from 'date-fns';
@@ -107,115 +106,118 @@ export default function Announcements({ announcements }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Pengumuman Gereja" />
 
-      <div className="dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
-        <div className="container mx-auto px-4 py-8 space-y-8">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-white drop-shadow-lg">Pengumuman Gereja</h1>
-        </div>
+      <div className="p-6 dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20, #235829, #2d5f35)' }}>
+        <div className="container mx-auto space-y-6">
+          {/* Header */}
+          <div className="relative bg-gradient-to-r from-blue-700 via-indigo-700 to-blue-800 rounded-2xl p-8 shadow-2xl overflow-hidden">
+            <div className="relative z-10 text-center">
+              <div className="relative inline-block mb-3">
+                <h1 className="text-4xl font-bold text-white drop-shadow-lg">Pengumuman Gereja</h1>
+                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-lg blur opacity-20"></div>
+              </div>
+              <p className="text-white/90 text-lg font-medium">
+                Informasi terbaru dari Gereja ST. Paulus Kwimi
+              </p>
+            </div>
+            <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
+          </div>
 
-        {/* Pengumuman */}
-        <div className="space-y-6">
-          {announcements.data.length === 0 ? (
-            <Card>
-              <CardContent className="py-8">
-                <p className="text-center text-white">Belum ada pengumuman yang terdaftar.</p>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {announcements.data.map((announcement) => {
-                const dateInfo = formatDate(announcement.created_at);
-                return (
-                  <Card key={announcement.id} className="group hover:shadow-lg transition-all duration-300 border-secondary/20 bg-white/80 backdrop-blur-sm overflow-hidden rounded-xl p-0 flex flex-col h-full">
-                    {announcement.image_url && !imageErrors[announcement.id] ? (
-                      <div className="aspect-video bg-gray-100 relative overflow-hidden">
-                        <img
-                          src={announcement.image_url}
-                          alt={announcement.title}
-                          className="absolute inset-0 w-full h-full object-cover rounded-t-xl group-hover:scale-105 transition-transform duration-300"
-                          onError={() => handleImageError(announcement.id)}
-                          loading="lazy"
-                        />
-                      </div>
-                    ) : (
-                      <div className="aspect-video bg-gray-100 flex items-center justify-center rounded-t-xl">
-                        <ImageIcon className="h-12 w-12 text-church-primary/50" />
-                      </div>
-                    )}
-                    <div className="absolute inset-0 pointer-events-none rounded-t-xl" />
-                    <CardHeader>
-                      <div className="flex flex-col-reverse mb-2">
-                        <span
-                          className="text-xs text-church-text/60 mt-2"
-                          title={dateInfo.full}
-                        >
-                          {dateInfo.relative}
-                        </span>
-                        <CardTitle className="text-xl text-church-dark group-hover:text-church-primary transition-colors duration-300 line-clamp-2">
-                          {announcement.title}
-                        </CardTitle>
-                      </div>
-                    </CardHeader>
-
-                    <CardContent className="pt-0 flex-1 flex flex-col">
-                      <p className="text-church-text/80 text-sm mb-4 line-clamp-2">
-                        {announcement.description}
-                      </p>
-
-                      <div className="flex items-center justify-between mt-auto pb-5">
-                        <Link
-                          href={`/umat/announcements/${announcement.id}`}
-                          className="inline-flex items-center px-3 py-1 text-xs bg-secondary text-white rounded-full hover:bg-secondary/90 hover:cursor-pointer transition-colors duration-300"
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          Baca Selengkapnya
-                        </Link>
-                      </div>
-
-                      {announcement.content && announcement.content.trim() !== '' && (
-                        <div className="border-t border-church-primary/10 pt-4 mt-4">
-                          <h4 className="text-sm font-semibold text-church-dark mb-2">Detail:</h4>
-                          <div className="text-church-text/80 text-sm whitespace-pre-wrap leading-relaxed line-clamp-3">
-                            {announcement.content}
-                          </div>
+          {/* Pengumuman */}
+          <div className="space-y-6">
+            {announcements.data.length === 0 ? (
+              <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-200/50 p-16 text-center">
+                <div className="rounded-full bg-blue-100 p-5 w-fit mx-auto mb-4">
+                  <User className="h-10 w-10 text-blue-400" />
+                </div>
+                <p className="text-gray-500 text-lg font-medium">Belum ada pengumuman yang terdaftar.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {announcements.data.map((announcement) => {
+                  const dateInfo = formatDate(announcement.created_at);
+                  return (
+                    <div key={announcement.id} className="group bg-white/95 backdrop-blur-sm rounded-2xl border border-gray-200 shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 flex flex-col h-full overflow-hidden">
+                      {/* Image */}
+                      {announcement.image_url && !imageErrors[announcement.id] ? (
+                        <div className="aspect-video bg-gray-100 relative overflow-hidden">
+                          <img
+                            src={announcement.image_url}
+                            alt={announcement.title}
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            onError={() => handleImageError(announcement.id)}
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : (
+                        <div className="aspect-video bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
+                          <ImageIcon className="h-12 w-12 text-blue-300" />
                         </div>
                       )}
-                    </CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          )}
 
-          {/* Pagination */}
-          {announcements.last_page > 1 && (
-            <div className="flex justify-center items-center space-x-2 mt-8">
-              {announcements.links.map((link, index) => {
-                if (!link.url) {
+                      {/* Content */}
+                      <div className="p-5 flex flex-col flex-1">
+                        <span className="text-xs text-slate-400 mb-2" title={dateInfo.full}>
+                          {dateInfo.relative}
+                        </span>
+                        <h3 className="text-base font-bold text-slate-800 group-hover:text-blue-700 transition-colors duration-200 line-clamp-2 mb-2">
+                          {announcement.title}
+                        </h3>
+                        <p className="text-sm text-slate-600 mb-4 line-clamp-2 flex-1">
+                          {announcement.description}
+                        </p>
+
+                        <Link
+                          href={`/umat/announcements/${announcement.id}`}
+                          className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 w-fit mt-auto"
+                        >
+                          <Eye className="h-3.5 w-3.5" />
+                          Baca Selengkapnya
+                        </Link>
+
+                        {announcement.content && announcement.content.trim() !== '' && (
+                          <div className="border-t border-gray-100 pt-3 mt-3">
+                            <h4 className="text-xs font-semibold text-slate-600 uppercase tracking-wide mb-1.5">Detail:</h4>
+                            <div className="text-slate-600 text-sm leading-relaxed line-clamp-3">
+                              {announcement.content}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {announcements.last_page > 1 && (
+              <div className="flex justify-center items-center gap-2 mt-6 flex-wrap">
+                {announcements.links.map((link, index) => {
+                  if (!link.url) {
+                    return (
+                      <span
+                        key={index}
+                        className="px-4 py-2 text-sm font-medium text-gray-400 bg-white border border-gray-200 rounded-lg cursor-not-allowed"
+                        dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
+                      />
+                    );
+                  }
+
                   return (
-                    <span
+                    <Link
                       key={index}
-                      className="px-3 py-2 text-white/60 bg-white/20 backdrop-blur-sm rounded-md border border-white/20"
+                      href={link.url}
+                      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${link.active
+                          ? 'bg-blue-600 text-white shadow-md'
+                          : 'bg-white border border-gray-200 text-gray-700 hover:bg-blue-50 hover:border-blue-300'
+                        }`}
                       dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
                     />
                   );
-                }
-
-                return (
-                  <Link
-                    key={index}
-                    href={link.url}
-                    className={`px-3 py-2 rounded-md border transition-colors duration-300 ${link.active
-                        ? 'bg-church-primary text-white border-church-primary'
-                        : 'bg-white/20 backdrop-blur-sm text-white border-white/20 hover:bg-white/30'
-                      }`}
-                    dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
-                  />
-                );
-              })}
-            </div>
-          )}
-        </div>
+                })}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </AppLayout>

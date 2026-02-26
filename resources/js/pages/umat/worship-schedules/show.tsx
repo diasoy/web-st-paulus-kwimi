@@ -1,5 +1,4 @@
 import { Head, Link } from "@inertiajs/react";
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import AppLayout from '@/layouts/app-layout';
 import { CalendarDays, Clock, Users, ArrowLeft } from 'lucide-react';
@@ -48,12 +47,12 @@ export default function WorshipScheduleShow({ worshipSchedule }: Props) {
         <AppLayout>
             <Head title={`Jadwal Ibadah - ${worshipSchedule.name}`} />
             
-            <div className="min-h-screen bg-gradient-to-br from-[#1a4d20] via-[#235829] to-[#2d5f35] py-10">
-                <div className="container mx-auto px-4 space-y-8">
+            <div className="p-6 dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20 0%, #235829 40%, #3e7147 100%)' }}>
+                <div className="container mx-auto space-y-6">
                     
                     {/* Header */}
                     <div className="flex items-center justify-between gap-4">
-                        <h1 className="text-3xl font-bold text-white drop-shadow-lg">
+                        <h1 className="text-2xl font-bold text-white drop-shadow-lg">
                             Detail Jadwal Ibadah
                         </h1>
                         <Link href={route('umat.worship-schedules.index')}>
@@ -68,62 +67,69 @@ export default function WorshipScheduleShow({ worshipSchedule }: Props) {
                     </div>
 
                     {/* Detail Card */}
-                    <Card className="border-none shadow-xl rounded-2xl bg-gradient-to-br from-slate-800/90 to-slate-900/90 backdrop-blur-md border border-slate-700/50">
-                        <CardHeader className="pb-2">
-                            <div className="flex justify-between items-start">
-                                <CardTitle className="text-2xl font-semibold text-white leading-tight">
+                    <div className="max-w-3xl mx-auto bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl border border-gray-200/50 overflow-hidden">
+                        {/* Accent bar */}
+                        <div className="h-2 bg-gradient-to-r from-purple-500 to-indigo-600" />
+
+                        <div className="p-6 space-y-6">
+                            {/* Title + Badge */}
+                            <div className="flex justify-between items-start gap-3">
+                                <h2 className="text-2xl font-bold text-slate-800 leading-tight">
                                     {worshipSchedule.name}
-                                </CardTitle>
-                                {isUpcoming(worshipSchedule.date) && (
-                                    <Badge className="bg-gradient-to-r from-emerald-500 to-green-600 text-white px-3 py-1 rounded-full text-sm shadow-lg">
+                                </h2>
+                                {isUpcoming(worshipSchedule.date) ? (
+                                    <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 whitespace-nowrap shrink-0">
                                         Mendatang
+                                    </Badge>
+                                ) : (
+                                    <Badge className="bg-gray-100 text-gray-600 border-gray-200 whitespace-nowrap shrink-0">
+                                        Sudah Lewat
                                     </Badge>
                                 )}
                             </div>
-                        </CardHeader>
-                        
-                        <CardContent className="pt-4 space-y-6">
+
                             {/* Informasi Utama */}
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-4">
-                                    <div className="flex items-center p-4 bg-slate-700/50 rounded-xl border border-slate-600/50 shadow-sm backdrop-blur-sm">
-                                        <CalendarDays className="w-6 h-6 mr-3 text-emerald-400" />
-                                        <div>
-                                            <h3 className="font-medium text-slate-300">Tanggal</h3>
-                                            <p className="text-white">{formatDate(worshipSchedule.date)}</p>
-                                        </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="flex items-center gap-4 p-4 bg-purple-50 rounded-xl border border-purple-100">
+                                    <div className="rounded-full bg-purple-100 p-3">
+                                        <CalendarDays className="w-5 h-5 text-purple-600" />
                                     </div>
-                                    
-                                    <div className="flex items-center p-4 bg-slate-700/50 rounded-xl border border-slate-600/50 shadow-sm backdrop-blur-sm">
-                                        <Clock className="w-6 h-6 mr-3 text-emerald-400" />
-                                        <div>
-                                            <h3 className="font-medium text-slate-300">Waktu</h3>
-                                            <p className="text-white">{formatTime(worshipSchedule.time_start)}</p>
-                                        </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Tanggal</p>
+                                        <p className="text-sm font-bold text-slate-800 mt-0.5">{formatDate(worshipSchedule.date)}</p>
                                     </div>
                                 </div>
                                 
-                                <div className="space-y-4">
-                                    <div className="flex items-center p-4 bg-slate-700/50 rounded-xl border border-slate-600/50 shadow-sm backdrop-blur-sm">
-                                        <Users className="w-6 h-6 mr-3 text-emerald-400" />
-                                        <div>
-                                            <h3 className="font-medium text-slate-300">Pemimpin</h3>
-                                            <p className="text-white">{worshipSchedule.pic}</p>
-                                        </div>
+                                <div className="flex items-center gap-4 p-4 bg-indigo-50 rounded-xl border border-indigo-100">
+                                    <div className="rounded-full bg-indigo-100 p-3">
+                                        <Clock className="w-5 h-5 text-indigo-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Waktu</p>
+                                        <p className="text-sm font-bold text-slate-800 mt-0.5">{formatTime(worshipSchedule.time_start)}</p>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex items-center gap-4 p-4 bg-violet-50 rounded-xl border border-violet-100 md:col-span-2">
+                                    <div className="rounded-full bg-violet-100 p-3">
+                                        <Users className="w-5 h-5 text-violet-600" />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs text-slate-500 font-semibold uppercase tracking-wide">Pemimpin Ibadah</p>
+                                        <p className="text-sm font-bold text-slate-800 mt-0.5">{worshipSchedule.pic}</p>
                                     </div>
                                 </div>
                             </div>
 
                             {/* Communities */}
                             {worshipSchedule.communities && worshipSchedule.communities.length > 0 && (
-                                <div className="p-4 bg-slate-700/50 rounded-xl border border-slate-600/50 shadow-sm backdrop-blur-sm">
-                                    <h3 className="font-medium text-slate-300 mb-3">Komunitas yang Terlibat</h3>
+                                <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-100">
+                                    <p className="text-xs font-semibold text-emerald-700 uppercase tracking-wide mb-3">Komunitas yang Terlibat</p>
                                     <div className="flex flex-wrap gap-2">
                                         {worshipSchedule.communities.map((community) => (
                                             <Badge 
                                                 key={community.id} 
-                                                variant="secondary" 
-                                                className="text-sm px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30 transition border border-emerald-500/30"
+                                                className="bg-emerald-100 text-emerald-800 border-emerald-200 text-sm px-3 py-1"
                                             >
                                                 {community.name}
                                             </Badge>
@@ -131,8 +137,8 @@ export default function WorshipScheduleShow({ worshipSchedule }: Props) {
                                     </div>
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
                 </div>
             </div>
         </AppLayout>

@@ -187,7 +187,7 @@ export default function UmatDashboard({ user, announcements, worship_schedules, 
                                 </div>
                             </div>
                             <div className="pt-2 border-t border-slate-100">
-                                <Button asChild size="sm" variant="outline" className="w-full text-green-700 border-green-200 hover:bg-green-50">
+                                <Button asChild size="sm" variant="outline" className="w-full text-white bg-green-600 border-green-200 hover:bg-green-700 hover:text-white">
                                     <Link href="/settings/profile">Edit Profil</Link>
                                 </Button>
                             </div>

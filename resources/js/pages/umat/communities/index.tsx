@@ -1,6 +1,5 @@
 import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Building2, Users } from 'lucide-react';
 import { BreadcrumbItem } from '@/types';
@@ -24,18 +23,18 @@ interface Props {
 export default function UmatCommunitiesIndex({ communities, my_community_id }: Props) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Komunitas Basis" />
+            <Head title="Komunitas Basis Gerejawi" />
 
             <div className="p-6 dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20 0%, #235829 40%, #3e7147 100%)' }}>
                 {/* Header */}
                 <div className="mb-6 relative bg-gradient-to-r from-emerald-700 via-green-700 to-teal-800 rounded-2xl p-8 shadow-2xl overflow-hidden">
                     <div className="relative z-10 text-center">
                         <div className="relative inline-block mb-3">
-                            <h1 className="text-4xl font-bold text-white drop-shadow-lg">Komunitas Basis</h1>
+                            <h1 className="text-4xl font-bold text-white drop-shadow-lg">Komunitas Basis Gerejawi</h1>
                             <div className="absolute -inset-1 bg-gradient-to-r from-emerald-400 to-teal-400 rounded-lg blur opacity-20"></div>
                         </div>
                         <p className="text-white/90 text-lg font-medium">
-                            Daftar komunitas basis ST. Paulus Kwimi
+                            Daftar komunitas basis Gerejawi ST. Paulus Kwimi
                         </p>
                     </div>
                     <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>

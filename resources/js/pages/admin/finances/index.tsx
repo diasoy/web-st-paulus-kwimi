@@ -237,7 +237,7 @@ export default function FinancesIndex({ finances, summary, filters }: FinancesIn
             <div className="rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm p-6 shadow-2xl">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <p className="text-white/70 text-sm font-semibold uppercase tracking-wide">Saldo Sederhana</p>
+                  <p className="text-white/70 text-sm font-semibold uppercase tracking-wide">Saldo Pemasukan</p>
                   <h3 className="text-3xl font-bold text-white mt-1">{formatCurrency(summary.balance)}</h3>
                 </div>
                 <div className="bg-cyan-500/20 text-cyan-100 p-3 rounded-xl">

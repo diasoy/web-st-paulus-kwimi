@@ -1,19 +1,12 @@
-import { Head, Link, router } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Users, Mail, Phone, Building2, Search, RotateCcw, Eye } from 'lucide-react';
-import { useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
+import { Head, Link, router } from '@inertiajs/react';
+import { Building2, Eye, Mail, Phone, RotateCcw, Search, Users } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/umat/dashboard' },
@@ -72,10 +65,14 @@ export default function UmatChurchOfficialsIndex({ officials, positions, filters
     const [position, setPosition] = useState(filters.position ?? '');
 
     const applyFilters = (overrides: Record<string, string> = {}) => {
-        router.get('/umat/church-officials', {
-            search: overrides.search ?? search,
-            position: overrides.position ?? position,
-        }, { preserveScroll: true, preserveState: true });
+        router.get(
+            '/umat/church-officials',
+            {
+                search: overrides.search ?? search,
+                position: overrides.position ?? position,
+            },
+            { preserveScroll: true, preserveState: true },
+        );
     };
 
     const resetFilters = () => {
@@ -90,56 +87,62 @@ export default function UmatChurchOfficialsIndex({ officials, positions, filters
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Pengurus Gereja" />
 
-            <div className="p-6 dashboard-gradient min-h-screen" style={{ background: 'linear-gradient(135deg, #1a4d20 0%, #235829 40%, #3e7147 100%)' }}>
+            <div
+                className="dashboard-gradient min-h-screen p-6"
+                style={{ background: 'linear-gradient(135deg, #1a4d20 0%, #235829 40%, #3e7147 100%)' }}
+            >
                 {/* Header */}
-                <div className="mb-6 relative bg-gradient-to-r from-teal-700 via-emerald-700 to-green-800 rounded-2xl p-8 shadow-2xl overflow-hidden">
+                <div className="relative mb-6 overflow-hidden rounded-2xl bg-gradient-to-r from-teal-700 via-emerald-700 to-green-800 p-8 shadow-2xl">
                     <div className="relative z-10 text-center">
-                        <div className="relative inline-block mb-3">
+                        <div className="relative mb-3 inline-block">
                             <h1 className="text-4xl font-bold text-white drop-shadow-lg">Pengurus Gereja</h1>
-                            <div className="absolute -inset-1 bg-gradient-to-r from-teal-400 to-emerald-400 rounded-lg blur opacity-20"></div>
+                            <div className="absolute -inset-1 rounded-lg bg-gradient-to-r from-teal-400 to-emerald-400 opacity-20 blur"></div>
                         </div>
-                        <p className="text-white/90 text-lg font-medium">
-                            Daftar pengurus aktif ST. Paulus Kwimi
-                        </p>
+                        <p className="text-lg font-medium text-white/90">Daftar pengurus aktif ST. Paulus Kwimi</p>
                     </div>
-                    <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
+                    <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-white/10 blur-2xl"></div>
                 </div>
 
                 {/* Filters */}
-                <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-200/50 p-5 mb-6">
-                    <div className="flex flex-col sm:flex-row gap-3">
+                <div className="mb-6 rounded-2xl border border-gray-200/50 bg-white/95 p-5 shadow-2xl backdrop-blur-lg">
+                    <div className="flex flex-col gap-3 sm:flex-row">
                         <div className="relative flex-1">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                             <Input
                                 placeholder="Cari nama, jabatan, departemen..."
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                                 onKeyDown={(e) => e.key === 'Enter' && applyFilters()}
-                                className="pl-9 h-10 border-gray-200"
+                                className="h-10 border-gray-200 pl-9"
                             />
                         </div>
-                        <Select value={position || 'all'} onValueChange={(v) => {
-                            const val = v === 'all' ? '' : v;
-                            setPosition(val);
-                            applyFilters({ position: val });
-                        }}>
-                            <SelectTrigger className="w-full sm:w-52 h-10 border-gray-200">
+                        <Select
+                            value={position || 'all'}
+                            onValueChange={(v) => {
+                                const val = v === 'all' ? '' : v;
+                                setPosition(val);
+                                applyFilters({ position: val });
+                            }}
+                        >
+                            <SelectTrigger className="h-10 w-full border-gray-200 sm:w-52">
                                 <SelectValue placeholder="Semua Jabatan" />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Semua Jabatan</SelectItem>
                                 {Object.entries(positions).map(([key, label]) => (
-                                    <SelectItem key={key} value={key}>{label}</SelectItem>
+                                    <SelectItem key={key} value={key}>
+                                        {label}
+                                    </SelectItem>
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Button onClick={() => applyFilters()} className="h-10 bg-teal-600 hover:bg-teal-700 text-white">
-                            <Search className="h-4 w-4 mr-2" />
+                        <Button onClick={() => applyFilters()} className="h-10 bg-teal-600 text-white hover:bg-teal-700">
+                            <Search className="mr-2 h-4 w-4" />
                             Cari
                         </Button>
                         {hasFilters && (
                             <Button onClick={resetFilters} variant="outline" className="h-10 border-gray-300">
-                                <RotateCcw className="h-4 w-4 mr-2" />
+                                <RotateCcw className="mr-2 h-4 w-4" />
                                 Reset
                             </Button>
                         )}
@@ -147,30 +150,36 @@ export default function UmatChurchOfficialsIndex({ officials, positions, filters
                 </div>
 
                 {/* Cards Grid */}
-                <div className="bg-white/95 backdrop-blur-lg rounded-2xl shadow-2xl border border-gray-200/50 p-6">
+                <div className="rounded-2xl border border-gray-200/50 bg-white/95 p-6 shadow-2xl backdrop-blur-lg">
                     {officials.data.length === 0 ? (
-                        <div className="text-center py-16">
-                            <div className="rounded-full bg-teal-100 p-5 w-fit mx-auto mb-4">
+                        <div className="py-16 text-center">
+                            <div className="mx-auto mb-4 w-fit rounded-full bg-teal-100 p-5">
                                 <Users className="h-10 w-10 text-teal-400" />
                             </div>
-                            <p className="text-gray-500 text-lg font-medium">Belum ada pengurus ditemukan</p>
+                            <p className="text-lg font-medium text-gray-500">Belum ada pengurus ditemukan</p>
                         </div>
                     ) : (
                         <>
-                            <p className="text-sm text-gray-500 mb-4">
-                                Menampilkan <span className="font-semibold text-teal-700">{officials.data.length}</span> dari <span className="font-semibold text-teal-700">{officials.total}</span> pengurus
+                            <p className="mb-4 text-sm text-gray-500">
+                                Menampilkan <span className="font-semibold text-teal-700">{officials.data.length}</span> dari{' '}
+                                <span className="font-semibold text-teal-700">{officials.total}</span> pengurus
                             </p>
                             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 {officials.data.map((official) => (
-                                    <div key={official.id} className="rounded-xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden">
+                                    <div
+                                        key={official.id}
+                                        className="overflow-hidden rounded-xl border border-gray-200 bg-gradient-to-b from-white to-gray-50 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                                    >
                                         {/* Photo */}
-                                        <div className="h-32 bg-gradient-to-br from-teal-100 to-emerald-100 flex items-center justify-center">
+                                        <div className="flex h-32 items-center justify-center bg-gradient-to-br from-teal-100 to-emerald-100">
                                             {official.photo_url ? (
                                                 <img
                                                     src={official.photo_url}
                                                     alt={official.name}
                                                     className="h-full w-full object-cover"
-                                                    onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                                                    onError={(e) => {
+                                                        (e.target as HTMLImageElement).style.display = 'none';
+                                                    }}
                                                 />
                                             ) : (
                                                 <div className="rounded-full bg-white/60 p-4">
@@ -179,39 +188,46 @@ export default function UmatChurchOfficialsIndex({ officials, positions, filters
                                             )}
                                         </div>
 
-                                        <div className="p-4 space-y-2">
-                                            <p className="font-bold text-slate-800 text-sm leading-tight line-clamp-1">{official.name}</p>
-                                            <Badge className="bg-teal-100 text-teal-800 border-teal-200 text-xs font-medium">
+                                        <div className="space-y-2 p-4">
+                                            <p className="line-clamp-1 text-sm leading-tight font-bold text-slate-800">{official.name}</p>
+                                            <Badge className="border-teal-200 bg-teal-100 text-xs font-medium text-teal-800">
                                                 {official.position_label || official.position}
                                             </Badge>
                                             {official.department && (
-                                                <p className="text-xs text-slate-500 flex items-center gap-1">
+                                                <p className="flex items-center gap-1 text-xs text-slate-500">
                                                     <Building2 className="h-3 w-3 text-teal-400" />
                                                     {official.department}
                                                 </p>
                                             )}
                                             {official.community && (
-                                                <p className="text-xs text-slate-500 flex items-center gap-1">
+                                                <p className="flex items-center gap-1 text-xs text-slate-500">
                                                     <Building2 className="h-3 w-3 text-emerald-400" />
                                                     {official.community.name}
                                                 </p>
                                             )}
                                             {official.email && (
-                                                <p className="text-xs text-slate-500 flex items-center gap-1 truncate">
-                                                    <Mail className="h-3 w-3 text-blue-400 flex-shrink-0" />
+                                                <p className="flex items-center gap-1 truncate text-xs text-slate-500">
+                                                    <Mail className="h-3 w-3 flex-shrink-0 text-blue-400" />
                                                     <span className="truncate">{official.email}</span>
                                                 </p>
                                             )}
                                             {official.phone && (
-                                                <p className="text-xs text-slate-500 flex items-center gap-1">
+                                                <p className="flex items-center gap-1 text-xs text-slate-500">
                                                     <Phone className="h-3 w-3 text-green-400" />
                                                     {official.phone}
                                                 </p>
                                             )}
                                             <div className="pt-2">
-                                                <Button asChild variant="outline" size="sm" className="w-full h-8 text-xs border-teal-200 text-teal-700 hover:bg-teal-50">
-                                                    <Link href={`/umat/church-officials/${official.id}`}>
-                                                        <Eye className="h-3 w-3 mr-1" />
+                                                <Button
+                                                    asChild
+                                                    size="sm"
+                                                    className="h-8 w-full border-none bg-teal-600 text-xs text-white hover:bg-teal-700"
+                                                >
+                                                    <Link
+                                                        href={`/umat/church-officials/${official.id}`}
+                                                        className="flex items-center justify-center text-white"
+                                                    >
+                                                        <Eye className="mr-1 h-3 w-3" />
                                                         Lihat Detail
                                                     </Link>
                                                 </Button>
@@ -223,27 +239,27 @@ export default function UmatChurchOfficialsIndex({ officials, positions, filters
 
                             {/* Pagination */}
                             {officials.last_page > 1 && (
-                                <div className="flex items-center justify-center gap-2 mt-6 flex-wrap">
-                                    {officials.links.map((link, i) => (
+                                <div className="mt-6 flex flex-wrap items-center justify-center gap-2">
+                                    {officials.links.map((link, i) =>
                                         link.url ? (
                                             <Link
                                                 key={i}
                                                 href={link.url}
-                                                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                                className={`rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
                                                     link.active
                                                         ? 'bg-teal-600 text-white shadow-md'
-                                                        : 'bg-white border border-gray-200 text-gray-700 hover:bg-teal-50 hover:border-teal-300'
+                                                        : 'border border-gray-200 bg-white text-gray-700 hover:border-teal-300 hover:bg-teal-50'
                                                 }`}
                                                 dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
                                             />
                                         ) : (
                                             <span
                                                 key={i}
-                                                className="px-4 py-2 rounded-lg text-sm font-medium text-gray-400 cursor-not-allowed bg-gray-50 border border-gray-200"
+                                                className="cursor-not-allowed rounded-lg border border-gray-200 bg-gray-50 px-4 py-2 text-sm font-medium text-gray-400"
                                                 dangerouslySetInnerHTML={{ __html: getLabel(link.label) }}
                                             />
-                                        )
-                                    ))}
+                                        ),
+                                    )}
                                 </div>
                             )}
                         </>
